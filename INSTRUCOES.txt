@@ -1,0 +1,138 @@
+# 🎯 INSTRUÇÕES RÁPIDAS - Forró Stream MOC
+
+## ✅ O QUE FOI MELHORADO
+
+Seu site agora tem:
+- ✨ Design mais profissional com animações suaves
+- 📱 Menu mobile completo e responsivo
+- ⏰ Grade de programação automática (detecta horário)
+- 👥 Contador de ouvintes online
+- 📲 WhatsApp e Instagram funcionais
+- 🔗 Botão de compartilhar rádio
+- ℹ️ Seção "Sobre" completa
+- 🔍 SEO otimizado para Google
+- 🎨 Footer com redes sociais
+
+---
+
+## ⚙️ PERSONALIZE AGORA (IMPORTANTE!)
+
+### 1. Número do WhatsApp
+Procure no código: `5538999999999`
+Substitua pelo seu número real (com DDD)
+
+**Onde mudar:**
+- Linha ~208: Link do WhatsApp para pedidos
+- Linha ~340: Link do WhatsApp no footer
+
+### 2. Instagram
+Procure no código: `forrostreammoc`
+Substitua pelo seu usuário real do Instagram
+
+**Onde mudar:**
+- Linha ~213: Link do Instagram
+- Linha ~344: Link do Instagram no footer
+
+### 3. Email de Contato
+Procure no código: `contato@forrostreammoc.com`
+Substitua pelo seu email real
+
+**Onde mudar:**
+- Linha ~317: Seção Sobre
+- Linha ~348: Footer
+
+### 4. Logo/Imagem
+Certifique-se de ter o arquivo `forro-moc-poster.jpg` na mesma pasta do HTML
+
+---
+
+## 🚀 COMO TESTAR
+
+1. **Abra o arquivo** `indexradioforrostreammoc.html` no navegador
+2. **Teste o player**: Clique no botão play e ouça a rádio
+3. **Teste o menu mobile**: Diminua a janela e clique no ícone de menu
+4. **Verifique os links**: Clique em WhatsApp, Instagram, etc.
+5. **Navegue pelas seções**: Role a página e veja as animações
+
+---
+
+## 📱 RECURSOS PRINCIPAIS
+
+### Player de Áudio
+- Play/Pause com animação
+- Controle de volume
+- Indicador de status (Conectando/No Ar/Pausado)
+- Waveform animado quando está tocando
+
+### Grade de Programação
+Detecta automaticamente o programa atual baseado no horário:
+- 06:00-10:00 → Manhã Animada MOC
+- 10:00-14:00 → Forró no Trabalho
+- 14:00-20:00 → Noite do Forró
+- 20:00-06:00 → Madrugada VIP
+
+### Contador de Ouvintes
+- Mostra entre 50-300 ouvintes (simulado)
+- Atualiza a cada 30 segundos
+- Aparece na seção "Sobre"
+
+### Compartilhamento
+- Botão "Compartilhar Rádio" no player
+- Usa API nativa do celular ou copia link
+
+---
+
+## 💡 DICAS IMPORTANTES
+
+### Para Hospedar Online:
+1. Use serviços gratuitos como:
+   - GitHub Pages
+   - Netlify
+   - Vercel
+   - InfinityFree
+
+2. Ou contrate uma hospedagem paga para domínio próprio
+
+### Para Melhorar Ainda Mais:
+- Adicione fotos reais dos locutores
+- Crie uma playlist das últimas músicas tocadas
+- Implemente um chat ao vivo
+- Adicione Google Analytics para ver estatísticas
+
+### Manutenção:
+- Teste o stream regularmente
+- Atualize informações de contato
+- Verifique se todos os links estão funcionando
+- Mantenha a imagem do logo atualizada
+
+---
+
+## 🆘 PROBLEMAS COMUNS
+
+### Player não toca:
+- Verifique se o link do streaming está ativo
+- Teste em diferentes navegadores
+- Verifique sua conexão com internet
+
+### Imagem não aparece:
+- Certifique-se que `forro-moc-poster.jpg` está na mesma pasta
+- Verifique o nome exato do arquivo (maiúsculas/minúsculas)
+
+### Links não funcionam:
+- Substitua os números/usuários fictícios pelos reais
+- Teste os links em uma nova aba
+
+---
+
+## 📞 SUPORTE
+
+Se precisar de ajuda adicional:
+- Revise este arquivo de instruções
+- Consulte o README.md para detalhes completos
+- Teste cada funcionalidade individualmente
+
+---
+
+**Pronto! Seu site está muito melhor! 🎉**
+
+Agora é só personalizar com suas informações reais e publicar!
