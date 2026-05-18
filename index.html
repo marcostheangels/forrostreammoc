@@ -772,14 +772,35 @@
                                     
                                     console.log('🎵 Dados da fonte:', source);
                                     
-                                    if (source.title) {
-                                        console.log('✅ Título encontrado:', source.title);
-                                        parseAndDisplaySongTitle(source.title);
+                                    // Tenta múltiplos campos onde o título pode estar
+                                    let songTitle = null;
+                                    
+                                    // Prioridade 1: metadata.x_icy_title (formato Icecast moderno)
+                                    if (source.metadata && source.metadata.x_icy_title) {
+                                        songTitle = source.metadata.x_icy_title;
+                                        console.log('✅ Título encontrado em metadata.x_icy_title:', songTitle);
+                                    }
+                                    // Prioridade 2: title (campo padrão)
+                                    else if (source.title) {
+                                        songTitle = source.title;
+                                        console.log('✅ Título encontrado em source.title:', songTitle);
+                                    }
+                                    // Prioridade 3: display-title
+                                    else if (source['display-title']) {
+                                        songTitle = source['display-title'];
+                                        console.log('✅ Título encontrado em display-title:', songTitle);
+                                    }
+                                    
+                                    if (songTitle) {
+                                        parseAndDisplaySongTitle(songTitle);
                                         metadataFound = true;
                                         break;
                                     } else {
-                                        console.log('⚠️ Campo title não encontrado em source');
+                                        console.log('⚠️ Nenhum campo de título encontrado');
                                         console.log('Campos disponíveis:', Object.keys(source));
+                                        if (source.metadata) {
+                                            console.log('Campos em metadata:', Object.keys(source.metadata));
+                                        }
                                     }
                                 } else {
                                     console.log('⚠️ Campo icestats.source não encontrado');
