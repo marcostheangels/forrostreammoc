@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Forró Stream MOC - A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG. Ouça os maiores sucessos do forró tradicional, universitário e eletrônico.">
+    <meta name="description" content="Forró Stream MOC - A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG. Ouça os maiores successes do forró tradicional, universitário e eletrônico.">
     <meta name="keywords" content="forró, rádio, Montes Claros, MOC, música, ao vivo, stream, forró tradicional, forró universitário">
     <meta name="author" content="Forró Stream MOC">
     
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
-    <meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
+    <meta property="og:title" content="🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
+    <meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG. Acesso 100% gratuito com programação 24 horas com o melhor do forró!">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://forrostreammoc.com">
-    <meta property="og:image" content="forro-moc-poster.jpg">
+    <meta property="og:url" content="https://forrostreammoc.shop">
+    <meta property="og:image" content="https://forrostreammoc.shop/forro-moc-poster.jpg">
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     
-    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
     <meta name="twitter:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
-    <meta name="twitter:image" content="forro-moc-poster.jpg">
+    <meta name="twitter:image" content="https://forrostreammoc.shop/forro-moc-poster.jpg">
     <meta name="theme-color" content="#f59e0b">
     <link rel="icon" type="image/jpeg" href="forro-moc-poster.jpg">
     <title>Forró Stream MOC | A Sua Rádio de Forró 24h Ao Vivo</title>
@@ -28,7 +29,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Toast Notification CSS -->
     <style>
         .toast {
             position: fixed;
@@ -251,7 +251,6 @@
                     <a href="#sobre-section" class="hover:text-amber-400 transition">Sobre</a>
                 </nav>
                 
-                <!-- Botão Menu Mobile -->
                 <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-amber-400 transition text-2xl">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -259,7 +258,6 @@
         </div>
     </header>
 
-    <!-- Badge Flutuante de Ouvintes -->
     <div id="floatingListenerBadge" class="fixed bottom-6 right-6 z-40 bg-gradient-to-br from-green-500 to-green-600 text-white px-5 py-3 rounded-full shadow-2xl hidden md:flex items-center gap-3 animate-fade-in-up hover:scale-105 transition-transform cursor-pointer border-2 border-green-400/50 backdrop-blur">
         <div class="w-3 h-3 bg-white rounded-full animate-ping"></div>
         <div class="flex items-center gap-2">
@@ -269,7 +267,6 @@
         <span class="text-xs font-bold uppercase tracking-wider opacity-90">ouvindo agora</span>
     </div>
 
-    <!-- Badge Flutuante da Música -->
     <div id="floatingNowPlaying" class="fixed bottom-24 right-6 z-40 bg-gradient-to-br from-purple-500 to-pink-600 text-white px-4 py-3 rounded-xl shadow-2xl hidden md:block max-w-[280px] animate-fade-in-up hover:scale-105 transition-transform border-2 border-purple-400/50 backdrop-blur">
         <div class="flex items-start gap-3">
             <i class="fa-solid fa-music text-base mt-0.5 flex-shrink-0"></i>
@@ -281,13 +278,11 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast">
         <i class="fa-solid fa-check-circle"></i>
         <span id="toastMessage">Notificação</span>
     </div>
 
-    <!-- Menu Mobile -->
     <div id="mobileMenu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-lg z-40 hidden flex-col items-center justify-center gap-8">
         <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-3xl transition">
             <i class="fa-solid fa-xmark"></i>
@@ -345,7 +340,6 @@
                                 </div>
                             </div>
 
-                            <!-- Música Tocando Agora -->
                             <div class="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-red-500/10 backdrop-blur border border-purple-500/30 p-4 md:p-5 rounded-2xl shadow-lg">
                                 <div class="flex items-start gap-3 md:gap-4">
                                     <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
@@ -365,7 +359,6 @@
                                 </div>
                             </div>
 
-                            <!-- Histórico de Músicas -->
                             <div class="bg-slate-900/60 backdrop-blur border border-slate-700/50 p-4 rounded-2xl shadow-lg">
                                 <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3 flex items-center gap-2">
                                     <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Últimas Tocadas
@@ -375,7 +368,6 @@
                                 </div>
                             </div>
 
-                            <!-- Contador de Ouvintes em Tempo Real -->
                             <div class="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 backdrop-blur border border-amber-500/30 p-5 rounded-2xl shadow-lg">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
@@ -475,13 +467,11 @@
                         <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8" oninput="changeVolume(this.value)" class="w-full accent-amber-500 bg-gradient-to-r from-slate-700 to-slate-600 h-2 rounded-lg appearance-none cursor-pointer hover:h-2.5 transition-all">
                     </div>
 
-                    <!-- Botão Compartilhar -->
                     <button onclick="shareRadio()" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-amber-500/10 hover:to-orange-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-amber-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-amber-500/20" aria-label="Compartilhar a rádio">
                         <i class="fa-solid fa-share-nodes text-amber-500 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
                         <span class="text-sm font-medium text-slate-300 group-hover:text-amber-400 transition-colors">Compartilhar Rádio</span>
                     </button>
 
-                    <!-- Timer/Sleep Mode -->
                     <button onclick="toggleSleepTimer()" id="sleepTimerBtn" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/20" aria-label="Configurar timer para parar">
                         <i class="fa-solid fa-clock text-blue-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
                         <span class="text-sm font-medium text-slate-300 group-hover:text-blue-400 transition-colors" id="sleepTimerText">Timer: Desligado</span>
@@ -511,7 +501,6 @@
             </div>
         </div>
 
-        <!-- Seção Sobre -->
         <section id="sobre-section" class="mt-12 md:mt-16 scroll-mt-24 animate-fade-in-up">
             <div class="glass-panel p-8 rounded-3xl border border-slate-800 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -577,7 +566,6 @@
                                 WhatsApp: <strong class="text-amber-400">(38) 99855-8528</strong>
                             </p>
                             
-                            <!-- Botão WhatsApp Principal -->
                             <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!" 
                                target="_blank" 
                                class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-green-500/50 mb-4 group">
@@ -585,7 +573,6 @@
                                 <span>Enviar WhatsApp</span>
                             </a>
                             
-                            <!-- Seção de Anúncios e Divulgação -->
                             <div class="border-t border-slate-700/50 pt-4 mt-4">
                                 <p class="text-xs text-slate-400 mb-3 text-center">
                                     📢 Quer divulgar sua marca, loja ou negócio? Anuncie na rádio!
@@ -615,7 +602,6 @@
             <p class="font-header text-2xl font-bold text-gradient leading-none">FORRÓ STREAM MOC</p>
             <p>&copy; 2026. A Rádio Profissional do Forró em Montes Claros/MG.</p>
             
-            <!-- Logo RadiosNet -->
             <div class="mt-4 mb-2">
                 <img src="radiosnet-logo.png" alt="RadiosNet - Plataforma de Rádios Online" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition-opacity duration-300">
             </div>
@@ -627,7 +613,7 @@
                 <a href="https://instagram.com/forrostreammoc" target="_blank" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-pink-500/30 hover:to-purple-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-pink-500/40 border border-slate-700/50 hover:border-pink-500/50">
                     <i class="fa-brands fa-instagram text-xl text-pink-500 group-hover:scale-125 transition-transform"></i>
                 </a>
-                <a href="mailto:contato@forrostreammoc.com" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-amber-500/30 hover:to-orange-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-amber-500/40 border border-slate-700/50 hover:border-amber-500/50">
+                <a href="mailto:contato@forrostreammoc.shop" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-amber-500/30 hover:to-orange-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-amber-500/40 border border-slate-700/50 hover:border-amber-500/50">
                     <i class="fa-solid fa-envelope text-xl text-amber-500 group-hover:scale-125 transition-transform"></i>
                 </a>
             </div>
@@ -639,7 +625,7 @@
                 <span class="text-slate-700">•</span>
                 <a href="#sobre-section" class="hover:text-amber-400 transition">Sobre</a>
                 <span class="text-slate-700">•</span>
-                <a href="mailto:contato@forrostreammoc.com" class="hover:text-amber-400 transition">Contato</a>
+                <a href="mailto:contato@forrostreammoc.shop" class="hover:text-amber-400 transition">Contato</a>
             </div>
         </div>
     </footer>
@@ -821,8 +807,6 @@
             }).join('');
         }
 
-        // Função removida - Área VIP desativada
-
         // Detectar programa atual baseado no horário
         function updateCurrentProgram() {
             const now = new Date();
@@ -857,12 +841,10 @@
         // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
-                // Para GitHub Pages, usamos proxies CORS públicos
                 const streamUrl = 'https://usu300opw28m.shares.zrok.io/status-json.xsl';
                 const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
                 const streamUrl7html = 'https://usu300opw28m.shares.zrok.io/7.html';
                 
-                // Tenta múltiplos proxies CORS com diferentes endpoints
                 const proxyUrls = [
                     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl)}`,
                     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,
@@ -871,154 +853,99 @@
                     `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrl)}`
                 ];
                 
-                console.log('🔍 Iniciando busca de metadados via proxy CORS...');
-                console.log('URL original:', streamUrl);
-                
                 let metadataFound = false;
                 
                 for (const proxyUrl of proxyUrls) {
                     try {
-                        console.log(`Tentando proxy: ${proxyUrl.substring(0, 80)}...`);
-                        
                         const response = await fetch(proxyUrl, { 
                             method: 'GET',
                             mode: 'cors',
                             cache: 'no-cache'
                         });
                         
-                        console.log(`Status: ${response.status} ${response.statusText}`);
-                        
                         if (response.ok) {
                             const text = await response.text();
-                            console.log('Resposta:', text.substring(0, 300));
                             
-                            // Tenta parsear JSON
                             try {
                                 const json = JSON.parse(text);
-                                console.log('✅ JSON parseado');
-                                console.log('📋 Estrutura completa:', JSON.stringify(json, null, 2).substring(0, 1000));
-                                
                                 if (json.icestats && json.icestats.source) {
                                     const source = Array.isArray(json.icestats.source) 
                                         ? json.icestats.source[0] 
                                         : json.icestats.source;
                                     
-                                    console.log('🎵 Dados da fonte:', source);
-                                    
-                                    // Tenta múltiplos campos onde o título pode estar
                                     let songTitle = null;
-                                    
-                                    // Prioridade 1: metadata.x_icy_title (formato Icecast moderno)
                                     if (source.metadata && source.metadata.x_icy_title) {
                                         songTitle = source.metadata.x_icy_title;
-                                        console.log('✅ Título encontrado em metadata.x_icy_title:', songTitle);
-                                    }
-                                    // Prioridade 2: title (campo padrão)
-                                    else if (source.title) {
+                                    } else if (source.title) {
                                         songTitle = source.title;
-                                        console.log('✅ Título encontrado em source.title:', songTitle);
-                                    }
-                                    // Prioridade 3: display-title
-                                    else if (source['display-title']) {
+                                    } else if (source['display-title']) {
                                         songTitle = source['display-title'];
-                                        console.log('✅ Título encontrado em display-title:', songTitle);
                                     }
                                     
                                     if (songTitle) {
                                         parseAndDisplaySongTitle(songTitle);
                                         metadataFound = true;
                                         break;
-                                    } else {
-                                        console.log('⚠️ Nenhum campo de título encontrado');
-                                        console.log('Campos disponíveis:', Object.keys(source));
-                                        if (source.metadata) {
-                                            console.log('Campos em metadata:', Object.keys(source.metadata));
-                                        }
                                     }
-                                } else {
-                                    console.log('⚠️ Campo icestats.source não encontrado');
-                                    console.log('Campos em icestats:', json.icestats ? Object.keys(json.icestats) : 'N/A');
                                 }
                             } catch (e) {
-                                console.log('Não é JSON, tentando extrair de HTML/XML...');
-                                
-                                // Tenta extrair título de XML (status.xsl)
                                 const titleMatch = text.match(/<title>([^<]+)<\/title>/i);
                                 if (titleMatch && titleMatch[1] && !titleMatch[1].includes('Icecast')) {
-                                    console.log('✅ Título encontrado no XML:', titleMatch[1]);
                                     parseAndDisplaySongTitle(titleMatch[1]);
                                     metadataFound = true;
                                     break;
                                 }
                                 
-                                // Tenta formato 7.html
                                 const parts = text.split(',');
                                 if (parts.length >= 5) {
                                     const currsong = parts[4];
                                     if (currsong && currsong.trim()) {
-                                        console.log('✅ Título no 7.html:', currsong);
                                         parseAndDisplaySongTitle(currsong);
                                         metadataFound = true;
                                         break;
                                     }
                                 }
-                                
-                                console.log('⚠️ Não conseguiu extrair título do formato HTML/XML');
                             }
                         }
                     } catch (err) {
-                        console.log(`❌ Proxy falhou:`, err.message);
                         continue;
                     }
                 }
                 
                 if (!metadataFound) {
-                    console.log('⚠️ Nenhum proxy funcionou, usando fallback');
                     displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo');
                 }
                 
             } catch (error) {
-                console.error('❌ Erro geral:', error);
                 displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo');
             }
         }
 
-        // Parseia e exibe o título da música
         function parseAndDisplaySongTitle(title) {
-            // RadioBOSS/Icecast geralmente envia no formato: "Artista - Título da Música"
             let artist = '';
             let song = title;
             
-            // Tenta separar por " - " (hífen com espaços)
             if (title.includes(' - ')) {
                 const parts = title.split(' - ');
                 artist = parts[0].trim();
-                song = parts.slice(1).join(' - ').trim(); // Rejoin caso tenha mais hífens
+                song = parts.slice(1).join(' - ').trim();
             }
             
-            // Evita atualizar se for o mesmo título
             if (song !== currentSongTitle || artist !== currentSongArtist) {
                 currentSongTitle = song;
                 currentSongArtist = artist;
                 displayNowPlaying(song, artist);
-                
-                // Adicionar ao histórico
                 addToSongHistory(song, artist);
             }
         }
 
-        // Exibe a música tocando na interface
         function displayNowPlaying(title, artist) {
             const nowPlayingText = document.getElementById('nowPlayingText');
             const nowPlayingArtist = document.getElementById('nowPlayingArtist');
             const floatingSongTitle = document.getElementById('floatingSongTitle');
             const floatingSongArtist = document.getElementById('floatingSongArtist');
             
-            // Atualiza card principal
-            if (nowPlayingText) {
-                nowPlayingText.textContent = title || 'Forró Stream MOC';
-            }
-            
+            if (nowPlayingText) nowPlayingText.textContent = title || 'Forró Stream MOC';
             if (nowPlayingArtist) {
                 if (artist && artist.trim()) {
                     nowPlayingArtist.textContent = artist;
@@ -1027,12 +954,7 @@
                     nowPlayingArtist.style.display = 'none';
                 }
             }
-            
-            // Atualiza badge flutuante
-            if (floatingSongTitle) {
-                floatingSongTitle.textContent = title || 'Forró Stream MOC';
-            }
-            
+            if (floatingSongTitle) floatingSongTitle.textContent = title || 'Forró Stream MOC';
             if (floatingSongArtist) {
                 if (artist && artist.trim()) {
                     floatingSongArtist.textContent = artist;
@@ -1043,43 +965,30 @@
             }
         }
 
-        // Função para buscar estatísticas reais do stream Icecast/Shoutcast
         async function fetchRealListeners() {
             try {
-                // Tenta obter status do stream via endpoint de status
-                // Para Zrok/Icecast, tentamos acessar o status JSON
                 const statusUrls = [
                     'https://usu300opw28m.shares.zrok.io/status-json.xsl',
                     'https://usu300opw28m.shares.zrok.io/status.xsl',
-                    'https://usu300opw28m.shares.zrok.io/7.html' // Formato Shoutcast DNAS
+                    'https://usu300opw28m.shares.zrok.io/7.html'
                 ];
                 
                 let listenersFound = false;
                 
                 for (const url of statusUrls) {
                     try {
-                        const response = await fetch(url, { 
-                            method: 'GET',
-                            mode: 'cors'
-                        });
-                        
+                        const response = await fetch(url, { method: 'GET', mode: 'cors' });
                         if (response.ok) {
                             const text = await response.text();
-                            
-                            // Tenta parsear como JSON primeiro
                             try {
                                 const json = JSON.parse(text);
-                                // Icecast format
                                 if (json.icestats && json.icestats.source) {
-                                    const sources = Array.isArray(json.icestats.source) 
-                                        ? json.icestats.source 
-                                        : [json.icestats.source];
+                                    const sources = Array.isArray(json.icestats.source) ? json.icestats.source : [json.icestats.source];
                                     realListenerCount = sources.reduce((sum, source) => sum + (source.listeners || 0), 0);
                                     listenersFound = true;
                                     break;
                                 }
                             } catch (e) {
-                                // Se não for JSON, tenta formato Shoutcast (7.html retorna: listeners, status, peak, max)
                                 const parts = text.split(',');
                                 if (parts.length >= 1) {
                                     const count = parseInt(parts[0]);
@@ -1092,27 +1001,18 @@
                             }
                         }
                     } catch (err) {
-                        console.log(`Tentativa falhou para ${url}:`, err.message);
                         continue;
                     }
                 }
                 
-                // Se não conseguiu obter dados reais, usa estimativa baseada no player
                 if (!listenersFound) {
-                    // Verifica se o áudio está tocando
                     const audio = document.getElementById('audioPlayer');
                     if (audio && !audio.paused) {
-                        // Se está tocando, assume pelo menos 1 ouvinte (o usuário atual)
-                        // Adiciona uma variação pequena para simular outros ouvintes
                         realListenerCount = Math.max(realListenerCount, 1);
                     }
                 }
-                
                 updateAllDisplays(realListenerCount);
-                
             } catch (error) {
-                console.error('Erro ao buscar ouvintes reais:', error);
-                // Fallback: mantém o último valor conhecido ou usa 1 se estiver tocando
                 const audio = document.getElementById('audioPlayer');
                 if (audio && !audio.paused && realListenerCount === 0) {
                     realListenerCount = 1;
@@ -1121,7 +1021,6 @@
             }
         }
 
-        // Atualiza todos os displays com o número real
         function updateAllDisplays(count) {
             const listenerElement = document.getElementById('listenerCount');
             const liveListenerElement = document.getElementById('liveListenerCount');
@@ -1132,47 +1031,25 @@
             if (floatingCountElement) floatingCountElement.textContent = count;
         }
 
-        // Monitora quando o usuário dá play/pause para ajustar contagem
         function monitorPlayerState() {
             const audio = document.getElementById('audioPlayer');
             if (!audio) return;
-            
-            // Quando o usuário dá play, garante que tem pelo menos 1 ouvinte
             audio.addEventListener('play', () => {
                 if (realListenerCount < 1) {
                     realListenerCount = 1;
                     updateAllDisplays(realListenerCount);
                 }
             });
-            
-            // Opcional: quando pausa, pode reduzir (mas mantemos o último valor)
-            audio.addEventListener('pause', () => {
-                // Não reduzimos automaticamente pois o stream pode continuar rodando
-            });
         }
 
-        // Inicializar quando a página carregar
         window.addEventListener('DOMContentLoaded', () => {
-            console.log('✅ DOMContentLoaded disparado!');
-            console.log('🔄 Iniciando todas as funções...');
-            
             updateCurrentProgram();
-            console.log('✅ updateCurrentProgram() executado');
-            
-            // Busca contador REAL imediatamente
             fetchRealListeners();
-            console.log('✅ fetchRealListeners() chamado');
-            
-            // Busca música tocando AGORA imediatamente
             fetchNowPlaying();
-            console.log('🎵 Chamando fetchNowPlaying() pela primeira vez...');
-            
-            // Monitora estado do player
             monitorPlayerState();
             
-            // AUTOPLAY: Toca automaticamente ao carregar o site
+            // AUTOPLAY
             setTimeout(() => {
-                console.log('▶️ Tentando autoplay...');
                 audio.play()
                     .then(() => {
                         playIcon.className = "fa-solid fa-pause";
@@ -1180,30 +1057,18 @@
                         statusText.innerText = "No Ar - Forró Stream MOC VIP";
                         statusText.className = "text-xl font-semibold text-green-400";
                         waveform.classList.remove('hidden');
-                        console.log('✅ Autoplay funcionou! Música tocando.');
                     })
                     .catch(err => {
-                        console.log('⚠️ Autoplay bloqueado pelo navegador:', err.message);
-                        console.log('💡 Usuário precisa clicar no botão de play manualmente');
                         statusText.innerText = "Clique para ouvir MOC";
                         statusText.className = "text-xl font-semibold text-amber-400";
                     });
-            }, 1000); // Aguarda 1 segundo antes de tentar autoplay
+            }, 1000);
             
-            // Atualiza contador REAL a cada 10 segundos
             setInterval(fetchRealListeners, 10000);
-            console.log('⏱️ Intervalo fetchRealListeners configurado (10s)');
-            
-            // Atualiza música tocando a cada 5 segundos (mais frequente)
             setInterval(fetchNowPlaying, 5000);
-            console.log('⏱️ Intervalo fetchNowPlaying configurado (5s)');
-            
-            // Verificar programa atual a cada minuto
             setInterval(updateCurrentProgram, 60000);
-            console.log('⏱️ Intervalo updateCurrentProgram configurado (60s)');
         });
 
-        // Toggle menu mobile
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
             if (mobileMenu.classList.contains('hidden')) {
@@ -1217,11 +1082,10 @@
             }
         }
 
-        // Função para compartilhar a rádio
         async function shareRadio() {
             const shareData = {
                 title: 'Forró Stream MOC',
-                text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶',
+                text: 'Ouça a melhor rádio de forró 24 horas! 🎵🇺🇦',
                 url: window.location.href
             };
 
@@ -1229,12 +1093,10 @@
                 if (navigator.share) {
                     await navigator.share(shareData);
                 } else {
-                    // Fallback: copiar link para área de transferência
                     await navigator.clipboard.writeText(window.location.href);
                     showToast('✅ Link copiado! Compartilhe com seus amigos.');
                 }
             } catch (err) {
-                console.log('Erro ao compartilhar:', err);
                 showToast('❌ Erro ao compartilhar');
             }
         }
