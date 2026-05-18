@@ -295,11 +295,11 @@
                                     <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                                         <i class="fa-solid fa-music text-xl text-white animate-pulse"></i>
                                     </div>
-                                    <div class="flex-grow">
+                                    <div class="flex-grow min-w-0">
                                         <p class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-1">Tocando Agora</p>
-                                        <div id="nowPlayingContainer">
-                                            <p id="nowPlayingText" class="text-lg md:text-xl font-bold text-white leading-tight">Carregando...</p>
-                                            <p id="nowPlayingArtist" class="text-sm text-purple-300 mt-1"></p>
+                                        <div id="nowPlayingContainer" class="overflow-hidden">
+                                            <p id="nowPlayingText" class="text-lg md:text-xl font-bold text-white leading-tight break-words line-clamp-2">Carregando...</p>
+                                            <p id="nowPlayingArtist" class="text-sm text-purple-300 mt-1 break-words line-clamp-1"></p>
                                         </div>
                                         <div class="flex items-center gap-2 mt-2">
                                             <div class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></div>
@@ -499,14 +499,35 @@
                         
                         <div class="bg-slate-900/80 backdrop-blur p-6 rounded-2xl border border-slate-700/50 shadow-lg hover:shadow-lg hover:shadow-slate-500/10 transition-all duration-300 hover:-translate-y-1">
                             <h3 class="font-header text-lg font-bold text-white mb-3 flex items-center gap-2">
-                                <i class="fa-solid fa-envelope text-amber-500"></i> Contato Comercial
+                                <i class="fa-solid fa-envelope text-amber-500"></i> Fale Conosco
                             </h3>
-                            <p class="text-sm text-slate-300 mb-3">Anuncie na Forró Stream MOC e alcance milhares de ouvintes!</p>
-                            <a href="mailto:contato@forrostreammoc.com" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-lg transition text-sm">
-                                <i class="fa-solid fa-paper-plane"></i>
-                                Fale Conosco
-                               <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!" target="_blank"
+                            <p class="text-sm text-slate-300 mb-4">
+                                WhatsApp: <strong class="text-amber-400">(38) 99855-8528</strong>
+                            </p>
+                            
+                            <!-- Botão WhatsApp Principal -->
+                            <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!" 
+                               target="_blank" 
+                               class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-green-500/50 mb-4 group">
+                                <i class="fa-brands fa-whatsapp text-2xl group-hover:scale-110 transition-transform"></i>
+                                <span>Enviar WhatsApp</span>
                             </a>
+                            
+                            <!-- Seção de Anúncios e Divulgação -->
+                            <div class="border-t border-slate-700/50 pt-4 mt-4">
+                                <p class="text-xs text-slate-400 mb-3 text-center">
+                                    📢 Quer divulgar sua marca, loja ou negócio? Anuncie na rádio!
+                                </p>
+                                <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20divulgar%20minha%20marca%20na%20Forró%20Stream%20MOC!" 
+                                   target="_blank" 
+                                   class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-amber-500/50 group">
+                                    <i class="fa-solid fa-bullhorn group-hover:scale-110 group-hover:rotate-12 transition-all"></i>
+                                    <span>Anunciar na Rádio</span>
+                                </a>
+                                <p class="text-xs text-slate-500 mt-2 text-center">
+                                    Comercial • Spot • Divulgação de Loja • Patrocínio
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -522,8 +543,13 @@
             <p class="font-header text-2xl font-bold text-gradient leading-none">FORRÓ STREAM MOC</p>
             <p>&copy; 2026. A Rádio Profissional do Forró em Montes Claros/MG.</p>
             
+            <!-- Logo RadiosNet -->
+            <div class="mt-4 mb-2">
+                <img src="radiosnet-logo.png" alt="RadiosNet - Plataforma de Rádios Online" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition-opacity duration-300">
+            </div>
+            
             <div class="flex gap-4 mt-2">
-                <a href="https://wa.me/5538999999999" target="_blank" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-green-500/30 hover:to-green-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-green-500/40 border border-slate-700/50 hover:border-green-500/50">
+                <a href="https://wa.me/5538998558528" target="_blank" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-green-500/30 hover:to-green-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-green-500/40 border border-slate-700/50 hover:border-green-500/50">
                     <i class="fa-brands fa-whatsapp text-xl text-green-500 group-hover:scale-125 transition-transform"></i>
                 </a>
                 <a href="https://instagram.com/forrostreammoc" target="_blank" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-pink-500/30 hover:to-purple-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-pink-500/40 border border-slate-700/50 hover:border-pink-500/50">
@@ -1085,26 +1111,6 @@
         // Função para compartilhar a rádio
         async function shareRadio() {
             const shareData = {
-                title: 'Forró Stream MOC',
-                text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶',
-                url: window.location.href
-            };
-
-            try {
-                if (navigator.share) {
-                    await navigator.share(shareData);
-                } else {
-                    // Fallback: copiar link para área de transferência
-                    await navigator.clipboard.writeText(window.location.href);
-                    alert('Link copiado! Compartilhe com seus amigos.');
-                }
-            } catch (err) {
-                console.log('Erro ao compartilhar:', err);
-            }
-        }
-    </script>
-</body>
-</html>     const shareData = {
                 title: 'Forró Stream MOC',
                 text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶',
                 url: window.location.href
