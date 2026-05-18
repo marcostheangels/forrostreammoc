@@ -1034,6 +1034,26 @@
             // Monitora estado do player
             monitorPlayerState();
             
+            // AUTOPLAY: Toca automaticamente ao carregar o site
+            setTimeout(() => {
+                console.log('▶️ Tentando autoplay...');
+                audio.play()
+                    .then(() => {
+                        playIcon.className = "fa-solid fa-pause";
+                        playBtnRing.classList.remove('opacity-0');
+                        statusText.innerText = "No Ar - Forró Stream MOC VIP";
+                        statusText.className = "text-xl font-semibold text-green-400";
+                        waveform.classList.remove('hidden');
+                        console.log('✅ Autoplay funcionou! Música tocando.');
+                    })
+                    .catch(err => {
+                        console.log('⚠️ Autoplay bloqueado pelo navegador:', err.message);
+                        console.log('💡 Usuário precisa clicar no botão de play manualmente');
+                        statusText.innerText = "Clique para ouvir MOC";
+                        statusText.className = "text-xl font-semibold text-amber-400";
+                    });
+            }, 1000); // Aguarda 1 segundo antes de tentar autoplay
+            
             // Atualiza contador REAL a cada 10 segundos
             setInterval(fetchRealListeners, 10000);
             console.log('⏱️ Intervalo fetchRealListeners configurado (10s)');
@@ -1064,6 +1084,26 @@
         // Função para compartilhar a rádio
         async function shareRadio() {
             const shareData = {
+                title: 'Forró Stream MOC',
+                text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶',
+                url: window.location.href
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    // Fallback: copiar link para área de transferência
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert('Link copiado! Compartilhe com seus amigos.');
+                }
+            } catch (err) {
+                console.log('Erro ao compartilhar:', err);
+            }
+        }
+    </script>
+</body>
+</html>     const shareData = {
                 title: 'Forró Stream MOC',
                 text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶',
                 url: window.location.href
