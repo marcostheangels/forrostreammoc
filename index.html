@@ -6,11 +6,19 @@
     <meta name="description" content="Forró Stream MOC - A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG. Ouça os maiores sucessos do forró tradicional, universitário e eletrônico.">
     <meta name="keywords" content="forró, rádio, Montes Claros, MOC, música, ao vivo, stream, forró tradicional, forró universitário">
     <meta name="author" content="Forró Stream MOC">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
     <meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://forrostreammoc.com">
     <meta property="og:image" content="forro-moc-poster.jpg">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
+    <meta name="twitter:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
+    <meta name="twitter:image" content="forro-moc-poster.jpg">
     <meta name="theme-color" content="#f59e0b">
     <link rel="icon" type="image/jpeg" href="forro-moc-poster.jpg">
     <title>Forró Stream MOC | A Sua Rádio de Forró 24h Ao Vivo</title>
@@ -19,6 +27,34 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Toast Notification CSS -->
+    <style>
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-weight: 500;
+            max-width: 350px;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        .toast i {
+            font-size: 24px;
+        }
+    </style>
     <style>
         body { 
             font-family: 'Poppins', sans-serif;
@@ -245,6 +281,12 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-check-circle"></i>
+        <span id="toastMessage">Notificação</span>
+    </div>
+
     <!-- Menu Mobile -->
     <div id="mobileMenu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-lg z-40 hidden flex-col items-center justify-center gap-8">
         <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-3xl transition">
@@ -320,6 +362,16 @@
                                             <span class="text-[10px] md:text-xs text-purple-300" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Atualizado em tempo real</span>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Histórico de Músicas -->
+                            <div class="bg-slate-900/60 backdrop-blur border border-slate-700/50 p-4 rounded-2xl shadow-lg">
+                                <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3 flex items-center gap-2">
+                                    <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Últimas Tocadas
+                                </h3>
+                                <div id="songHistory" class="space-y-2">
+                                    <p class="text-xs text-slate-500 text-center py-2">Aguardando músicas...</p>
                                 </div>
                             </div>
 
@@ -409,7 +461,7 @@
                 <div class="glass-panel p-6 md:p-8 rounded-3xl text-center border-4 border-amber-500/10 flex flex-col items-center gap-6 shadow-2xl animate-fade-in-up delay-200 hover-lift">
                     <audio id="audioPlayer" src="https://usu300opw28m.shares.zrok.io/radio.mp3" preload="none"></audio>
 
-                    <button id="playBtn" onclick="togglePlay()" class="relative group">
+                    <button id="playBtn" onclick="togglePlay()" class="relative group" aria-label="Tocar ou pausar a rádio">
                         <div id="playBtnRing" class="absolute inset-0 rounded-full border-4 border-amber-400/60 pulse-live-ring opacity-0"></div>
                         <div class="relative w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 hover:from-amber-500 hover:via-orange-500 hover:to-orange-600 text-slate-950 rounded-full flex items-center justify-center text-4xl md:text-5xl shadow-2xl hover:shadow-amber-500/60 transition-all duration-300 active:scale-95 group-hover:scale-110 btn-shine">
                             <i class="fa-solid fa-play ml-1" id="playIcon"></i>
@@ -424,9 +476,15 @@
                     </div>
 
                     <!-- Botão Compartilhar -->
-                    <button onclick="shareRadio()" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-amber-500/10 hover:to-orange-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-amber-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-amber-500/20">
+                    <button onclick="shareRadio()" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-amber-500/10 hover:to-orange-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-amber-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-amber-500/20" aria-label="Compartilhar a rádio">
                         <i class="fa-solid fa-share-nodes text-amber-500 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
                         <span class="text-sm font-medium text-slate-300 group-hover:text-amber-400 transition-colors">Compartilhar Rádio</span>
+                    </button>
+
+                    <!-- Timer/Sleep Mode -->
+                    <button onclick="toggleSleepTimer()" id="sleepTimerBtn" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/20" aria-label="Configurar timer para parar">
+                        <i class="fa-solid fa-clock text-blue-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
+                        <span class="text-sm font-medium text-slate-300 group-hover:text-blue-400 transition-colors" id="sleepTimerText">Timer: Desligado</span>
                     </button>
                 </div>
 
@@ -651,6 +709,118 @@
             }
         }
 
+        // Toast Notification System
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // Sleep Timer Functionality
+        let sleepTimerInterval = null;
+        let sleepTimerMinutes = 0;
+
+        function toggleSleepTimer() {
+            if (sleepTimerMinutes > 0) {
+                // Desligar timer
+                clearInterval(sleepTimerInterval);
+                sleepTimerMinutes = 0;
+                document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
+                showToast('⏰ Timer desativado');
+            } else {
+                // Mostrar opções de tempo
+                const minutes = prompt('Definir timer para parar em quantos minutos?\n\nExemplos: 15, 30, 45, 60', '30');
+                
+                if (minutes && !isNaN(minutes) && parseInt(minutes) > 0) {
+                    sleepTimerMinutes = parseInt(minutes);
+                    startSleepTimer(sleepTimerMinutes);
+                }
+            }
+        }
+
+        function startSleepTimer(minutes) {
+            let remainingSeconds = minutes * 60;
+            
+            updateSleepTimerDisplay(remainingSeconds);
+            
+            sleepTimerInterval = setInterval(() => {
+                remainingSeconds--;
+                
+                if (remainingSeconds <= 0) {
+                    clearInterval(sleepTimerInterval);
+                    audio.pause();
+                    playIcon.className = "fa-solid fa-play ml-1";
+                    playBtnRing.classList.add('opacity-0');
+                    statusText.innerText = "Timer encerrado - Pausado";
+                    statusText.className = "text-xl font-semibold text-slate-500";
+                    waveform.classList.add('hidden');
+                    sleepTimerMinutes = 0;
+                    document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
+                    showToast('😴 Timer encerrado! Rádio pausada.');
+                } else {
+                    updateSleepTimerDisplay(remainingSeconds);
+                }
+            }, 1000);
+            
+            showToast(`⏰ Timer ativado: ${minutes} minutos`);
+        }
+
+        function updateSleepTimerDisplay(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('sleepTimerText').textContent = `Timer: ${timeStr}`;
+        }
+
+        // Song History Management
+        const songHistory = [];
+        const MAX_HISTORY = 3;
+
+        function addToSongHistory(title, artist) {
+            // Não adicionar se for a mesma música
+            if (songHistory.length > 0 && songHistory[0].title === title && songHistory[0].artist === artist) {
+                return;
+            }
+            
+            // Adicionar ao início do array
+            songHistory.unshift({ title, artist, time: new Date() });
+            
+            // Manter apenas as últimas 3 músicas
+            if (songHistory.length > MAX_HISTORY) {
+                songHistory.pop();
+            }
+            
+            updateSongHistoryDisplay();
+        }
+
+        function updateSongHistoryDisplay() {
+            const historyContainer = document.getElementById('songHistory');
+            
+            if (songHistory.length === 0) {
+                historyContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Aguardando músicas...</p>';
+                return;
+            }
+            
+            historyContainer.innerHTML = songHistory.map((song, index) => {
+                const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="flex items-start gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors">
+                        <span class="text-xs text-slate-500 font-mono flex-shrink-0 mt-0.5">${time}</span>
+                        <div class="flex-grow min-w-0">
+                            <p class="text-xs font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p>
+                            ${song.artist ? `<p class="text-[10px] text-slate-400 truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         // Função removida - Área VIP desativada
 
         // Detectar programa atual baseado no horário
@@ -831,6 +1001,9 @@
                 currentSongTitle = song;
                 currentSongArtist = artist;
                 displayNowPlaying(song, artist);
+                
+                // Adicionar ao histórico
+                addToSongHistory(song, artist);
             }
         }
 
@@ -1058,10 +1231,11 @@
                 } else {
                     // Fallback: copiar link para área de transferência
                     await navigator.clipboard.writeText(window.location.href);
-                    alert('Link copiado! Compartilhe com seus amigos.');
+                    showToast('✅ Link copiado! Compartilhe com seus amigos.');
                 }
             } catch (err) {
                 console.log('Erro ao compartilhar:', err);
+                showToast('❌ Erro ao compartilhar');
             }
         }
     </script>
