@@ -726,10 +726,14 @@
             try {
                 // Para GitHub Pages, usamos proxies CORS públicos
                 const streamUrl = 'https://usu300opw28m.shares.zrok.io/status-json.xsl';
+                const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
+                const streamUrl7html = 'https://usu300opw28m.shares.zrok.io/7.html';
                 
-                // Tenta múltiplos proxies CORS
+                // Tenta múltiplos proxies CORS com diferentes endpoints
                 const proxyUrls = [
                     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl)}`,
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl7html)}`,
                     `https://corsproxy.io/?${encodeURIComponent(streamUrl)}`,
                     `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrl)}`
                 ];
@@ -759,21 +763,39 @@
                             try {
                                 const json = JSON.parse(text);
                                 console.log('✅ JSON parseado');
+                                console.log('📋 Estrutura completa:', JSON.stringify(json, null, 2).substring(0, 1000));
                                 
                                 if (json.icestats && json.icestats.source) {
                                     const source = Array.isArray(json.icestats.source) 
                                         ? json.icestats.source[0] 
                                         : json.icestats.source;
                                     
+                                    console.log('🎵 Dados da fonte:', source);
+                                    
                                     if (source.title) {
                                         console.log('✅ Título encontrado:', source.title);
                                         parseAndDisplaySongTitle(source.title);
                                         metadataFound = true;
                                         break;
+                                    } else {
+                                        console.log('⚠️ Campo title não encontrado em source');
+                                        console.log('Campos disponíveis:', Object.keys(source));
                                     }
+                                } else {
+                                    console.log('⚠️ Campo icestats.source não encontrado');
+                                    console.log('Campos em icestats:', json.icestats ? Object.keys(json.icestats) : 'N/A');
                                 }
                             } catch (e) {
-                                console.log('Não é JSON, tentando 7.html...');
+                                console.log('Não é JSON, tentando extrair de HTML/XML...');
+                                
+                                // Tenta extrair título de XML (status.xsl)
+                                const titleMatch = text.match(/<title>([^<]+)<\/title>/i);
+                                if (titleMatch && titleMatch[1] && !titleMatch[1].includes('Icecast')) {
+                                    console.log('✅ Título encontrado no XML:', titleMatch[1]);
+                                    parseAndDisplaySongTitle(titleMatch[1]);
+                                    metadataFound = true;
+                                    break;
+                                }
                                 
                                 // Tenta formato 7.html
                                 const parts = text.split(',');
@@ -786,6 +808,8 @@
                                         break;
                                     }
                                 }
+                                
+                                console.log('⚠️ Não conseguiu extrair título do formato HTML/XML');
                             }
                         }
                     } catch (err) {
