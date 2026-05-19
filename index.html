@@ -1,36 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<<head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <meta name="description" content="Forró Stream MOC - A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG. Ouça forró tradicional, universitário e eletrônico.">
- <meta name="keywords" content="forró, rádio, Montes Claros, MOC, música, ao vivo, stream, forró tradicional, forró universitário">
- <meta name="author" content="Forró Stream MOC">
- <link rel="canonical" href="https://forrostreammoc.shop/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Forró Stream MOC - A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG. Ouça os maiores sucessos do forró tradicional, universitário e eletrônico.">
+    <meta name="keywords" content="forró, rádio, Montes Claros, MOC, música, ao vivo, stream, forró tradicional, forró universitário">
+    <meta name="author" content="Forró Stream MOC">
+    <link rel="canonical" href="https://forrostreammoc.shop/">
 
- <meta property="og:title" content="🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
- <meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG. Acesso 100% gratuito com programação 24 horas com o melhor do forró!">
- <meta property="og:type" content="website">
- <meta property="og:url" content="https://forrostreammoc.shop/">
- <meta property="og:image" content="https://forrostreammoc.shop/forro-moc-poster.jpg">
- <meta property="og:site_name" content="Forró Stream MOC">
- <meta property="og:locale" content="pt_BR">
-
- <meta name="twitter:card" content="summary_large_image">
- <meta name="twitter:title" content="🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
- <meta name="twitter:description" content="A sua rádio de forró favorita em Montes Claros/MG.">
- <meta name="twitter:image" content="https://forrostreammoc.shop/forro-moc-poster.jpg">
-
- <title>🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo</title>
+    <meta property="og:title" content="🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
     <meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG. Acesso 100% gratuito com programação 24 horas com o melhor do forró!">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://forrostreammoc.shop/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
-<meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG.">
-<meta property="og:image" content="URL_DA_SUA_IMAGEM">
-<link rel="canonical" href="https://forrostreammoc.shop/">
-    <title>Forró Stream MOC | A Sua Rádio de Forró 24h Ao Vivo</title>
+    <meta property="og:image" content="https://forrostreammoc.shop/forro-moc-poster.jpg">
+    <meta property="og:site_name" content="Forró Stream MOC">
+    <meta property="og:locale" content="pt_BR">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
+    <meta name="twitter:description" content="A sua rádio de forró favorita em Montes Claros/MG.">
+    <meta name="twitter:image" content="https://forrostreammoc.shop/forro-moc-poster.jpg">
+
+    <title>🪗 Forró Stream MOC | Rádio de Forró 24h Ao Vivo</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,15 +54,12 @@
         .toast i {
             font-size: 24px;
         }
-    </style>
-    <style>
         body { 
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
         }
         .font-header { font-family: 'Montserrat', sans-serif; }
         
-        /* Controle de overflow de texto para o card Tocando Agora */
         .overflow-wrap-anywhere {
             overflow-wrap: anywhere;
             word-wrap: anywhere;
@@ -91,7 +80,6 @@
             text-overflow: ellipsis;
         }
         
-        /* Efeitos visuais profissionais, paleta ajustada para a imagem */
         .glass-panel {
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
@@ -116,7 +104,6 @@
             filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
         }
         
-        /* Animação de pulso contínuo para o botão no ar */
         .pulse-live-ring {
             border-color: rgba(251, 191, 36, 0.6);
             animation: pulseRing 1.5s cubic-bezier(0.24, 0, 0.38, 1) infinite;
@@ -127,7 +114,6 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
         }
 
-        /* Animação Waveform (Ondas Sonoras Simuladas) */
         .waveform { display: flex; align-items: flex-end; gap: 2px; height: 16px; width: 24px; }
         .waveform-bar { width: 4px; border-radius: 2px; }
         .waveform-bar-1 { height: 100%; animation: wf 0.8s ease-in-out infinite; }
@@ -136,42 +122,25 @@
         .waveform-bar-4 { height: 60%; animation: wf 1s ease-in-out 0.3s infinite; }
         @keyframes wf { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.4); } }
 
-        /* Animações suaves de entrada */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
         .animate-fade-in-up {
             animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
 
-        /* Efeito hover suave nos cards */
         .hover-lift {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .hover-lift:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 
-                        0 0 30px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(245, 158, 11, 0.2);
         }
 
-        /* Efeito de brilho nos botões */
         .btn-shine {
             position: relative;
             overflow: hidden;
@@ -190,12 +159,8 @@
             left: 100%;
         }
 
-        /* Scroll suave */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
-        /* Efeito de partículas sutis no fundo */
         body::before {
             content: '';
             position: fixed;
@@ -211,13 +176,8 @@
             z-index: -1;
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, #f59e0b, #ea580c);
             border-radius: 5px;
@@ -226,15 +186,9 @@
             background: linear-gradient(180deg, #fbbf24, #f59e0b);
         }
 
-        /* Responsividade mobile */
         @media (max-width: 768px) {
-            .font-header.text-5xl {
-                font-size: 2.5rem;
-            }
-            .w-72.h-72 {
-                width: 16rem;
-                height: 16rem;
-            }
+            .font-header.text-5xl { font-size: 2.5rem; }
+            .w-72.h-72 { width: 16rem; height: 16rem; }
         }
     </style>
 </head>
@@ -656,24 +610,23 @@
             statusText: !!statusText
         });
 
-        // CRITICAL: Este link é o seu streaming funcional atual. NÃO ALTERE.
         audio.volume = volumeSlider.value;
 
         function togglePlay() {
             if (audio.paused) {
                 statusText.innerText = "Conectando ao Forró Stream MOC...";
                 statusText.className = "text-xl font-semibold text-amber-400";
-                waveform.classList.add('hidden'); // Oculta waveform durante conexão
+                waveform.classList.add('hidden');
                 
                 audio.load();
                 
                 audio.play()
                     .then(() => {
                         playIcon.className = "fa-solid fa-pause";
-                        playBtnRing.classList.remove('opacity-0'); // Ativa animação de pulso
+                        playBtnRing.classList.remove('opacity-0');
                         statusText.innerText = "No Ar - Forró Stream MOC Forró De Minas Uai";
                         statusText.className = "text-xl font-semibold text-green-400";
-                        waveform.classList.remove('hidden'); // Mostra waveform no ar
+                        waveform.classList.remove('hidden');
                     })
                     .catch(err => {
                         statusText.innerText = "Sinal indisponível MOC";
@@ -685,10 +638,10 @@
             } else {
                 audio.pause();
                 playIcon.className = "fa-solid fa-play ml-1";
-                playBtnRing.classList.add('opacity-0'); // Desativa pulso
+                playBtnRing.classList.add('opacity-0');
                 statusText.innerText = "Pausado MOC";
                 statusText.className = "text-xl font-semibold text-slate-500";
-                waveform.classList.add('hidden'); // Oculta waveform
+                waveform.classList.add('hidden');
             }
         }
 
@@ -703,7 +656,6 @@
             }
         }
 
-        // Toast Notification System
         function showToast(message, duration = 3000) {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
@@ -716,19 +668,16 @@
             }, duration);
         }
 
-        // Sleep Timer Functionality
         let sleepTimerInterval = null;
         let sleepTimerMinutes = 0;
 
         function toggleSleepTimer() {
             if (sleepTimerMinutes > 0) {
-                // Desligar timer
                 clearInterval(sleepTimerInterval);
                 sleepTimerMinutes = 0;
                 document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
                 showToast('⏰ Timer desativado');
             } else {
-                // Mostrar opções de tempo
                 const minutes = prompt('Definir timer para parar em quantos minutos?\n\nExemplos: 15, 30, 45, 60', '30');
                 
                 if (minutes && !isNaN(minutes) && parseInt(minutes) > 0) {
@@ -740,7 +689,6 @@
 
         function startSleepTimer(minutes) {
             let remainingSeconds = minutes * 60;
-            
             updateSleepTimerDisplay(remainingSeconds);
             
             sleepTimerInterval = setInterval(() => {
@@ -772,81 +720,59 @@
             document.getElementById('sleepTimerText').textContent = `Timer: ${timeStr}`;
         }
 
-        // Song History Management
         const songHistory = [];
         const MAX_HISTORY = 3;
 
         function addToSongHistory(title, artist) {
-            // Não adicionar se for a mesma música
             if (songHistory.length > 0 && songHistory[0].title === title && songHistory[0].artist === artist) {
                 return;
             }
-            
-            // Adicionar ao início do array
             songHistory.unshift({ title, artist, time: new Date() });
-            
-            // Manter apenas as últimas 3 músicas
             if (songHistory.length > MAX_HISTORY) {
                 songHistory.pop();
             }
-            
             updateSongHistoryDisplay();
         }
 
         function updateSongHistoryDisplay() {
             const historyContainer = document.getElementById('songHistory');
-            
             if (songHistory.length === 0) {
                 historyContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Aguardando músicas...</p>';
                 return;
             }
-            
-            historyContainer.innerHTML = songHistory.map((song, index) => {
+            historyContainer.innerHTML = songHistory.map((song) => {
                 const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 return `
                     <div class="flex items-start gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors">
                         <span class="text-xs text-slate-500 font-mono flex-shrink-0 mt-0.5">${time}</span>
                         <div class="flex-grow min-w-0">
-                            <p class="text-xs font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p>
-                            ${song.artist ? `<p class="text-[10px] text-slate-400 truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>` : ''}
+                            <p class="text-xs font-medium text-white truncate">${song.title}</p>
+                            ${song.artist ? `<p class="text-[10px] text-slate-400 truncate">${song.artist}</p>` : ''}
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // Detectar programa atual baseado no horário
         function updateCurrentProgram() {
             const now = new Date();
             const hour = now.getHours();
-            
-            // Esconder todos os badges "NO AR"
             document.querySelectorAll('[id^="prog-"]').forEach(el => el.classList.add('hidden'));
             
             let currentProgram;
-            if (hour >= 6 && hour < 10) {
-                currentProgram = 'prog-manha';
-            } else if (hour >= 10 && hour < 14) {
-                currentProgram = 'prog-tarde';
-            } else if (hour >= 14 && hour < 20) {
-                currentProgram = 'prog-noite';
-            } else {
-                currentProgram = 'prog-madrugada';
-            }
+            if (hour >= 6 && hour < 10) { currentProgram = 'prog-manha'; }
+            else if (hour >= 10 && hour < 14) { currentProgram = 'prog-tarde'; }
+            else if (hour >= 14 && hour < 20) { currentProgram = 'prog-noite'; }
+            else { currentProgram = 'prog-madrugada'; }
             
             const activeBadge = document.getElementById(currentProgram);
-            if (activeBadge) {
-                activeBadge.classList.remove('hidden');
-            }
+            if (activeBadge) { activeBadge.classList.remove('hidden'); }
         }
 
-        // Contador REAL de ouvintes do stream
         let realListenerCount = 0;
-        const streamUrl = 'https://usu300opw28m.shares.zrok.io/radio.mp3';
         let currentSongTitle = '';
         let currentSongArtist = '';
 
-        // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
                 const streamUrl = 'https://usu300opw28m.shares.zrok.io/status-json.xsl';
@@ -862,34 +788,16 @@
                 ];
                 
                 let metadataFound = false;
-                
                 for (const proxyUrl of proxyUrls) {
                     try {
-                        const response = await fetch(proxyUrl, { 
-                            method: 'GET',
-                            mode: 'cors',
-                            cache: 'no-cache'
-                        });
-                        
+                        const response = await fetch(proxyUrl, { method: 'GET', mode: 'cors', cache: 'no-cache' });
                         if (response.ok) {
                             const text = await response.text();
-                            
                             try {
                                 const json = JSON.parse(text);
                                 if (json.icestats && json.icestats.source) {
-                                    const source = Array.isArray(json.icestats.source) 
-                                        ? json.icestats.source[0] 
-                                        : json.icestats.source;
-                                    
-                                    let songTitle = null;
-                                    if (source.metadata && source.metadata.x_icy_title) {
-                                        songTitle = source.metadata.x_icy_title;
-                                    } else if (source.title) {
-                                        songTitle = source.title;
-                                    } else if (source['display-title']) {
-                                        songTitle = source['display-title'];
-                                    }
-                                    
+                                    const source = Array.isArray(json.icestats.source) ? json.icestats.source[0] : json.icestats.source;
+                                    let songTitle = source.metadata?.x_icy_title || source.title || source['display-title'];
                                     if (songTitle) {
                                         parseAndDisplaySongTitle(songTitle);
                                         metadataFound = true;
@@ -903,42 +811,28 @@
                                     metadataFound = true;
                                     break;
                                 }
-                                
                                 const parts = text.split(',');
-                                if (parts.length >= 5) {
-                                    const currsong = parts[4];
-                                    if (currsong && currsong.trim()) {
-                                        parseAndDisplaySongTitle(currsong);
-                                        metadataFound = true;
-                                        break;
-                                    }
+                                if (parts.length >= 5 && parts[4]?.trim()) {
+                                    parseAndDisplaySongTitle(parts[4]);
+                                    metadataFound = true;
+                                    break;
                                 }
                             }
                         }
-                    } catch (err) {
-                        continue;
-                    }
+                    } catch (err) { continue; }
                 }
-                
-                if (!metadataFound) {
-                    displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo');
-                }
-                
-            } catch (error) {
-                displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo');
-            }
+                if (!metadataFound) { displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo'); }
+            } catch (error) { displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo'); }
         }
 
         function parseAndDisplaySongTitle(title) {
             let artist = '';
             let song = title;
-            
             if (title.includes(' - ')) {
                 const parts = title.split(' - ');
                 artist = parts[0].trim();
                 song = parts.slice(1).join(' - ').trim();
             }
-            
             if (song !== currentSongTitle || artist !== currentSongArtist) {
                 currentSongTitle = song;
                 currentSongArtist = artist;
@@ -955,21 +849,13 @@
             
             if (nowPlayingText) nowPlayingText.textContent = title || 'Forró Stream MOC';
             if (nowPlayingArtist) {
-                if (artist && artist.trim()) {
-                    nowPlayingArtist.textContent = artist;
-                    nowPlayingArtist.style.display = 'block';
-                } else {
-                    nowPlayingArtist.style.display = 'none';
-                }
+                nowPlayingArtist.textContent = artist || '';
+                nowPlayingArtist.style.display = artist ? 'block' : 'none';
             }
             if (floatingSongTitle) floatingSongTitle.textContent = title || 'Forró Stream MOC';
             if (floatingSongArtist) {
-                if (artist && artist.trim()) {
-                    floatingSongArtist.textContent = artist;
-                    floatingSongArtist.style.display = 'block';
-                } else {
-                    floatingSongArtist.style.display = 'none';
-                }
+                floatingSongArtist.textContent = artist || '';
+                floatingSongArtist.style.display = artist ? 'block' : 'none';
             }
         }
 
@@ -982,7 +868,6 @@
                 ];
                 
                 let listenersFound = false;
-                
                 for (const url of statusUrls) {
                     try {
                         const response = await fetch(url, { method: 'GET', mode: 'cors' });
@@ -998,34 +883,20 @@
                                 }
                             } catch (e) {
                                 const parts = text.split(',');
-                                if (parts.length >= 1) {
-                                    const count = parseInt(parts[0]);
-                                    if (!isNaN(count) && count >= 0) {
-                                        realListenerCount = count;
-                                        listenersFound = true;
-                                        break;
-                                    }
+                                const count = parseInt(parts[0]);
+                                if (!isNaN(count) && count >= 0) {
+                                    realListenerCount = count;
+                                    listenersFound = true;
+                                    break;
                                 }
                             }
                         }
-                    } catch (err) {
-                        continue;
-                    }
+                    } catch (err) { continue; }
                 }
-                
-                if (!listenersFound) {
-                    const audio = document.getElementById('audioPlayer');
-                    if (audio && !audio.paused) {
-                        realListenerCount = Math.max(realListenerCount, 1);
-                    }
-                }
+                if (!listenersFound && audio && !audio.paused) { realListenerCount = Math.max(realListenerCount, 1); }
                 updateAllDisplays(realListenerCount);
             } catch (error) {
-                const audio = document.getElementById('audioPlayer');
-                if (audio && !audio.paused && realListenerCount === 0) {
-                    realListenerCount = 1;
-                    updateAllDisplays(realListenerCount);
-                }
+                if (audio && !audio.paused && realListenerCount === 0) { realListenerCount = 1; updateAllDisplays(realListenerCount); }
             }
         }
 
@@ -1033,20 +904,15 @@
             const listenerElement = document.getElementById('listenerCount');
             const liveListenerElement = document.getElementById('liveListenerCount');
             const floatingCountElement = document.getElementById('floatingCount');
-            
             if (listenerElement) listenerElement.textContent = count;
             if (liveListenerElement) liveListenerElement.textContent = count;
             if (floatingCountElement) floatingCountElement.textContent = count;
         }
 
         function monitorPlayerState() {
-            const audio = document.getElementById('audioPlayer');
             if (!audio) return;
             audio.addEventListener('play', () => {
-                if (realListenerCount < 1) {
-                    realListenerCount = 1;
-                    updateAllDisplays(realListenerCount);
-                }
+                if (realListenerCount < 1) { realListenerCount = 1; updateAllDisplays(realListenerCount); }
             });
         }
 
@@ -1056,7 +922,6 @@
             fetchNowPlaying();
             monitorPlayerState();
             
-            // AUTOPLAY
             setTimeout(() => {
                 audio.play()
                     .then(() => {
@@ -1066,7 +931,7 @@
                         statusText.className = "text-xl font-semibold text-green-400";
                         waveform.classList.remove('hidden');
                     })
-                    .catch(err => {
+                    .catch(() => {
                         statusText.innerText = "Clique para ouvir MOC";
                         statusText.className = "text-xl font-semibold text-amber-400";
                     });
@@ -1096,17 +961,13 @@
                 text: 'Ouça a melhor rádio de forró 24 horas! 🎵🇺🇦',
                 url: window.location.href
             };
-
             try {
-                if (navigator.share) {
-                    await navigator.share(shareData);
-                } else {
+                if (navigator.share) { await navigator.share(shareData); } 
+                else {
                     await navigator.clipboard.writeText(window.location.href);
                     showToast('✅ Link copiado! Compartilhe com seus amigos.');
                 }
-            } catch (err) {
-                showToast('❌ Erro ao compartilhar');
-            }
+            } catch (err) { showToast('❌ Erro ao compartilhar'); }
         }
     </script>
 </body>
