@@ -928,23 +928,34 @@
                 const namespace = 'forrostreammoc-shop';
                 const key = 'total_listeners';
                 
-                // Obtém o valor atual da API
-                const response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
+                // Timeout de 5 segundos
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(
+                    `https://api.countapi.xyz/get/${namespace}/${key}`,
+                    { signal: controller.signal }
+                );
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 
                 if (data.value !== undefined) {
                     globalTotalVisitors = data.value;
                     console.log('✅ Contador global obtido:', globalTotalVisitors);
                 } else {
-                    // Fallback: usa localStorage
-                    globalTotalVisitors = parseInt(localStorage.getItem('forro_local_total') || '0');
-                    console.log('⚠️ Usando fallback localStorage:', globalTotalVisitors);
+                    throw new Error('Valor não encontrado');
                 }
                 
                 // Atualiza a interface com animação
                 animateCounter('totalVisitors', globalTotalVisitors);
                 
-                // Inicia sincronização periódica a cada 60 segundos
+                // Inicia sincronização periódica a cada 30 segundos
                 startCounterSync();
                 
             } catch (error) {
@@ -953,11 +964,49 @@
                 // Fallback: usa localStorage
                 globalTotalVisitors = parseInt(localStorage.getItem('forro_local_total') || '0');
                 animateCounter('totalVisitors', globalTotalVisitors);
+                console.log('⚠️ Usando fallback localStorage:', globalTotalVisitors);
             }
         }
 
         // Sincroniza contador periodicamente entre todos os dispositivos
         function startCounterSync() {
+            // Primeira sincronização após 5 segundos
+            setTimeout(async () => {
+                try {
+                    const namespace = 'forrostreammoc-shop';
+                    const key = 'total_listeners';
+                    
+                    console.log('🔄 Primeira sincronização rápida...');
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const response = await fetch(
+                        `https://api.countapi.xyz/get/${namespace}/${key}`,
+                        { signal: controller.signal }
+                    );
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const data = await response.json();
+                    
+                    if (data.value !== undefined) {
+                        const newTotal = data.value;
+                        
+                        if (newTotal !== globalTotalVisitors) {
+                            globalTotalVisitors = newTotal;
+                            animateCounter('totalVisitors', globalTotalVisitors);
+                            console.log('✅ Primeira sincronização:', globalTotalVisitors);
+                        }
+                    }
+                } catch (error) {
+                    console.log('⚠️ Erro na primeira sincronização:', error.message);
+                }
+            }, 5000);
+            
+            // Sincronização periódica a cada 30 segundos
             setInterval(async () => {
                 try {
                     const namespace = 'forrostreammoc-shop';
@@ -965,8 +1014,18 @@
                     
                     console.log('🔄 Sincronizando contador total...');
                     
-                    // Obtém valor atualizado da API
-                    const response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const response = await fetch(
+                        `https://api.countapi.xyz/get/${namespace}/${key}`,
+                        { signal: controller.signal }
+                    );
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
                     const data = await response.json();
                     
                     if (data.value !== undefined) {
@@ -984,7 +1043,7 @@
                 } catch (error) {
                     console.log('⚠️ Erro ao sincronizar:', error.message);
                 }
-            }, 60000); // A cada 60 segundos
+            }, 30000); // A cada 30 segundos
         }
 
         // Incrementa contador quando o usuário dá PLAY
@@ -995,10 +1054,48 @@
                 const namespace = 'forrostreammoc-shop';
                 const key = 'total_listeners';
                 
+                // Primeiro, sincroniza com a API para obter valor atual
+                try {
+                    console.log('📡 Sincronizando antes de incrementar...');
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const syncResponse = await fetch(
+                        `https://api.countapi.xyz/get/${namespace}/${key}`,
+                        { signal: controller.signal }
+                    );
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (syncResponse.ok) {
+                        const syncData = await syncResponse.json();
+                        
+                        if (syncData.value !== undefined) {
+                            globalTotalVisitors = syncData.value;
+                            console.log('✅ Valor sincronizado antes do incremento:', globalTotalVisitors);
+                        }
+                    }
+                } catch (syncError) {
+                    console.warn('⚠️ Erro na sincronização prévia:', syncError.message);
+                }
+                
                 // SEMPRE tenta incrementar na API primeiro (fonte principal)
                 try {
                     console.log('📡 Incrementando na API global...');
-                    const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const response = await fetch(
+                        `https://api.countapi.xyz/hit/${namespace}/${key}`,
+                        { signal: controller.signal }
+                    );
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
                     const data = await response.json();
                     
                     if (data.value !== undefined) {
@@ -1034,7 +1131,21 @@
                 const namespace = 'forrostreammoc-shop';
                 const key = 'total_listeners';
                 
-                const response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
+                // Tenta com timeout para não ficar travado
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos timeout
+                
+                const response = await fetch(
+                    `https://api.countapi.xyz/get/${namespace}/${key}`,
+                    { signal: controller.signal }
+                );
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 
                 if (data.value !== undefined) {
@@ -1043,11 +1154,21 @@
                     showToast('✅ Contador atualizado com sucesso!');
                     console.log('✅ Contador manual sincronizado:', globalTotalVisitors);
                 } else {
-                    showToast('⚠️ Erro ao buscar dados da API');
+                    throw new Error('Valor não encontrado na resposta');
                 }
             } catch (error) {
                 console.error('❌ Erro na sincronização manual:', error);
-                showToast('❌ Erro ao atualizar contador');
+                
+                // Fallback: tenta usar valor do localStorage
+                const localValue = parseInt(localStorage.getItem('forro_local_total') || '0');
+                if (localValue > 0) {
+                    globalTotalVisitors = localValue;
+                    animateCounter('totalVisitors', globalTotalVisitors);
+                    showToast('⚠️ Usando valor local (API indisponível)');
+                    console.log('⚠️ Fallback para localStorage:', localValue);
+                } else {
+                    showToast('❌ Erro ao atualizar contador - API indisponível');
+                }
             }
         }
 
@@ -1517,6 +1638,38 @@
             // Inicializar contador de visitantes
             initializeVisitorCounter();
             console.log('✅ initializeVisitorCounter() executado');
+            
+            // Sincronização extra após 2 segundos para garantir valor atualizado
+            setTimeout(async () => {
+                try {
+                    const namespace = 'forrostreammoc-shop';
+                    const key = 'total_listeners';
+                    
+                    console.log('🔄 Verificação inicial do contador...');
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const response = await fetch(
+                        `https://api.countapi.xyz/get/${namespace}/${key}`,
+                        { signal: controller.signal }
+                    );
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const data = await response.json();
+                    
+                    if (data.value !== undefined && data.value !== globalTotalVisitors) {
+                        globalTotalVisitors = data.value;
+                        animateCounter('totalVisitors', globalTotalVisitors);
+                        console.log('✅ Contador corrigido na inicialização:', globalTotalVisitors);
+                    }
+                } catch (error) {
+                    console.log('⚠️ Erro na verificação inicial:', error.message);
+                }
+            }, 2000);
             
             // Tenta autoplay
             attemptAutoPlay();
