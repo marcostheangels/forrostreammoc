@@ -28,6 +28,46 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Importa Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, onValue, runTransaction, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        
+        // CONFIGURAÇÃO DO FIREBASE - Forró Stream MOC
+        const firebaseConfig = {
+            apiKey: "AIzaSyCn9EYNFB094gysRRuGvnffOAbHTobFsbo",
+            authDomain: "forro-stream-moc.firebaseapp.com",
+            databaseURL: "https://forro-stream-moc-default-rtdb.firebaseio.com",
+            projectId: "forro-stream-moc",
+            storageBucket: "forro-stream-moc.firebasestorage.app",
+            messagingSenderId: "156075369710",
+            appId: "1:156075369710:web:7314e4407fb55cd4d17fff"
+        };
+        
+        // Inicializa Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        // Referências do contador no Firebase
+        const counterRef = ref(database, 'forro_stream/total_listeners');
+        const lastUpdateRef = ref(database, 'forro_stream/last_update');
+        
+        // Exporta para uso global
+        window.firebaseDB = {
+            database,
+            counterRef,
+            lastUpdateRef,
+            onValue,
+            runTransaction,
+            set,
+            ref
+        };
+        
+        console.log('✅ Firebase inicializado com sucesso!');
+        console.log('🔥 Projeto: forro-stream-moc');
+    </script>
+    
     <!-- Toast Notification CSS -->
     <style>
         .toast {
@@ -916,9 +956,10 @@
         let currentSongTitle = '';
         let currentSongArtist = '';
 
-        // Contador Global de Ouvintes - Sistema Híbrido Robusto
+        // Contador Global de Ouvintes - Sistema com Firebase Realtime Database
         let globalTotalVisitors = 0;
         let lastSyncTime = 0;
+        let firebaseListener = null;
         
         // Sistema de Broadcast Channel para sincronização entre abas/janelas do MESMO navegador
         let broadcastChannel = null;
@@ -940,117 +981,35 @@
         }
         
         async function initializeVisitorCounter() {
-            console.log('📊 Inicializando contador global...');
+            console.log('📊 Inicializando contador com Firebase...');
             
-            // Estratégia: Tenta API, se falhar usa localStorage + BroadcastChannel
-            const namespace = 'forrostreammoc-shop';
-            const key = 'total_listeners';
-            const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-            
-            // Tenta múltiplos proxies CORS
-            const proxyUrls = [
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`,
-                `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`
-            ];
-            
-            let apiSuccess = false;
-            
-            for (const proxyUrl of proxyUrls) {
-                try {
-                    console.log(`Tentando proxy: ${proxyUrl.substring(0, 60)}...`);
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 4000);
-                    
-                    const response = await fetch(proxyUrl, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) continue;
-                    
-                    const text = await response.text();
-                    
-                    try {
-                        const data = JSON.parse(text);
-                        
-                        if (data.value !== undefined && data.value > 0) {
-                            globalTotalVisitors = data.value;
-                            console.log('✅ Contador obtido da API:', globalTotalVisitors);
-                            apiSuccess = true;
-                            
-                            // Salva no localStorage como backup
-                            localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
-                            break;
-                        }
-                    } catch (e) {
-                        continue;
-                    }
-                } catch (err) {
-                    continue;
-                }
-            }
-            
-            // Se API falhou, usa localStorage
-            if (!apiSuccess) {
+            // Verifica se Firebase está disponível
+            if (!window.firebaseDB) {
+                console.error('❌ Firebase não inicializado! Usando fallback localStorage.');
                 const localValue = parseInt(localStorage.getItem('forro_local_total') || '0');
-                globalTotalVisitors = localValue;
-                console.log('⚠️ Usando localStorage:', globalTotalVisitors);
+                globalTotalVisitors = localValue > 0 ? localValue : Math.floor(Math.random() * 10) + 5;
+                animateCounter('totalVisitors', globalTotalVisitors);
+                localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
+                return;
             }
             
-            // Atualiza interface
-            animateCounter('totalVisitors', globalTotalVisitors);
-            lastSyncTime = Date.now();
+            const { counterRef, onValue, runTransaction, set, ref, database } = window.firebaseDB;
             
-            // Inicia sincronização
-            startCounterSync();
-        }
-
-        // Sincroniza contador periodicamente entre todos os dispositivos
-        function startCounterSync() {
-            // Primeira sincronização após 3 segundos (mais rápida)
-            setTimeout(async () => {
-                await syncCounterFromAPI();
-            }, 3000);
-            
-            // Sincronização periódica a cada 15 segundos (mais frequente)
-            setInterval(async () => {
-                await syncCounterFromAPI();
-            }, 15000); // A cada 15 segundos
-        }
-        
-        // Função auxiliar para sincronizar contador da API
-        async function syncCounterFromAPI() {
-            try {
-                const namespace = 'forrostreammoc-shop';
-                const key = 'total_listeners';
-                const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
+            // Escuta mudanças em tempo real no Firebase
+            firebaseListener = onValue(counterRef, (snapshot) => {
+                const data = snapshot.val();
                 
-                console.log('🔄 Sincronizando contador...');
-                
-                // Tenta com proxy CORS
-                const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`;
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                
-                const response = await fetch(proxyUrl, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const text = await response.text();
-                const data = JSON.parse(text);
-                
-                if (data.value !== undefined) {
-                    const newTotal = data.value;
+                if (data !== null && data.count !== undefined) {
+                    const firebaseCount = data.count;
                     
-                    // Atualiza se mudou
-                    if (newTotal !== globalTotalVisitors) {
-                        globalTotalVisitors = newTotal;
+                    // Só atualiza se for diferente
+                    if (firebaseCount !== globalTotalVisitors) {
+                        globalTotalVisitors = firebaseCount;
                         animateCounter('totalVisitors', globalTotalVisitors);
                         lastSyncTime = Date.now();
-                        console.log('✅ Contador sincronizado:', globalTotalVisitors);
+                        console.log('🔥 Firebase sync:', globalTotalVisitors);
                         
-                        // Salva no localStorage
+                        // Salva no localStorage como backup
                         localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
                         
                         // Envia update via BroadcastChannel
@@ -1061,73 +1020,113 @@
                                 timestamp: Date.now()
                             });
                         }
-                    } else {
-                        console.log('ℹ️ Contador inalterado:', globalTotalVisitors);
                     }
+                } else {
+                    // Primeiro acesso - inicializa contador no Firebase
+                    console.log('🆕 Inicializando contador no Firebase...');
+                    const initialValue = Math.floor(Math.random() * 10) + 5; // 5-15
+                    
+                    set(counterRef, {
+                        count: initialValue,
+                        last_updated: Date.now()
+                    }).then(() => {
+                        globalTotalVisitors = initialValue;
+                        animateCounter('totalVisitors', globalTotalVisitors);
+                        localStorage.setItem('forro_local_total', initialValue.toString());
+                        console.log('✅ Contador Firebase inicializado:', initialValue);
+                    }).catch((error) => {
+                        console.error('❌ Erro ao inicializar Firebase:', error);
+                        // Fallback para localStorage
+                        globalTotalVisitors = initialValue;
+                        animateCounter('totalVisitors', globalTotalVisitors);
+                    });
                 }
-            } catch (error) {
-                console.log('⚠️ Erro ao sincronizar:', error.message);
-            }
+            }, (error) => {
+                console.error('❌ Erro no listener Firebase:', error);
+            });
         }
 
-        // Incrementa contador quando o usuário dá PLAY
+        // Sincroniza contador periodicamente (Firebase já faz sync automático)
+        function startCounterSync() {
+            // Firebase Realtime Database já sincroniza em tempo real!
+            // Não precisamos de polling manual
+            console.log('✅ Firebase Realtime Database ativo - sincronização automática');
+        }
+        
+        // Função para sincronização manual do contador (força refresh)
+        async function manualSyncCounter() {
+            console.log('🔄 Sincronização manual solicitada...');
+            showToast('🔄 Atualizando contador...');
+            
+            if (!window.firebaseDB) {
+                showToast('⚠️ Firebase não disponível');
+                return;
+            }
+            
+            // Força re-leitura do Firebase
+            const { counterRef, onValue } = window.firebaseDB;
+            
+            onValue(counterRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.count !== undefined) {
+                    globalTotalVisitors = data.count;
+                    animateCounter('totalVisitors', globalTotalVisitors);
+                    showToast('✅ Contador atualizado!');
+                    console.log('✅ Sync manual:', globalTotalVisitors);
+                }
+            }, { onlyOnce: true }); // Lê apenas uma vez
+        }
         async function incrementListenerCounter() {
             console.log('🎵 Usuário deu PLAY - incrementando contador...');
             
-            const namespace = 'forrostreammoc-shop';
-            const key = 'total_listeners';
+            // Verifica se Firebase está disponível
+            if (!window.firebaseDB) {
+                console.warn('⚠️ Firebase não disponível, usando localStorage');
+                globalTotalVisitors++;
+                localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
+                animateCounter('totalVisitors', globalTotalVisitors);
+                return;
+            }
             
-            // Tenta incrementar na API
-            let apiIncrementSuccess = false;
+            const { counterRef, runTransaction } = window.firebaseDB;
             
-            try {
-                const hitUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
-                const proxyHitUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hitUrl)}`;
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                
-                const response = await fetch(proxyHitUrl, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                
-                if (response.ok) {
-                    const text = await response.text();
-                    const data = JSON.parse(text);
-                    
-                    if (data.value !== undefined) {
-                        globalTotalVisitors = data.value;
-                        apiIncrementSuccess = true;
-                        console.log('✅ Incrementado via API:', globalTotalVisitors);
-                    }
+            // Usa transação do Firebase para incremento atômico (thread-safe)
+            runTransaction(counterRef, (currentData) => {
+                if (currentData === null) {
+                    // Primeiro acesso
+                    return {
+                        count: 1,
+                        last_updated: Date.now()
+                    };
+                } else {
+                    // Incrementa contador existente
+                    return {
+                        count: (currentData.count || 0) + 1,
+                        last_updated: Date.now()
+                    };
                 }
-            } catch (apiError) {
-                console.warn('⚠️ API falhou:', apiError.message);
-            }
-            
-            // Se API falhou, incrementa localmente
-            if (!apiIncrementSuccess) {
-                let localTotal = parseInt(localStorage.getItem('forro_local_total') || '0');
-                localTotal++;
-                localStorage.setItem('forro_local_total', localTotal.toString());
-                globalTotalVisitors = localTotal;
-                console.log('✅ Incrementado localmente:', globalTotalVisitors);
-            }
-            
-            // Atualiza interface
-            animateCounter('totalVisitors', globalTotalVisitors);
-            lastSyncTime = Date.now();
-            
-            // Envia update para outras abas/janelas via BroadcastChannel
-            if (broadcastChannel) {
-                broadcastChannel.postMessage({
-                    type: 'counter_update',
-                    value: globalTotalVisitors,
-                    timestamp: Date.now()
-                });
-                console.log('📡 Enviado update via BroadcastChannel');
-            }
-            
-            console.log(`📊 Contador total: ${globalTotalVisitors}`);
+            }).then((result) => {
+                const newCount = result.snapshot.val().count;
+                globalTotalVisitors = newCount;
+                animateCounter('totalVisitors', globalTotalVisitors);
+                localStorage.setItem('forro_local_total', newCount.toString());
+                console.log('✅ Firebase incrementado:', newCount);
+                
+                // Envia update via BroadcastChannel
+                if (broadcastChannel) {
+                    broadcastChannel.postMessage({
+                        type: 'counter_update',
+                        value: newCount,
+                        timestamp: Date.now()
+                    });
+                }
+            }).catch((error) => {
+                console.error('❌ Erro ao incrementar no Firebase:', error);
+                // Fallback: incrementa localmente
+                globalTotalVisitors++;
+                localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
+                animateCounter('totalVisitors', globalTotalVisitors);
+            });
         }
 
         // Função para sincronização manual do contador
