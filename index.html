@@ -1189,14 +1189,16 @@
                 const streamUrl = 'https://usu300opw28m.shares.zrok.io/status-json.xsl';
                 const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
                 const streamUrl7html = 'https://usu300opw28m.shares.zrok.io/7.html';
+                const nowPlayingUrl = 'https://usu300opw28m.shares.zrok.io/nowplaying.txt';  // NOVO: Arquivo do RadioBOSS
                 
-                // Tenta múltiplos proxies CORS - PRIORIZA XML (funcionando) e 7.html
+                // Tenta múltiplos proxies CORS - PRIORIZA nowplaying.txt, depois XML e 7.html
                 const proxyUrls = [
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,  // status.xsl - XML (FUNCIONANDO)
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(nowPlayingUrl)}`,  // nowplaying.txt (MAIS CONFIÁVEL)
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,  // status.xsl - XML
                     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl7html)}`, // 7.html
                     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl)}`,      // status-json.xsl
-                    `https://corsproxy.io/?${encodeURIComponent(streamUrlXML)}`,
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrlXML)}`
+                    `https://corsproxy.io/?${encodeURIComponent(nowPlayingUrl)}`,
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(nowPlayingUrl)}`
                 ];
                 
                 console.log('🔍 Iniciando busca de metadados via proxy CORS...');
@@ -1227,8 +1229,19 @@
                                 continue;
                             }
                             
+                            // Verifica se é nowplaying.txt (texto simples com nome da música)
+                            if (!text.includes('<') && !text.includes('{') && text.trim().length > 5) {
+                                console.log('✅ Detectado nowplaying.txt (texto simples)');
+                                const songTitle = text.trim();
+                                if (songTitle && songTitle.length > 0) {
+                                    console.log('✅ Título encontrado no nowplaying.txt:', songTitle);
+                                    parseAndDisplaySongTitle(songTitle);
+                                    metadataFound = true;
+                                    break;
+                                }
+                            }
                             // Verifica se é JSON válido
-                            if (text.trim().startsWith('{')) {
+                            else if (text.trim().startsWith('{')) {
                                 console.log('✅ Detectado formato JSON');
                             }
                             // Verifica se é XML válido (Icecast)
