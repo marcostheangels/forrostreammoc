@@ -1177,13 +1177,13 @@
                 const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
                 const streamUrl7html = 'https://usu300opw28m.shares.zrok.io/7.html';
                 
-                // Tenta múltiplos proxies CORS com diferentes endpoints
+                // Tenta múltiplos proxies CORS - PRIORIZA XML (funcionando) e 7.html
                 const proxyUrls = [
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl)}`,
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl7html)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(streamUrl)}`,
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrl)}`
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,  // status.xsl - XML (FUNCIONANDO)
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl7html)}`, // 7.html
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl)}`,      // status-json.xsl
+                    `https://corsproxy.io/?${encodeURIComponent(streamUrlXML)}`,
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrlXML)}`
                 ];
                 
                 console.log('🔍 Iniciando busca de metadados via proxy CORS...');
@@ -1206,9 +1206,29 @@
                         if (response.ok) {
                             const text = await response.text();
                             
-                            // Verifica se é HTML e ignora
-                            if (text.includes('<!DOCTYPE') || text.includes('<html') || text.includes('Icecast Server') || text.includes('Status</th>')) {
-                                console.log('️ Ignorando resposta HTML');
+                            console.log('📄 Resposta recebida (primeiros 500 chars):', text.substring(0, 500));
+                            
+                            // Verifica se é página de erro do proxy e ignora
+                            if (text.includes('500 Internal') || text.includes('Error 500') || text.includes('Bad Gateway') || text.includes('Service Unavailable')) {
+                                console.log('⚠️ Proxy retornou erro HTTP, tentando próximo...');
+                                continue;
+                            }
+                            
+                            // Verifica se é JSON válido
+                            if (text.trim().startsWith('{')) {
+                                console.log('✅ Detectado formato JSON');
+                            }
+                            // Verifica se é XML válido (Icecast)
+                            else if (text.includes('<icestats>') || text.includes('<?xml')) {
+                                console.log('✅ Detectado formato XML Icecast');
+                            }
+                            // Verifica se é 7.html
+                            else if (text.includes('<body>') && text.includes(',')) {
+                                console.log('✅ Detectado formato 7.html');
+                            }
+                            // Ignora apenas páginas HTML completas de erro
+                            else if (text.includes('<!DOCTYPE html>') && text.includes('Error')) {
+                                console.log('⚠️ Página de erro HTML, ignorando...');
                                 continue;
                             }
                             
@@ -1262,27 +1282,58 @@
                                     console.log('Campos em icestats:', json.icestats ? Object.keys(json.icestats) : 'N/A');
                                 }
                             } catch (e) {
-                                console.log('Não é JSON, tentando extrair de HTML/XML...');
+                                console.log('Não é JSON, tentando extrair de outros formatos...');
                                 
-                                // Tenta extrair título de XML (status.xsl)
-                                const titleMatch = text.match(/<title>([^<]+)<\/title>/i);
-                                if (titleMatch && titleMatch[1] && !titleMatch[1].includes('Icecast')) {
-                                    console.log('✅ Título encontrado no XML:', titleMatch[1]);
-                                    parseAndDisplaySongTitle(titleMatch[1]);
-                                    metadataFound = true;
-                                    break;
+                                // Tenta parsear XML do Icecast PRIMEIRO
+                                if (text.includes('<icestats>') || text.includes('<?xml')) {
+                                    console.log('🔍 Tentando extrair metadados do XML Icecast...');
+                                    
+                                    // Extrai x_icy_title do XML
+                                    const icyTitleMatch = text.match(/<x_icy_title>([^<]*)<\/x_icy_title>/i);
+                                    if (icyTitleMatch && icyTitleMatch[1] && icyTitleMatch[1].trim()) {
+                                        const songTitle = icyTitleMatch[1].trim();
+                                        console.log('✅ Título encontrado no XML (x_icy_title):', songTitle);
+                                        parseAndDisplaySongTitle(songTitle);
+                                        metadataFound = true;
+                                        break;
+                                    }
+                                    
+                                    // Tenta extrair <title> dentro de <source>
+                                    const sourceTitleMatch = text.match(/<source[^>]*>[\s\S]*?<title>([^<]+)<\/title>/i);
+                                    if (sourceTitleMatch && sourceTitleMatch[1] && sourceTitleMatch[1].trim()) {
+                                        const songTitle = sourceTitleMatch[1].trim();
+                                        console.log('✅ Título encontrado no XML (source title):', songTitle);
+                                        parseAndDisplaySongTitle(songTitle);
+                                        metadataFound = true;
+                                        break;
+                                    }
+                                    
+                                    console.log('⚠️ Não encontrou título no XML Icecast');
                                 }
                                 
                                 // Tenta formato 7.html
-                                const parts = text.split(',');
+                                // Formato: listeners,peak_listeners,bitrate,status,current_song,...
+                                const htmlMatch = text.match(/<body>([^<]+)<\/body>/i);
+                                const bodyContent = htmlMatch ? htmlMatch[1] : text;
+                                const parts = bodyContent.split(',');
+                                
                                 if (parts.length >= 5) {
-                                    const currsong = parts[4];
-                                    if (currsong && currsong.trim()) {
-                                        console.log('✅ Título no 7.html:', currsong);
+                                    const currsong = parts[4].trim();
+                                    if (currsong && currsong.length > 0 && !currsong.includes('<')) {
+                                        console.log('✅ Título encontrado no 7.html:', currsong);
                                         parseAndDisplaySongTitle(currsong);
                                         metadataFound = true;
                                         break;
                                     }
+                                }
+                                
+                                // Tenta extrair título de XML (status.xsl) como fallback
+                                const titleMatch = text.match(/<title>([^<]+)<\/title>/i);
+                                if (titleMatch && titleMatch[1] && !titleMatch[1].includes('Icecast') && !titleMatch[1].includes('Status')) {
+                                    console.log('✅ Título encontrado no XML:', titleMatch[1]);
+                                    parseAndDisplaySongTitle(titleMatch[1]);
+                                    metadataFound = true;
+                                    break;
                                 }
                                 
                                 console.log('⚠️ Não conseguiu extrair título do formato HTML/XML');
@@ -1493,11 +1544,11 @@
         async function fetchRealListeners() {
             try {
                 // Tenta obter status do stream via endpoint de status
-                // Para Zrok/Icecast, tentamos acessar o status JSON
+                // Para Zrok/Icecast, PRIORIZA XML (status.xsl) que está funcionando
                 const statusUrls = [
-                    'https://usu300opw28m.shares.zrok.io/status-json.xsl',
-                    'https://usu300opw28m.shares.zrok.io/status.xsl',
-                    'https://usu300opw28m.shares.zrok.io/7.html' // Formato Shoutcast DNAS
+                    'https://usu300opw28m.shares.zrok.io/status.xsl',  // XML - FUNCIONANDO
+                    'https://usu300opw28m.shares.zrok.io/7.html',      // Formato Shoutcast DNAS
+                    'https://usu300opw28m.shares.zrok.io/status-json.xsl'  // JSON (pode não funcionar)
                 ];
                 
                 let listenersFound = false;
@@ -1525,13 +1576,47 @@
                                     break;
                                 }
                             } catch (e) {
-                                // Se não for JSON, tenta formato Shoutcast (7.html retorna: listeners, status, peak, max)
-                                const parts = text.split(',');
+                                // Se não for JSON, tenta parsear XML do Icecast
+                                if (text.includes('<icestats>') || text.includes('<?xml')) {
+                                    console.log('🔍 Extraindo ouvintes do XML Icecast...');
+                                    
+                                    // Extrai número de ouvintes do <source mount="/radio.mp3">
+                                    const sourceMatch = text.match(/<source[^>]*mount="\/radio\.mp3"[^>]*>[\s\S]*?<listeners>(\d+)<\/listeners>/i);
+                                    if (sourceMatch && sourceMatch[1]) {
+                                        const count = parseInt(sourceMatch[1]);
+                                        if (!isNaN(count) && count >= 0) {
+                                            realListenerCount = count;
+                                            listenersFound = true;
+                                            console.log('✅ Ouvintes reais via XML Icecast:', count);
+                                            break;
+                                        }
+                                    }
+                                    
+                                    // Fallback: tenta extrair listeners globais
+                                    const globalListenersMatch = text.match(/<listeners>(\d+)<\/listeners>/i);
+                                    if (globalListenersMatch && globalListenersMatch[1]) {
+                                        const count = parseInt(globalListenersMatch[1]);
+                                        if (!isNaN(count) && count >= 0) {
+                                            realListenerCount = count;
+                                            listenersFound = true;
+                                            console.log('✅ Ouvintes globais via XML:', count);
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                // Tenta formato Shoutcast/Icecast 7.html
+                                // Formato: <html><head>...</head><body>listeners,status,peak,max,current_song,... </body></html>
+                                const htmlMatch = text.match(/<body>([^<]+)<\/body>/i);
+                                const bodyContent = htmlMatch ? htmlMatch[1] : text;
+                                const parts = bodyContent.split(',');
+                                
                                 if (parts.length >= 1) {
-                                    const count = parseInt(parts[0]);
+                                    const count = parseInt(parts[0].trim());
                                     if (!isNaN(count) && count >= 0) {
                                         realListenerCount = count;
                                         listenersFound = true;
+                                        console.log('✅ Ouvintes reais via 7.html:', count);
                                         break;
                                     }
                                 }
