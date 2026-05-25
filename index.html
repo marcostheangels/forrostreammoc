@@ -1358,24 +1358,52 @@
                                     if (playlistSection && playlistSection[1]) {
                                         const playlistHTML = playlistSection[1];
                                         console.log('✅ Encontrada playlist-container, extraindo músicas...');
+                                        console.log('📄 Conteúdo da playlist (primeiros 300 chars):', playlistHTML.substring(0, 300));
                                         
                                         // Extrai todas as linhas da tabela dentro da playlist
                                         const playlistRows = playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g);
                                         
+                                        let rowNumber = 0;
                                         for (const row of playlistRows) {
+                                            rowNumber++;
                                             const title = row[4].trim();
+                                            console.log(`🎵 Linha ${rowNumber}: "${title}" (length: ${title.length}, tem " - ": ${title.includes(' - ')})`);
+                                            
                                             // Filtra títulos válidos (deve ter " - " separando artista e música)
                                             if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
-                                                console.log('✅ Título encontrado na playlist HTML:', title);
+                                                console.log('✅ Título VÁLIDO encontrado na playlist HTML:', title);
                                                 parseAndDisplaySongTitle(title);
                                                 metadataFound = true;
                                                 break;
                                             } else {
-                                                console.log('⚠️ Título inválido ignorado:', title.substring(0, 50));
+                                                console.log(`⚠️ Título INVÁLIDO ignorado: "${title.substring(0, 50)}"`);
                                             }
                                         }
+                                        
+                                        if (rowNumber === 0) {
+                                            console.log('⚠️ Nenhuma linha encontrada na playlist');
+                                        }
                                     } else {
-                                        console.log('⚠️ playlist-container não encontrada no HTML');
+                                        console.log('⚠️ playlist-container NÃO encontrada no HTML');
+                                        console.log('🔍 Tentando buscar por <tbody> diretamente...');
+                                        
+                                        // Fallback: tenta extrair do <tbody> geral
+                                        const tbodyMatch = text.match(/<tbody>([\s\S]*?)<\/tbody>/i);
+                                        if (tbodyMatch && tbodyMatch[1]) {
+                                            console.log('✅ Encontrado tbody, extraindo...');
+                                            const tbodyHTML = tbodyMatch[1];
+                                            const rows = tbodyHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g);
+                                            
+                                            for (const row of rows) {
+                                                const title = row[4].trim();
+                                                if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
+                                                    console.log('✅ Título encontrado no tbody:', title);
+                                                    parseAndDisplaySongTitle(title);
+                                                    metadataFound = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
                                     }
                                     
                                     if (metadataFound) break;
