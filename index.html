@@ -1350,16 +1350,32 @@
                                     }
                                     
                                     // Fallback: tenta extrair da playlist (primeira música tocando)
-                                    // Procura pela primeira música na tabela de playlist
-                                    const playlistRows = text.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g);
-                                    for (const row of playlistRows) {
-                                        const title = row[4].trim();
-                                        if (title && title.length > 0 && !title.includes('<')) {
-                                            console.log('✅ Título encontrado na playlist HTML:', title);
-                                            parseAndDisplaySongTitle(title);
-                                            metadataFound = true;
-                                            break;
+                                    // Procura pela primeira música na tabela de playlist dentro de .playlist-container
+                                    console.log('🔍 Procurando na playlist-container...');
+                                    
+                                    // Extrai a seção da playlist primeiro
+                                    const playlistSection = text.match(/<div class="playlist-container">([\s\S]*?)<\/div>/i);
+                                    if (playlistSection && playlistSection[1]) {
+                                        const playlistHTML = playlistSection[1];
+                                        console.log('✅ Encontrada playlist-container, extraindo músicas...');
+                                        
+                                        // Extrai todas as linhas da tabela dentro da playlist
+                                        const playlistRows = playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g);
+                                        
+                                        for (const row of playlistRows) {
+                                            const title = row[4].trim();
+                                            // Filtra títulos válidos (deve ter " - " separando artista e música)
+                                            if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
+                                                console.log('✅ Título encontrado na playlist HTML:', title);
+                                                parseAndDisplaySongTitle(title);
+                                                metadataFound = true;
+                                                break;
+                                            } else {
+                                                console.log('⚠️ Título inválido ignorado:', title.substring(0, 50));
+                                            }
                                         }
+                                    } else {
+                                        console.log('⚠️ playlist-container não encontrada no HTML');
                                     }
                                     
                                     if (metadataFound) break;
