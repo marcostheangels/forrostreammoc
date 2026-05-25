@@ -596,7 +596,9 @@
                                 <i class="fa-solid fa-chart-line text-3xl text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
                                 <p class="text-xs text-slate-400 font-medium">Total de Ouvintes</p>
                                 <p class="text-base font-bold text-blue-400 mt-1" id="totalVisitors">0</p>
-                                <p class="text-xs text-blue-400/80 mt-1">Desde o início</p>
+                                <button onclick="manualSyncCounter()" class="text-xs text-blue-400/80 mt-1 hover:text-blue-300 transition-colors flex items-center justify-center gap-1 mx-auto cursor-pointer">
+                                    <i class="fa-solid fa-rotate"></i> Atualizar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -916,7 +918,6 @@
 
         // Contador Global de Ouvintes (usando API externa para contador compartilhado)
         let globalTotalVisitors = 0;
-        let globalTodayVisitors = 0;
         
         async function initializeVisitorCounter() {
             try {
@@ -926,32 +927,24 @@
                 // Namespace único para o Forró Stream MOC
                 const namespace = 'forrostreammoc-shop';
                 const key = 'total_listeners';
-                const todayKey = `listeners_${new Date().toISOString().split('T')[0]}`;
                 
-                // Apenas obtém o valor atual (não incrementa aqui)
+                // Obtém o valor atual da API
                 const response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
                 const data = await response.json();
                 
-                // Usa o valor REAL da API
-                globalTotalVisitors = data.value || 0;
-                
-                // Busca contador de hoje
-                try {
-                    const todayResponse = await fetch(`https://api.countapi.xyz/get/${namespace}/${todayKey}`);
-                    const todayData = await todayResponse.json();
-                    globalTodayVisitors = todayData.value || 0;
-                } catch (err) {
-                    console.log('Erro ao buscar contador diário:', err);
-                    globalTodayVisitors = 0;
+                if (data.value !== undefined) {
+                    globalTotalVisitors = data.value;
+                    console.log('✅ Contador global obtido:', globalTotalVisitors);
+                } else {
+                    // Fallback: usa localStorage
+                    globalTotalVisitors = parseInt(localStorage.getItem('forro_local_total') || '0');
+                    console.log('⚠️ Usando fallback localStorage:', globalTotalVisitors);
                 }
                 
                 // Atualiza a interface com animação
                 animateCounter('totalVisitors', globalTotalVisitors);
-                animateCounter('todayVisitors', globalTodayVisitors);
                 
-                console.log(`📊 Contador global atualizado - Total: ${globalTotalVisitors}, Hoje: ${globalTodayVisitors}`);
-                
-                // Inicia sincronização periódica a cada 30 segundos
+                // Inicia sincronização periódica a cada 60 segundos
                 startCounterSync();
                 
             } catch (error) {
@@ -959,10 +952,7 @@
                 
                 // Fallback: usa localStorage
                 globalTotalVisitors = parseInt(localStorage.getItem('forro_local_total') || '0');
-                globalTodayVisitors = parseInt(localStorage.getItem('forro_local_today') || '0');
-                
                 animateCounter('totalVisitors', globalTotalVisitors);
-                animateCounter('todayVisitors', globalTodayVisitors);
             }
         }
 
@@ -972,11 +962,10 @@
                 try {
                     const namespace = 'forrostreammoc-shop';
                     const key = 'total_listeners';
-                    const todayKey = `listeners_${new Date().toISOString().split('T')[0]}`;
                     
-                    console.log('🔄 Sincronizando contador...');
+                    console.log('🔄 Sincronizando contador total...');
                     
-                    // Obtém valores atualizados da API
+                    // Obtém valor atualizado da API
                     const response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
                     const data = await response.json();
                     
@@ -988,30 +977,14 @@
                             globalTotalVisitors = newTotal;
                             animateCounter('totalVisitors', globalTotalVisitors);
                             console.log('✅ Total sincronizado:', globalTotalVisitors);
+                        } else {
+                            console.log('ℹ️ Contador inalterado:', globalTotalVisitors);
                         }
-                    }
-                    
-                    // Também sincroniza o contador de hoje
-                    try {
-                        const todayResponse = await fetch(`https://api.countapi.xyz/get/${namespace}/${todayKey}`);
-                        const todayData = await todayResponse.json();
-                        
-                        if (todayData.value !== undefined) {
-                            const newToday = todayData.value;
-                            
-                            if (newToday !== globalTodayVisitors) {
-                                globalTodayVisitors = newToday;
-                                animateCounter('todayVisitors', globalTodayVisitors);
-                                console.log('✅ Hoje sincronizado:', globalTodayVisitors);
-                            }
-                        }
-                    } catch (err) {
-                        console.log('⚠️ Erro ao sincronizar hoje:', err.message);
                     }
                 } catch (error) {
                     console.log('⚠️ Erro ao sincronizar:', error.message);
                 }
-            }, 30000); // A cada 30 segundos
+            }, 60000); // A cada 60 segundos
         }
 
         // Incrementa contador quando o usuário dá PLAY
@@ -1021,7 +994,6 @@
                 
                 const namespace = 'forrostreammoc-shop';
                 const key = 'total_listeners';
-                const todayKey = `listeners_${new Date().toISOString().split('T')[0]}`;
                 
                 // SEMPRE tenta incrementar na API primeiro (fonte principal)
                 try {
@@ -1031,49 +1003,51 @@
                     
                     if (data.value !== undefined) {
                         globalTotalVisitors = data.value;
-                        console.log('✅ Total da API:', globalTotalVisitors);
-                    }
-                    
-                    const todayResponse = await fetch(`https://api.countapi.xyz/hit/${namespace}/${todayKey}`);
-                    const todayData = await todayResponse.json();
-                    
-                    if (todayData.value !== undefined) {
-                        globalTodayVisitors = todayData.value;
-                        console.log('✅ Hoje da API:', globalTodayVisitors);
+                        console.log('✅ Total da API após incremento:', globalTotalVisitors);
                     }
                 } catch (apiError) {
                     console.warn('⚠️ API falhou, usando localStorage:', apiError.message);
                     
                     // Fallback: usa localStorage
                     let localTotal = parseInt(localStorage.getItem('forro_local_total') || '0');
-                    let localToday = parseInt(localStorage.getItem('forro_local_today') || '0');
-                    
-                    const lastDate = localStorage.getItem('forro_local_date');
-                    const today = new Date().toISOString().split('T')[0];
-                    
-                    if (lastDate !== today) {
-                        localToday = 0;
-                        localStorage.setItem('forro_local_date', today);
-                    }
-                    
                     localTotal++;
-                    localToday++;
-                    
                     localStorage.setItem('forro_local_total', localTotal.toString());
-                    localStorage.setItem('forro_local_today', localToday.toString());
-                    
                     globalTotalVisitors = localTotal;
-                    globalTodayVisitors = localToday;
                 }
                 
                 // Atualiza a interface
                 animateCounter('totalVisitors', globalTotalVisitors);
-                animateCounter('todayVisitors', globalTodayVisitors);
                 
-                console.log(`📊 Contador atualizado - Total: ${globalTotalVisitors}, Hoje: ${globalTodayVisitors}`);
+                console.log(`📊 Contador total atualizado: ${globalTotalVisitors}`);
                 
             } catch (error) {
                 console.error('❌ Erro ao incrementar contador:', error);
+            }
+        }
+
+        // Função para sincronização manual do contador
+        async function manualSyncCounter() {
+            console.log('🔄 Sincronização manual solicitada...');
+            showToast('🔄 Atualizando contador...');
+            
+            try {
+                const namespace = 'forrostreammoc-shop';
+                const key = 'total_listeners';
+                
+                const response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
+                const data = await response.json();
+                
+                if (data.value !== undefined) {
+                    globalTotalVisitors = data.value;
+                    animateCounter('totalVisitors', globalTotalVisitors);
+                    showToast('✅ Contador atualizado com sucesso!');
+                    console.log('✅ Contador manual sincronizado:', globalTotalVisitors);
+                } else {
+                    showToast('⚠️ Erro ao buscar dados da API');
+                }
+            } catch (error) {
+                console.error('❌ Erro na sincronização manual:', error);
+                showToast('❌ Erro ao atualizar contador');
             }
         }
 
