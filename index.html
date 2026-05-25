@@ -954,9 +954,9 @@
             } catch (error) {
                 console.error('❌ Erro ao buscar contador global:', error);
                 
-                // Fallback: mostra 0 se a API falhar
-                globalTotalVisitors = 0;
-                globalTodayVisitors = 0;
+                // Fallback: usa localStorage
+                globalTotalVisitors = parseInt(localStorage.getItem('forro_local_total') || '0');
+                globalTodayVisitors = parseInt(localStorage.getItem('forro_local_today') || '0');
                 
                 animateCounter('totalVisitors', globalTotalVisitors);
                 animateCounter('todayVisitors', globalTodayVisitors);
@@ -966,19 +966,49 @@
         // Incrementa contador quando o usuário dá PLAY
         async function incrementListenerCounter() {
             try {
+                console.log('🎵 Usuário deu PLAY - incrementando contador...');
+                
                 const namespace = 'forrostreammoc-shop';
                 const key = 'total_listeners';
                 const todayKey = `listeners_${new Date().toISOString().split('T')[0]}`;
                 
-                // Incrementa o total
-                await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+                // Tenta incrementar na API (pode falhar)
+                try {
+                    console.log('📡 Tentando incrementar na API...');
+                    const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+                    console.log('✅ Resposta da API (total):', response.status);
+                    
+                    const todayResponse = await fetch(`https://api.countapi.xyz/hit/${namespace}/${todayKey}`);
+                    console.log('✅ Resposta da API (hoje):', todayResponse.status);
+                } catch (apiError) {
+                    console.warn('️ API falhou, usando localStorage:', apiError.message);
+                }
                 
-                // Incrementa o de hoje
-                await fetch(`https://api.countapi.xyz/hit/${namespace}/${todayKey}`);
+                // SEMPRE incrementa no localStorage como backup
+                let localTotal = parseInt(localStorage.getItem('forro_local_total') || '0');
+                let localToday = parseInt(localStorage.getItem('forro_local_today') || '0');
+                
+                // Verifica se é um novo dia
+                const lastDate = localStorage.getItem('forro_local_date');
+                const today = new Date().toISOString().split('T')[0];
+                
+                if (lastDate !== today) {
+                    // Novo dia, reseta contador de hoje
+                    localToday = 0;
+                    localStorage.setItem('forro_local_date', today);
+                }
+                
+                // Incrementa
+                localTotal++;
+                localToday++;
+                
+                // Salva
+                localStorage.setItem('forro_local_total', localTotal.toString());
+                localStorage.setItem('forro_local_today', localToday.toString());
                 
                 // Atualiza a interface
-                globalTotalVisitors++;
-                globalTodayVisitors++;
+                globalTotalVisitors = localTotal;
+                globalTodayVisitors = localToday;
                 
                 animateCounter('totalVisitors', globalTotalVisitors);
                 animateCounter('todayVisitors', globalTodayVisitors);
