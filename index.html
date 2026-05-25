@@ -1129,17 +1129,30 @@
             });
         }
 
-        // Função para sincronização manual do contador
+        // Função para sincronização manual do contador (força refresh do Firebase)
         async function manualSyncCounter() {
             console.log('🔄 Sincronização manual solicitada...');
             showToast('🔄 Atualizando contador...');
             
-            await syncCounterFromAPI();
+            if (!window.firebaseDB) {
+                showToast('⚠️ Firebase não disponível');
+                return;
+            }
             
-            // Mostra feedback
-            setTimeout(() => {
-                showToast('✅ Contador atualizado!');
-            }, 500);
+            // Força re-leitura do Firebase
+            const { counterRef, onValue } = window.firebaseDB;
+            
+            onValue(counterRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data !== null && data > 0) {
+                    globalTotalVisitors = data;
+                    animateCounter('totalVisitors', globalTotalVisitors);
+                    lastSyncTime = Date.now();
+                    localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
+                    console.log('✅ Contador sincronizado manualmente:', globalTotalVisitors);
+                    showToast('✅ Contador atualizado!');
+                }
+            }, { onlyOnce: true });
         }
 
         // Animação suave do contador
@@ -1222,12 +1235,12 @@
                             else if (text.includes('<icestats>') || text.includes('<?xml')) {
                                 console.log('✅ Detectado formato XML Icecast');
                             }
-                            // Verifica se é 7.html
-                            else if (text.includes('<body>') && text.includes(',')) {
+                            // Verifica se é 7.html (formato simples com vírgulas)
+                            else if (text.includes('<body>') && text.match(/<body>[^,]*,[^,]*,[^,]*/)) {
                                 console.log('✅ Detectado formato 7.html');
                             }
-                            // Verifica se é HTML de status do Icecast (página visual)
-                            else if (text.includes('Icecast Server') && text.includes('Mountpoint')) {
+                            // Verifica se é HTML de status do Icecast (página visual completa)
+                            else if (text.includes('Icecast Server') && (text.includes('Mountpoint') || text.includes('Currently playing'))) {
                                 console.log('✅ Detectado HTML de Status do Icecast - extraindo dados...');
                             }
                             // Ignora apenas páginas HTML completas de erro
@@ -1287,6 +1300,9 @@
                                 }
                             } catch (e) {
                                 console.log('Não é JSON, tentando extrair de outros formatos...');
+                                console.log('🔍 Debug - text.includes("Icecast Server"):', text.includes('Icecast Server'));
+                                console.log('🔍 Debug - text.includes("Mountpoint"):', text.includes('Mountpoint'));
+                                console.log('🔍 Debug - text.includes("Currently playing"):', text.includes('Currently playing'));
                                 
                                 // Tenta parsear XML do Icecast PRIMEIRO
                                 if (text.includes('<icestats>') || text.includes('<?xml')) {
@@ -1315,7 +1331,7 @@
                                     console.log('⚠️ Não encontrou título no XML Icecast');
                                 }
                                 // Tenta extrair de HTML de Status do Icecast
-                                else if (text.includes('Icecast Server') && text.includes('Mountpoint')) {
+                                else if (text.includes('Icecast Server') && (text.includes('Mountpoint') || text.includes('Currently playing'))) {
                                     console.log('🔍 Extraindo metadados do HTML de Status...');
                                     
                                     // Extrai "Currently playing" do HTML
@@ -1645,7 +1661,7 @@
                                     }
                                 }
                                 // Tenta extrair de HTML de Status do Icecast
-                                else if (text.includes('Icecast Server') && text.includes('Mountpoint')) {
+                                else if (text.includes('Icecast Server') && (text.includes('Mountpoint') || text.includes('Currently playing'))) {
                                     console.log('🔍 Extraindo ouvintes do HTML de Status...');
                                     
                                     // Extrai "Listeners (current)" do HTML
@@ -1750,9 +1766,19 @@
             initializeVisitorCounter();
             console.log('✅ initializeVisitorCounter() executado');
             
-            // Sincronização extra após 2 segundos para garantir valor atualizado
-            setTimeout(async () => {
-                await syncCounterFromAPI();
+            // Sincronização extra após 2 segundos para garantir valor atualizado do Firebase
+            setTimeout(() => {
+                if (window.firebaseDB) {
+                    const { counterRef, onValue } = window.firebaseDB;
+                    onValue(counterRef, (snapshot) => {
+                        const data = snapshot.val();
+                        if (data !== null && data > globalTotalVisitors) {
+                            globalTotalVisitors = data;
+                            animateCounter('totalVisitors', globalTotalVisitors);
+                            console.log('✅ Sync inicial Firebase:', globalTotalVisitors);
+                        }
+                    }, { onlyOnce: true });
+                }
             }, 2000);
             
             // Tenta autoplay
