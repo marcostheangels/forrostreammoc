@@ -1185,20 +1185,48 @@
         // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
-                // Para GitHub Pages, usamos proxies CORS públicos
+                // Usa metadata.php como proxy (lê nowplaying.txt localmente)
+                const metadataProxyUrl = 'https://forrostreammoc.shop/metadata.php';  // ← MUDE PARA SUA URL REAL
+                
+                // Tenta acessar o proxy PHP diretamente (sem CORS)
+                console.log('🔍 Buscando metadados via metadata.php...');
+                
+                try {
+                    const response = await fetch(metadataProxyUrl, { 
+                        method: 'GET',
+                        cache: 'no-cache'
+                    });
+                    
+                    if (response.ok) {
+                        const text = await response.text();
+                        console.log('📄 Resposta do metadata.php:', text.substring(0, 200));
+                        
+                        if (text && text.trim().length > 5 && !text.includes('error') && !text.includes('Error')) {
+                            const songTitle = text.trim();
+                            console.log('✅ Título encontrado via metadata.php:', songTitle);
+                            parseAndDisplaySongTitle(songTitle);
+                            return; // Sucesso, sai da função
+                        } else {
+                            console.log('⚠️ metadata.php retornou vazio ou erro');
+                        }
+                    } else {
+                        console.log('⚠️ Erro HTTP:', response.status);
+                    }
+                } catch (err) {
+                    console.log('❌ Erro ao acessar metadata.php:', err.message);
+                }
+                
+                // Fallback: tenta proxies CORS se metadata.php falhar
+                console.log('⚠️ metadata.php falhou, tentando fallback com proxies CORS...');
+                
                 const streamUrl = 'https://usu300opw28m.shares.zrok.io/status-json.xsl';
                 const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
                 const streamUrl7html = 'https://usu300opw28m.shares.zrok.io/7.html';
-                const nowPlayingUrl = 'https://usu300opw28m.shares.zrok.io/nowplaying.txt';  // NOVO: Arquivo do RadioBOSS
                 
-                // Tenta múltiplos proxies CORS - PRIORIZA nowplaying.txt, depois XML e 7.html
                 const proxyUrls = [
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(nowPlayingUrl)}`,  // nowplaying.txt (MAIS CONFIÁVEL)
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,  // status.xsl - XML
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl7html)}`, // 7.html
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl)}`,      // status-json.xsl
-                    `https://corsproxy.io/?${encodeURIComponent(nowPlayingUrl)}`,
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(nowPlayingUrl)}`
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl7html)}`,
+                    `https://corsproxy.io/?${encodeURIComponent(streamUrlXML)}`
                 ];
                 
                 console.log('🔍 Iniciando busca de metadados via proxy CORS...');
