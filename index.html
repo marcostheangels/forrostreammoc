@@ -1390,8 +1390,8 @@
                                         }
                                     }
                                     
-                                    // Fallback: tenta extrair da playlist (primeira música tocando)
-                                    // Procura pela primeira música na tabela de playlist dentro de .playlist-container
+                                    // Fallback: tenta extrair da playlist (ÚLTIMA música = mais recente)
+                                    // A playlist do Icecast mostra histórico: primeira = mais antiga, última = mais recente
                                     console.log('🔍 Procurando na playlist-container...');
                                     
                                     // Extrai a seção da playlist primeiro
@@ -1399,20 +1399,21 @@
                                     if (playlistSection && playlistSection[1]) {
                                         const playlistHTML = playlistSection[1];
                                         console.log('✅ Encontrada playlist-container, extraindo músicas...');
-                                        console.log('📄 Conteúdo da playlist (primeiros 300 chars):', playlistHTML.substring(0, 300));
                                         
-                                        // Extrai todas as linhas da tabela dentro da playlist
-                                        const playlistRows = playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g);
+                                        // Extrai TODAS as linhas da tabela dentro da playlist
+                                        const playlistRows = [...playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g)];
                                         
-                                        let rowNumber = 0;
-                                        for (const row of playlistRows) {
-                                            rowNumber++;
+                                        console.log(`📊 Total de músicas na playlist: ${playlistRows.length}`);
+                                        
+                                        // Pega a ÚLTIMA música (mais recente) primeiro
+                                        for (let i = playlistRows.length - 1; i >= 0; i--) {
+                                            const row = playlistRows[i];
                                             const title = row[4].trim();
-                                            console.log(`🎵 Linha ${rowNumber}: "${title}" (length: ${title.length}, tem " - ": ${title.includes(' - ')})`);
+                                            console.log(`🎵 Linha ${i + 1} de ${playlistRows.length}: "${title}" (length: ${title.length}, tem " - ": ${title.includes(' - ')})`);
                                             
                                             // Filtra títulos válidos (deve ter " - " separando artista e música)
                                             if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
-                                                console.log('✅ Título VÁLIDO encontrado na playlist HTML:', title);
+                                                console.log('✅ Título VÁLIDO encontrado na playlist HTML (mais recente):', title);
                                                 parseAndDisplaySongTitle(title);
                                                 metadataFound = true;
                                                 break;
@@ -1421,7 +1422,7 @@
                                             }
                                         }
                                         
-                                        if (rowNumber === 0) {
+                                        if (playlistRows.length === 0) {
                                             console.log('⚠️ Nenhuma linha encontrada na playlist');
                                         }
                                     } else {
@@ -1433,12 +1434,14 @@
                                         if (tbodyMatch && tbodyMatch[1]) {
                                             console.log('✅ Encontrado tbody, extraindo...');
                                             const tbodyHTML = tbodyMatch[1];
-                                            const rows = tbodyHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g);
+                                            const rows = [...tbodyHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g)];
                                             
-                                            for (const row of rows) {
+                                            // Pega a ÚLTIMA música
+                                            for (let i = rows.length - 1; i >= 0; i--) {
+                                                const row = rows[i];
                                                 const title = row[4].trim();
                                                 if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
-                                                    console.log('✅ Título encontrado no tbody:', title);
+                                                    console.log('✅ Título encontrado no tbody (mais recente):', title);
                                                     parseAndDisplaySongTitle(title);
                                                     metadataFound = true;
                                                     break;
