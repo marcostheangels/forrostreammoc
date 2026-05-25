@@ -405,52 +405,103 @@
                 </div>
 
                 <div class="glass-panel p-6 rounded-2xl border border-slate-800 shadow-xl animate-fade-in-up delay-100" id="grade-section">
-                    <h2 class="font-header text-xl font-bold text-white mb-5 tracking-tight flex items-center gap-3">
-                        <i class="fa-solid fa-calendar-days text-amber-500"></i> Grade de Programação
-                    </h2>
+                    <div class="flex items-center justify-between mb-5">
+                        <h2 class="font-header text-xl font-bold text-white flex items-center gap-3">
+                            <i class="fa-solid fa-calendar-days text-amber-500"></i> Grade de Programação
+                        </h2>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-400">Horário Local</p>
+                            <p class="text-lg font-bold text-amber-400 font-mono" id="currentTime">--:--</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Banner do Programa Atual -->
+                    <div id="currentProgramBanner" class="mb-4 p-4 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-red-500/20 border border-amber-500/40 rounded-xl backdrop-blur animate-pulse-slow">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
+                                <i class="fa-solid fa-broadcast-tower text-xl text-white"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="text-xs text-amber-300 font-bold uppercase tracking-wider">Programa Atual</p>
+                                <p class="text-base font-bold text-white" id="currentProgramName">Carregando...</p>
+                                <p class="text-xs text-slate-300" id="currentProgramTime">--:--</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                                <span class="text-xs font-bold text-green-400">AO VIVO</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Countdown para o próximo programa -->
+                    <div class="mb-4 p-3 bg-slate-900/80 border border-slate-700 rounded-lg text-center">
+                        <p class="text-xs text-slate-400 mb-1">Próximo programa em:</p>
+                        <p class="text-xl font-bold text-gradient font-mono" id="nextProgramCountdown">--:--:--</p>
+                    </div>
+                    
                     <div class="space-y-3">
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-amber-500 transition-all duration-300 cursor-pointer group">
-                            <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-amber-500/50 transition-all duration-300 group-hover:scale-110">
+                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-amber-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Manhã Animada MOC', '06:00 - 10:00', 'O melhor forró para começar o dia com energia! Músicas animadas, notícias e muita diversão.', 'Manhã')">
+                            <div class="absolute inset-0 bg-gradient-to-r from-amber-500/0 to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-amber-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
                                 <i class="fa-solid fa-sun text-2xl text-slate-950"></i>
                             </div>
-                            <div class="flex-grow">
+                            <div class="flex-grow relative z-10">
                                 <p class="text-sm font-bold text-white">Manhã Animada MOC</p>
                                 <p class="text-xs text-slate-400">06:00 - 10:00 • O melhor para começar o dia</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">🎵 Forró Animado</span>
+                                    <span class="text-[10px] bg-orange-500/20 text-orange-300 px-2 py-0.5 rounded-full">☀️ Manhã</span>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden" id="prog-manha">NO AR</span>
+                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-manha">NO AR</span>
                         </div>
                         
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-blue-500 transition-all duration-300 cursor-pointer group">
-                            <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300 group-hover:scale-110">
+                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-blue-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Forró no Trabalho', '10:00 - 14:00', 'Trilha sonora perfeita para o seu expediente! Forró tranquilo e produtivo.', 'Tarde')">
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
                                 <i class="fa-solid fa-briefcase text-2xl text-white"></i>
                             </div>
-                            <div class="flex-grow">
+                            <div class="flex-grow relative z-10">
                                 <p class="text-sm font-bold text-white">Forró no Trabalho</p>
                                 <p class="text-xs text-slate-400">10:00 - 14:00 • Trilha sonora do seu expediente</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">💼 Trabalho</span>
+                                    <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full">🎶 Relaxante</span>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden" id="prog-tarde">NO AR</span>
+                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-tarde">NO AR</span>
                         </div>
                         
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-purple-500 transition-all duration-300 cursor-pointer group">
-                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300 group-hover:scale-110">
+                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-purple-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Noite do Forró', '14:00 - 20:00', 'Os clássicos do forró que marcaram época! Xote, baião e muito mais.', 'Noite')">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
                                 <i class="fa-solid fa-moon text-2xl text-white"></i>
                             </div>
-                            <div class="flex-grow">
+                            <div class="flex-grow relative z-10">
                                 <p class="text-sm font-bold text-white">Noite do Forró</p>
                                 <p class="text-xs text-slate-400">14:00 - 20:00 • Os clássicos do forró</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full"> Noite</span>
+                                    <span class="text-[10px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full">⭐ Clássicos</span>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden" id="prog-noite">NO AR</span>
+                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-noite">NO AR</span>
                         </div>
                         
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-red-500 transition-all duration-300 cursor-pointer group">
-                            <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-red-500/50 transition-all duration-300 group-hover:scale-110">
+                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-red-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Madrugada VIP', '20:00 - 06:00', 'Sucessos sem parar! A melhor seleção para sua madrugada.', 'Madrugada')">
+                            <div class="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-red-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
                                 <i class="fa-solid fa-star text-2xl text-white"></i>
                             </div>
-                            <div class="flex-grow">
+                            <div class="flex-grow relative z-10">
                                 <p class="text-sm font-bold text-white">Madrugada VIP</p>
                                 <p class="text-xs text-slate-400">20:00 - 06:00 • Sucessos sem parar</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded-full">🌟 VIP</span>
+                                    <span class="text-[10px] bg-orange-500/20 text-orange-300 px-2 py-0.5 rounded-full">🔥 Sucessos</span>
+                                </div>
                             </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden" id="prog-madrugada">NO AR</span>
+                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-madrugada">NO AR</span>
                         </div>
                     </div>
                 </div>
@@ -1149,6 +1200,91 @@
             }
         }
 
+        // Função para mostrar detalhes do programa
+        function showProgramDetails(name, time, description, period) {
+            showToast(`📻 ${name}: ${description}`, 4000);
+        }
+
+        // Atualizar relógio local
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const clockElement = document.getElementById('currentTime');
+            if (clockElement) {
+                clockElement.textContent = `${hours}:${minutes}`;
+            }
+        }
+
+        // Atualizar banner do programa atual
+        function updateCurrentProgramBanner() {
+            const hour = new Date().getHours();
+            let programName = '';
+            let programTime = '';
+            
+            if (hour >= 6 && hour < 10) {
+                programName = 'Manhã Animada MOC';
+                programTime = '06:00 - 10:00';
+            } else if (hour >= 10 && hour < 14) {
+                programName = 'Forró no Trabalho';
+                programTime = '10:00 - 14:00';
+            } else if (hour >= 14 && hour < 20) {
+                programName = 'Noite do Forró';
+                programTime = '14:00 - 20:00';
+            } else {
+                programName = 'Madrugada VIP';
+                programTime = '20:00 - 06:00';
+            }
+            
+            const nameElement = document.getElementById('currentProgramName');
+            const timeElement = document.getElementById('currentProgramTime');
+            
+            if (nameElement) nameElement.textContent = programName;
+            if (timeElement) timeElement.textContent = programTime;
+        }
+
+        // Countdown para o próximo programa
+        function updateNextProgramCountdown() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+            
+            let nextProgramHour = 0;
+            
+            // Determina a hora do próximo programa
+            if (hour < 6) {
+                nextProgramHour = 6; // Manhã às 06:00
+            } else if (hour < 10) {
+                nextProgramHour = 10; // Trabalho às 10:00
+            } else if (hour < 14) {
+                nextProgramHour = 14; // Noite às 14:00
+            } else if (hour < 20) {
+                nextProgramHour = 20; // Madrugada às 20:00
+            } else {
+                nextProgramHour = 30; // Manhã do próximo dia (24 + 6)
+            }
+            
+            // Calcula segundos restantes
+            const currentSeconds = hour * 3600 + minute * 60 + second;
+            const nextProgramSeconds = nextProgramHour * 3600;
+            let remainingSeconds = nextProgramSeconds - currentSeconds;
+            
+            if (remainingSeconds <= 0) {
+                remainingSeconds += 24 * 3600; // Próximo dia
+            }
+            
+            const hoursLeft = Math.floor(remainingSeconds / 3600);
+            const minutesLeft = Math.floor((remainingSeconds % 3600) / 60);
+            const secondsLeft = remainingSeconds % 60;
+            
+            const countdownElement = document.getElementById('nextProgramCountdown');
+            if (countdownElement) {
+                countdownElement.textContent = 
+                    `${hoursLeft.toString().padStart(2, '0')}:${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
+            }
+        }
+
         // Função para buscar estatísticas reais do stream Icecast/Shoutcast
         async function fetchRealListeners() {
             try {
@@ -1272,6 +1408,20 @@
             // Tenta autoplay
             attemptAutoPlay();
             console.log('✅ attemptAutoPlay() chamado');
+            
+            // Inicializar relógio e countdown
+            updateClock();
+            updateCurrentProgramBanner();
+            updateNextProgramCountdown();
+            
+            // Atualiza relógio a cada segundo
+            setInterval(updateClock, 1000);
+            
+            // Atualiza countdown a cada segundo
+            setInterval(updateNextProgramCountdown, 1000);
+            
+            // Atualiza banner do programa a cada minuto
+            setInterval(updateCurrentProgramBanner, 60000);
             
             // Busca contador REAL imediatamente
             fetchRealListeners();
