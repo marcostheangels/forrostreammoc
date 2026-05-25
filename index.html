@@ -916,223 +916,218 @@
         let currentSongTitle = '';
         let currentSongArtist = '';
 
-        // Contador Global de Ouvintes (usando API externa para contador compartilhado)
+        // Contador Global de Ouvintes - Sistema Híbrido Robusto
         let globalTotalVisitors = 0;
+        let lastSyncTime = 0;
+        
+        // Sistema de Broadcast Channel para sincronização entre abas/janelas do MESMO navegador
+        let broadcastChannel = null;
+        try {
+            if ('BroadcastChannel' in window) {
+                broadcastChannel = new BroadcastChannel('forro_stream_counter');
+                broadcastChannel.onmessage = (event) => {
+                    if (event.data && event.data.type === 'counter_update') {
+                        console.log('📡 Recebido update via BroadcastChannel:', event.data.value);
+                        globalTotalVisitors = event.data.value;
+                        animateCounter('totalVisitors', globalTotalVisitors);
+                        lastSyncTime = Date.now();
+                    }
+                };
+                console.log('✅ BroadcastChannel inicializado');
+            }
+        } catch (e) {
+            console.log('⚠️ BroadcastChannel não suportado');
+        }
         
         async function initializeVisitorCounter() {
-            try {
-                console.log('📊 Buscando contador global de ouvintes...');
-                
-                // Usando proxy CORS para acessar a API
-                const namespace = 'forrostreammoc-shop';
-                const key = 'total_listeners';
-                const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-                
-                // Tenta múltiplos proxies CORS
-                const proxyUrls = [
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`,
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`
-                ];
-                
-                let apiSuccess = false;
-                
-                for (const proxyUrl of proxyUrls) {
+            console.log('📊 Inicializando contador global...');
+            
+            // Estratégia: Tenta API, se falhar usa localStorage + BroadcastChannel
+            const namespace = 'forrostreammoc-shop';
+            const key = 'total_listeners';
+            const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
+            
+            // Tenta múltiplos proxies CORS
+            const proxyUrls = [
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`,
+                `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`
+            ];
+            
+            let apiSuccess = false;
+            
+            for (const proxyUrl of proxyUrls) {
+                try {
+                    console.log(`Tentando proxy: ${proxyUrl.substring(0, 60)}...`);
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 4000);
+                    
+                    const response = await fetch(proxyUrl, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) continue;
+                    
+                    const text = await response.text();
+                    
                     try {
-                        console.log(`Tentando proxy: ${proxyUrl.substring(0, 60)}...`);
+                        const data = JSON.parse(text);
                         
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 5000);
-                        
-                        const response = await fetch(proxyUrl, { signal: controller.signal });
-                        clearTimeout(timeoutId);
-                        
-                        if (!response.ok) continue;
-                        
-                        const data = await response.json();
-                        
-                        if (data.value !== undefined) {
+                        if (data.value !== undefined && data.value > 0) {
                             globalTotalVisitors = data.value;
-                            console.log('✅ Contador global obtido via proxy:', globalTotalVisitors);
+                            console.log('✅ Contador obtido da API:', globalTotalVisitors);
                             apiSuccess = true;
+                            
+                            // Salva no localStorage como backup
+                            localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
                             break;
                         }
-                    } catch (err) {
-                        console.log(`Proxy falhou:`, err.message);
+                    } catch (e) {
                         continue;
                     }
+                } catch (err) {
+                    continue;
                 }
-                
-                if (!apiSuccess) {
-                    throw new Error('Todos os proxies falharam');
-                }
-                
-                // Atualiza a interface com animação
-                animateCounter('totalVisitors', globalTotalVisitors);
-                
-                // Inicia sincronização periódica a cada 30 segundos
-                startCounterSync();
-                
-            } catch (error) {
-                console.error('❌ Erro ao buscar contador global:', error);
-                
-                // Fallback: usa localStorage
-                globalTotalVisitors = parseInt(localStorage.getItem('forro_local_total') || '0');
-                animateCounter('totalVisitors', globalTotalVisitors);
-                console.log('⚠️ Usando fallback localStorage:', globalTotalVisitors);
             }
+            
+            // Se API falhou, usa localStorage
+            if (!apiSuccess) {
+                const localValue = parseInt(localStorage.getItem('forro_local_total') || '0');
+                globalTotalVisitors = localValue;
+                console.log('⚠️ Usando localStorage:', globalTotalVisitors);
+            }
+            
+            // Atualiza interface
+            animateCounter('totalVisitors', globalTotalVisitors);
+            lastSyncTime = Date.now();
+            
+            // Inicia sincronização
+            startCounterSync();
         }
 
         // Sincroniza contador periodicamente entre todos os dispositivos
         function startCounterSync() {
-            // Primeira sincronização após 5 segundos
+            // Primeira sincronização após 3 segundos (mais rápida)
             setTimeout(async () => {
-                try {
-                    const namespace = 'forrostreammoc-shop';
-                    const key = 'total_listeners';
-                    const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-                    
-                    console.log('🔄 Primeira sincronização rápida...');
-                    
-                    // Tenta com proxy CORS
-                    const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`;
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const response = await fetch(proxyUrl, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    
-                    const data = await response.json();
-                    
-                    if (data.value !== undefined) {
-                        const newTotal = data.value;
-                        
-                        if (newTotal !== globalTotalVisitors) {
-                            globalTotalVisitors = newTotal;
-                            animateCounter('totalVisitors', globalTotalVisitors);
-                            console.log('✅ Primeira sincronização:', globalTotalVisitors);
-                        }
-                    }
-                } catch (error) {
-                    console.log('⚠️ Erro na primeira sincronização:', error.message);
-                }
-            }, 5000);
+                await syncCounterFromAPI();
+            }, 3000);
             
-            // Sincronização periódica a cada 30 segundos
+            // Sincronização periódica a cada 15 segundos (mais frequente)
             setInterval(async () => {
-                try {
-                    const namespace = 'forrostreammoc-shop';
-                    const key = 'total_listeners';
-                    const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
+                await syncCounterFromAPI();
+            }, 15000); // A cada 15 segundos
+        }
+        
+        // Função auxiliar para sincronizar contador da API
+        async function syncCounterFromAPI() {
+            try {
+                const namespace = 'forrostreammoc-shop';
+                const key = 'total_listeners';
+                const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
+                
+                console.log('🔄 Sincronizando contador...');
+                
+                // Tenta com proxy CORS
+                const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`;
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                
+                const response = await fetch(proxyUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const text = await response.text();
+                const data = JSON.parse(text);
+                
+                if (data.value !== undefined) {
+                    const newTotal = data.value;
                     
-                    console.log('🔄 Sincronizando contador total...');
-                    
-                    // Tenta com proxy CORS
-                    const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`;
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const response = await fetch(proxyUrl, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    
-                    const data = await response.json();
-                    
-                    if (data.value !== undefined) {
-                        const newTotal = data.value;
+                    // Atualiza se mudou
+                    if (newTotal !== globalTotalVisitors) {
+                        globalTotalVisitors = newTotal;
+                        animateCounter('totalVisitors', globalTotalVisitors);
+                        lastSyncTime = Date.now();
+                        console.log('✅ Contador sincronizado:', globalTotalVisitors);
                         
-                        // Só atualiza se mudou
-                        if (newTotal !== globalTotalVisitors) {
-                            globalTotalVisitors = newTotal;
-                            animateCounter('totalVisitors', globalTotalVisitors);
-                            console.log('✅ Total sincronizado:', globalTotalVisitors);
-                        } else {
-                            console.log('ℹ️ Contador inalterado:', globalTotalVisitors);
+                        // Salva no localStorage
+                        localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
+                        
+                        // Envia update via BroadcastChannel
+                        if (broadcastChannel) {
+                            broadcastChannel.postMessage({
+                                type: 'counter_update',
+                                value: globalTotalVisitors,
+                                timestamp: Date.now()
+                            });
                         }
+                    } else {
+                        console.log('ℹ️ Contador inalterado:', globalTotalVisitors);
                     }
-                } catch (error) {
-                    console.log('⚠️ Erro ao sincronizar:', error.message);
                 }
-            }, 30000); // A cada 30 segundos
+            } catch (error) {
+                console.log('⚠️ Erro ao sincronizar:', error.message);
+            }
         }
 
         // Incrementa contador quando o usuário dá PLAY
         async function incrementListenerCounter() {
+            console.log('🎵 Usuário deu PLAY - incrementando contador...');
+            
+            const namespace = 'forrostreammoc-shop';
+            const key = 'total_listeners';
+            
+            // Tenta incrementar na API
+            let apiIncrementSuccess = false;
+            
             try {
-                console.log('🎵 Usuário deu PLAY - incrementando contador...');
+                const hitUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
+                const proxyHitUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hitUrl)}`;
                 
-                const namespace = 'forrostreammoc-shop';
-                const key = 'total_listeners';
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
                 
-                // Primeiro, sincroniza com a API para obter valor atual
-                try {
-                    console.log('📡 Sincronizando antes de incrementar...');
-                    
-                    const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-                    const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`;
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const syncResponse = await fetch(proxyUrl, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if (syncResponse.ok) {
-                        const syncData = await syncResponse.json();
-                        
-                        if (syncData.value !== undefined) {
-                            globalTotalVisitors = syncData.value;
-                            console.log('✅ Valor sincronizado antes do incremento:', globalTotalVisitors);
-                        }
-                    }
-                } catch (syncError) {
-                    console.warn('⚠️ Erro na sincronização prévia:', syncError.message);
-                }
+                const response = await fetch(proxyHitUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 
-                // SEMPRE tenta incrementar na API primeiro (fonte principal)
-                try {
-                    console.log('📡 Incrementando na API global...');
-                    
-                    const hitUrl = `https://api.countapi.xyz/hit/${namespace}/${key}`;
-                    const proxyHitUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(hitUrl)}`;
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const response = await fetch(proxyHitUrl, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    
-                    const data = await response.json();
+                if (response.ok) {
+                    const text = await response.text();
+                    const data = JSON.parse(text);
                     
                     if (data.value !== undefined) {
                         globalTotalVisitors = data.value;
-                        console.log('✅ Total da API após incremento:', globalTotalVisitors);
+                        apiIncrementSuccess = true;
+                        console.log('✅ Incrementado via API:', globalTotalVisitors);
                     }
-                } catch (apiError) {
-                    console.warn('⚠️ API falhou, usando localStorage:', apiError.message);
-                    
-                    // Fallback: usa localStorage
-                    let localTotal = parseInt(localStorage.getItem('forro_local_total') || '0');
-                    localTotal++;
-                    localStorage.setItem('forro_local_total', localTotal.toString());
-                    globalTotalVisitors = localTotal;
                 }
-                
-                // Atualiza a interface
-                animateCounter('totalVisitors', globalTotalVisitors);
-                
-                console.log(`📊 Contador total atualizado: ${globalTotalVisitors}`);
-                
-            } catch (error) {
-                console.error('❌ Erro ao incrementar contador:', error);
+            } catch (apiError) {
+                console.warn('⚠️ API falhou:', apiError.message);
             }
+            
+            // Se API falhou, incrementa localmente
+            if (!apiIncrementSuccess) {
+                let localTotal = parseInt(localStorage.getItem('forro_local_total') || '0');
+                localTotal++;
+                localStorage.setItem('forro_local_total', localTotal.toString());
+                globalTotalVisitors = localTotal;
+                console.log('✅ Incrementado localmente:', globalTotalVisitors);
+            }
+            
+            // Atualiza interface
+            animateCounter('totalVisitors', globalTotalVisitors);
+            lastSyncTime = Date.now();
+            
+            // Envia update para outras abas/janelas via BroadcastChannel
+            if (broadcastChannel) {
+                broadcastChannel.postMessage({
+                    type: 'counter_update',
+                    value: globalTotalVisitors,
+                    timestamp: Date.now()
+                });
+                console.log('📡 Enviado update via BroadcastChannel');
+            }
+            
+            console.log(`📊 Contador total: ${globalTotalVisitors}`);
         }
 
         // Função para sincronização manual do contador
@@ -1140,65 +1135,12 @@
             console.log('🔄 Sincronização manual solicitada...');
             showToast('🔄 Atualizando contador...');
             
-            try {
-                const namespace = 'forrostreammoc-shop';
-                const key = 'total_listeners';
-                const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-                
-                // Tenta múltiplos proxies CORS
-                const proxyUrls = [
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`,
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`
-                ];
-                
-                let apiSuccess = false;
-                
-                for (const proxyUrl of proxyUrls) {
-                    try {
-                        console.log(`Tentando proxy manual: ${proxyUrl.substring(0, 60)}...`);
-                        
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 5000);
-                        
-                        const response = await fetch(proxyUrl, { signal: controller.signal });
-                        clearTimeout(timeoutId);
-                        
-                        if (!response.ok) continue;
-                        
-                        const data = await response.json();
-                        
-                        if (data.value !== undefined) {
-                            globalTotalVisitors = data.value;
-                            animateCounter('totalVisitors', globalTotalVisitors);
-                            showToast('✅ Contador atualizado com sucesso!');
-                            console.log('✅ Contador manual sincronizado:', globalTotalVisitors);
-                            apiSuccess = true;
-                            break;
-                        }
-                    } catch (err) {
-                        console.log(`Proxy manual falhou:`, err.message);
-                        continue;
-                    }
-                }
-                
-                if (!apiSuccess) {
-                    throw new Error('Todos os proxies falharam');
-                }
-            } catch (error) {
-                console.error('❌ Erro na sincronização manual:', error);
-                
-                // Fallback: tenta usar valor do localStorage
-                const localValue = parseInt(localStorage.getItem('forro_local_total') || '0');
-                if (localValue > 0) {
-                    globalTotalVisitors = localValue;
-                    animateCounter('totalVisitors', globalTotalVisitors);
-                    showToast('⚠️ Usando valor local (API indisponível)');
-                    console.log('⚠️ Fallback para localStorage:', localValue);
-                } else {
-                    showToast('❌ Erro ao atualizar contador - API indisponível');
-                }
-            }
+            await syncCounterFromAPI();
+            
+            // Mostra feedback
+            setTimeout(() => {
+                showToast('✅ Contador atualizado!');
+            }, 500);
         }
 
         // Animação suave do contador
@@ -1670,34 +1612,7 @@
             
             // Sincronização extra após 2 segundos para garantir valor atualizado
             setTimeout(async () => {
-                try {
-                    const namespace = 'forrostreammoc-shop';
-                    const key = 'total_listeners';
-                    const apiUrl = `https://api.countapi.xyz/get/${namespace}/${key}`;
-                    
-                    console.log('🔄 Verificação inicial do contador...');
-                    
-                    // Tenta com proxy CORS
-                    const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`;
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const response = await fetch(proxyUrl, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    
-                    const data = await response.json();
-                    
-                    if (data.value !== undefined && data.value !== globalTotalVisitors) {
-                        globalTotalVisitors = data.value;
-                        animateCounter('totalVisitors', globalTotalVisitors);
-                        console.log('✅ Contador corrigido na inicialização:', globalTotalVisitors);
-                    }
-                } catch (error) {
-                    console.log('⚠️ Erro na verificação inicial:', error.message);
-                }
+                await syncCounterFromAPI();
             }, 2000);
             
             // Tenta autoplay
