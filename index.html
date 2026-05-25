@@ -1226,6 +1226,10 @@
                             else if (text.includes('<body>') && text.includes(',')) {
                                 console.log('✅ Detectado formato 7.html');
                             }
+                            // Verifica se é HTML de status do Icecast (página visual)
+                            else if (text.includes('Icecast Server') && text.includes('Mountpoint')) {
+                                console.log('✅ Detectado HTML de Status do Icecast - extraindo dados...');
+                            }
                             // Ignora apenas páginas HTML completas de erro
                             else if (text.includes('<!DOCTYPE html>') && text.includes('Error')) {
                                 console.log('⚠️ Página de erro HTML, ignorando...');
@@ -1309,6 +1313,42 @@
                                     }
                                     
                                     console.log('⚠️ Não encontrou título no XML Icecast');
+                                }
+                                // Tenta extrair de HTML de Status do Icecast
+                                else if (text.includes('Icecast Server') && text.includes('Mountpoint')) {
+                                    console.log('🔍 Extraindo metadados do HTML de Status...');
+                                    
+                                    // Extrai "Currently playing" do HTML
+                                    const currentlyPlayingMatch = text.match(/Currently playing:[\s\S]*?<td[^>]*class="streamstats"[^>]*>([^<]*)<\/td>/i);
+                                    if (currentlyPlayingMatch && currentlyPlayingMatch[1]) {
+                                        const songTitle = currentlyPlayingMatch[1].trim();
+                                        // Verifica se não está vazio ou com &nbsp;
+                                        if (songTitle.length > 0 && songTitle !== '&nbsp;' && songTitle !== '') {
+                                            console.log('✅ Título encontrado no HTML (Currently playing):', songTitle);
+                                            parseAndDisplaySongTitle(songTitle);
+                                            metadataFound = true;
+                                            break;
+                                        } else {
+                                            console.log('⚠️ Currently playing está vazio, tentando playlist...');
+                                        }
+                                    }
+                                    
+                                    // Fallback: tenta extrair da playlist (primeira música tocando)
+                                    // Procura pela primeira música na tabela de playlist
+                                    const playlistRows = text.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g);
+                                    for (const row of playlistRows) {
+                                        const title = row[4].trim();
+                                        if (title && title.length > 0 && !title.includes('<')) {
+                                            console.log('✅ Título encontrado na playlist HTML:', title);
+                                            parseAndDisplaySongTitle(title);
+                                            metadataFound = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (metadataFound) break;
+                                    
+                                    console.log('⚠️ Não encontrou título no HTML de Status');
                                 }
                                 
                                 // Tenta formato 7.html
@@ -1600,6 +1640,22 @@
                                             realListenerCount = count;
                                             listenersFound = true;
                                             console.log('✅ Ouvintes globais via XML:', count);
+                                            break;
+                                        }
+                                    }
+                                }
+                                // Tenta extrair de HTML de Status do Icecast
+                                else if (text.includes('Icecast Server') && text.includes('Mountpoint')) {
+                                    console.log('🔍 Extraindo ouvintes do HTML de Status...');
+                                    
+                                    // Extrai "Listeners (current)" do HTML
+                                    const listenersMatch = text.match(/Listeners \(current\):[\s\S]*?<td[^>]*class="streamstats"[^>]*>(\d+)<\/td>/i);
+                                    if (listenersMatch && listenersMatch[1]) {
+                                        const count = parseInt(listenersMatch[1]);
+                                        if (!isNaN(count) && count >= 0) {
+                                            realListenerCount = count;
+                                            listenersFound = true;
+                                            console.log('✅ Ouvintes reais via HTML Status:', count);
                                             break;
                                         }
                                     }
