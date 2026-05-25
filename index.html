@@ -1266,6 +1266,9 @@
                     statusText.innerText = "Tocando Agora";
                     statusText.className = "text-xl font-semibold text-green-400 animate-pulse";
                     waveform.classList.remove('hidden');
+                    
+                    // Incrementa contador quando autoplay funciona
+                    incrementListenerCounter();
                 }
             } catch (error) {
                 // Autoplay bloqueado pelo navegador
