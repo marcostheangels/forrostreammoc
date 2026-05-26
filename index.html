@@ -1303,6 +1303,12 @@
             
             console.log('🔤 Texto original:', text);
             
+            // Se o texto já parece correto (não tem caracteres estranhos), retorna como está
+            if (!text.includes('Ã') && !text.includes('\ufffd')) {
+                console.log('✅ Texto já está em UTF-8 correto, sem necessidade de correção');
+                return text;
+            }
+            
             // Substitui caracteres com encoding errado (UTF-8 interpretado como Latin-1)
             const replacements = {
                 'Ã§': 'ç',
@@ -1318,9 +1324,7 @@
                 'Ãµ': 'õ',
                 'Ãœ': 'Ü',
                 'Ã': 'À',
-                'Ã±': 'ñ',
-                '': 'Â',  // Caractere de substituição comum
-                '\ufffd': 'Â'  // Unicode replacement character
+                'Ã±': 'ñ'
             };
             
             let fixed = text;
@@ -1331,6 +1335,9 @@
                     console.log(`   🔄 Corrigido: "${wrong}" -> "${correct}"`);
                 }
             }
+            
+            // Remove caracteres de substituição Unicode se ainda existirem
+            fixed = fixed.replace(/\ufffd/g, '');
             
             console.log('🔤 Texto corrigido:', fixed);
             return fixed;
