@@ -22,19 +22,20 @@ if (file_exists($nowPlayingFile)) {
     // Lê o arquivo como bytes brutos
     $content = file_get_contents($nowPlayingFile);
     if ($content && trim($content) !== '') {
-        // Remove BOM se existir
+        // Remove BOM se existir (UTF-8 BOM)
         if (substr($content, 0, 3) === "\xEF\xBB\xBF") {
             $content = substr($content, 3);
         }
         
-        // Tenta detectar encoding
+        // Detecta encoding e converte para UTF-8 se necessário
+        // RadioBOSS geralmente salva em Windows-1252/ANSI
         $encoding = mb_detect_encoding($content, ['UTF-8', 'Windows-1252', 'ISO-8859-1'], true);
         
-        // Só converte se NÃO for UTF-8
-        if ($encoding && $encoding !== 'UTF-8' && $encoding !== false) {
+        // Se detectou Windows-1252 ou ISO-8859-1, converte para UTF-8
+        if ($encoding === 'Windows-1252' || $encoding === 'ISO-8859-1') {
             $content = mb_convert_encoding($content, 'UTF-8', $encoding);
         }
-        // Se já é UTF-8 ou não conseguiu detectar, usa como está
+        // Se já é UTF-8 ou não detectou, usa como está
         
         echo trim($content);
         exit;

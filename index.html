@@ -1336,9 +1336,6 @@
                 }
             }
             
-            // Remove caracteres de substituição Unicode se ainda existirem
-            fixed = fixed.replace(/\ufffd/g, '');
-            
             console.log('🔤 Texto corrigido:', fixed);
             return fixed;
         }
