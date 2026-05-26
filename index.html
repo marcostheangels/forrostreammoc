@@ -1198,14 +1198,16 @@
         async function fetchNowPlaying() {
             try {
                 // Usa metadata.php como proxy (lê nowplaying.txt localmente)
-                const metadataProxyUrl = 'https://forrostreammoc.shop/metadata.php';  // ← MUDE PARA SUA URL REAL
+                // PRIORIZA servidor Python local, fallback para metadata.php
+                const nowPlayingServerUrl = 'https://usu300opw28m.shares.zrok.io:8081/nowplaying.txt';  // Servidor Python via Zrok
+                const metadataProxyUrl = 'https://forrostreammoc.shop/metadata.php';  // Fallback
                 
-                // Tenta acessar o proxy PHP diretamente (sem CORS)
-                console.log('🔍 Buscando metadados via metadata.php...');
+                // Tenta acessar o servidor Python PRIMEIRO (mais rápido e em tempo real)
+                console.log('🔍 Buscando metadados via servidor Python...');
                 
                 try {
                     // Adiciona timestamp para evitar cache
-                    const urlWithTimestamp = `${metadataProxyUrl}?t=${Date.now()}`;
+                    const urlWithTimestamp = `${nowPlayingServerUrl}?t=${Date.now()}`;
                     const response = await fetch(urlWithTimestamp, { 
                         method: 'GET',
                         cache: 'no-cache'
@@ -1217,25 +1219,25 @@
                         const decoder = new TextDecoder('utf-8');
                         const text = decoder.decode(buffer);
                         
-                        console.log('📄 Resposta do metadata.php:', text.substring(0, 200));
+                        console.log('📄 Resposta do servidor Python:', text.substring(0, 200));
                         
                         if (text && text.trim().length > 5 && !text.includes('error') && !text.includes('Error')) {
                             const songTitle = text.trim();
-                            console.log('✅ Título encontrado via metadata.php:', songTitle);
+                            console.log('✅ Título encontrado via servidor Python:', songTitle);
                             parseAndDisplaySongTitle(songTitle);
                             return; // Sucesso, sai da função
                         } else {
-                            console.log('⚠️ metadata.php retornou vazio ou erro');
+                            console.log('⚠️ Servidor Python retornou vazio ou erro');
                         }
                     } else {
-                        console.log('⚠️ Erro HTTP:', response.status);
+                        console.log('⚠️ Erro HTTP do servidor Python:', response.status);
                     }
                 } catch (err) {
-                    console.log('❌ Erro ao acessar metadata.php:', err.message);
+                    console.log('❌ Erro ao acessar servidor Python:', err.message);
                 }
                 
-                // Fallback: tenta proxies CORS se metadata.php falhar
-                console.log('⚠️ metadata.php falhou, tentando fallback com proxies CORS...');
+                // Fallback: tenta metadata.php se servidor Python falhar
+                console.log('⚠️ Servidor Python falhou, tentando metadata.php...');
                 
                 const streamUrl = 'https://usu300opw28m.shares.zrok.io/status-json.xsl';
                 const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
@@ -1527,6 +1529,8 @@
         function fixUTF8Encoding(text) {
             if (!text) return text;
             
+            console.log('🔤 Texto original:', text);
+            
             // Substitui caracteres com encoding errado
             const replacements = {
                 'Ã§': 'ç',
@@ -1547,9 +1551,14 @@
             
             let fixed = text;
             for (const [wrong, correct] of Object.entries(replacements)) {
+                const before = fixed;
                 fixed = fixed.split(wrong).join(correct);
+                if (before !== fixed) {
+                    console.log(`   🔄 Corrigido: "${wrong}" -> "${correct}"`);
+                }
             }
             
+            console.log('🔤 Texto corrigido:', fixed);
             return fixed;
         }
 
