@@ -1192,13 +1192,19 @@
                 console.log('🔍 Buscando metadados via metadata.php...');
                 
                 try {
-                    const response = await fetch(metadataProxyUrl, { 
+                    // Adiciona timestamp para evitar cache
+                    const urlWithTimestamp = `${metadataProxyUrl}?t=${Date.now()}`;
+                    const response = await fetch(urlWithTimestamp, { 
                         method: 'GET',
                         cache: 'no-cache'
                     });
                     
                     if (response.ok) {
-                        const text = await response.text();
+                        // Lê como array buffer e converte para UTF-8 corretamente
+                        const buffer = await response.arrayBuffer();
+                        const decoder = new TextDecoder('utf-8');
+                        const text = decoder.decode(buffer);
+                        
                         console.log('📄 Resposta do metadata.php:', text.substring(0, 200));
                         
                         if (text && text.trim().length > 5 && !text.includes('error') && !text.includes('Error')) {
@@ -1236,9 +1242,11 @@
                 
                 for (const proxyUrl of proxyUrls) {
                     try {
-                        console.log(`Tentando proxy: ${proxyUrl.substring(0, 80)}...`);
+                        // Adiciona timestamp para evitar cache do proxy
+                        const urlWithTimestamp = `${proxyUrl}&t=${Date.now()}`;
+                        console.log(`Tentando proxy: ${urlWithTimestamp.substring(0, 80)}...`);
                         
-                        const response = await fetch(proxyUrl, { 
+                        const response = await fetch(urlWithTimestamp, { 
                             method: 'GET',
                             mode: 'cors',
                             cache: 'no-cache'
@@ -1247,7 +1255,10 @@
                         console.log(`Status: ${response.status} ${response.statusText}`);
                         
                         if (response.ok) {
-                            const text = await response.text();
+                            // Lê como array buffer e converte para UTF-8 corretamente
+                            const buffer = await response.arrayBuffer();
+                            const decoder = new TextDecoder('utf-8');
+                            const text = decoder.decode(buffer);
                             
                             console.log('📄 Resposta recebida (primeiros 500 chars):', text.substring(0, 500));
                             
@@ -1500,8 +1511,41 @@
             }
         }
 
+        // Corrige problemas de encoding UTF-8
+        function fixUTF8Encoding(text) {
+            if (!text) return text;
+            
+            // Substitui caracteres com encoding errado
+            const replacements = {
+                'Ã§': 'ç',
+                'Ã£': 'ã',
+                'Ã¡': 'á',
+                'Ã©': 'é',
+                'Ã­': 'í',
+                'Ã³': 'ó',
+                'Ãº': 'ú',
+                'Ã¢': 'â',
+                'Ãª': 'ê',
+                'Ã´': 'ô',
+                'Ãµ': 'õ',
+                'Ãœ': 'Ü',
+                'Ã': 'À',
+                'Ã±': 'ñ'
+            };
+            
+            let fixed = text;
+            for (const [wrong, correct] of Object.entries(replacements)) {
+                fixed = fixed.split(wrong).join(correct);
+            }
+            
+            return fixed;
+        }
+
         // Parseia e exibe o título da música
         function parseAndDisplaySongTitle(title) {
+            // Corrige encoding UTF-8 se necessário
+            title = fixUTF8Encoding(title);
+            
             // Verifica se é conteúdo HTML e ignora
             if (title.includes('<!DOCTYPE') || title.includes('<html') || title.includes('Icecast Server') || title.includes('Status</th>') || title.includes('Mountpoint')) {
                 console.log('⚠️ Ignorando título HTML inválido');
@@ -1922,9 +1966,9 @@
             setInterval(fetchRealListeners, 10000);
             console.log('⏱️ Intervalo fetchRealListeners configurado (10s)');
             
-            // Atualiza música tocando a cada 5 segundos (mais frequente)
-            setInterval(fetchNowPlaying, 5000);
-            console.log('⏱️ Intervalo fetchNowPlaying configurado (5s)');
+            // Atualiza música tocando a cada 2 segundos (MAIS RÁPIDO)
+            setInterval(fetchNowPlaying, 2000);
+            console.log('⏱️ Intervalo fetchNowPlaying configurado (2s)');
             
             // Verificar programa atual a cada minuto
             setInterval(updateCurrentProgram, 60000);
