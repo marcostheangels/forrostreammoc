@@ -1197,44 +1197,8 @@
         // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
-                // PRIORIZA metadata.php (mais rápido e confiável)
-                const metadataProxyUrl = 'https://forrostreammoc.shop/metadata.php';
-                
-                console.log('🔍 Buscando metadados via metadata.php...');
-                
-                try {
-                    // Adiciona timestamp para evitar cache
-                    const urlWithTimestamp = `${metadataProxyUrl}?t=${Date.now()}`;
-                    const response = await fetch(urlWithTimestamp, { 
-                        method: 'GET',
-                        cache: 'no-cache'
-                    });
-                    
-                    if (response.ok) {
-                        // Lê como array buffer e converte para UTF-8 corretamente
-                        const buffer = await response.arrayBuffer();
-                        const decoder = new TextDecoder('utf-8');
-                        const text = decoder.decode(buffer);
-                        
-                        console.log('📄 Resposta do metadata.php:', text.substring(0, 200));
-                        
-                        if (text && text.trim().length > 5 && !text.includes('error') && !text.includes('Error')) {
-                            const songTitle = text.trim();
-                            console.log('✅ Título encontrado via metadata.php:', songTitle);
-                            parseAndDisplaySongTitle(songTitle);
-                            return; // Sucesso, sai da função
-                        } else {
-                            console.log('⚠️ metadata.php retornou vazio ou erro');
-                        }
-                    } else {
-                        console.log('⚠️ Erro HTTP do metadata.php:', response.status);
-                    }
-                } catch (err) {
-                    console.log('❌ Erro ao acessar metadata.php:', err.message);
-                }
-                
-                // Fallback rápido: tenta APENAS o proxy mais rápido (codetabs)
-                console.log('⚠️ metadata.php falhou, tentando fallback rápido...');
+                // Para GitHub Pages: usa APENAS proxies CORS (sem PHP)
+                console.log('🔍 Buscando metadados via proxy CORS...');
                 
                 const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
                 const fastProxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}&t=${Date.now()}`;
@@ -1258,7 +1222,7 @@
                             if (currentlyPlayingMatch && currentlyPlayingMatch[1] && currentlyPlayingMatch[1].trim().length > 0) {
                                 const songTitle = currentlyPlayingMatch[1].trim();
                                 if (songTitle !== '&nbsp;' && songTitle !== '') {
-                                    console.log('✅ Título encontrado via fallback:', songTitle);
+                                    console.log('✅ Título encontrado:', songTitle);
                                     parseAndDisplaySongTitle(songTitle);
                                     return;
                                 }
@@ -1286,10 +1250,10 @@
                         }
                     }
                 } catch (err) {
-                    console.log('❌ Fallback também falhou:', err.message);
+                    console.log('❌ Erro ao buscar metadados:', err.message);
                 }
                 
-                // Se tudo falhar, mantém o título anterior ou mostra padrão
+                // Se falhar, mantém o título anterior
                 console.log('⚠️ Não foi possível obter metadados, mantendo título atual');
                 
             } catch (error) {
