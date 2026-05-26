@@ -1197,17 +1197,14 @@
         // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
-                // Usa metadata.php como proxy (lê nowplaying.txt localmente)
-                // PRIORIZA servidor Python local, fallback para metadata.php
-                const nowPlayingServerUrl = 'https://usu300opw28m.shares.zrok.io:8081/nowplaying.txt';  // Servidor Python via Zrok
-                const metadataProxyUrl = 'https://forrostreammoc.shop/metadata.php';  // Fallback
+                // PRIORIZA metadata.php (mais rápido e confiável)
+                const metadataProxyUrl = 'https://forrostreammoc.shop/metadata.php';
                 
-                // Tenta acessar o servidor Python PRIMEIRO (mais rápido e em tempo real)
-                console.log('🔍 Buscando metadados via servidor Python...');
+                console.log('🔍 Buscando metadados via metadata.php...');
                 
                 try {
                     // Adiciona timestamp para evitar cache
-                    const urlWithTimestamp = `${nowPlayingServerUrl}?t=${Date.now()}`;
+                    const urlWithTimestamp = `${metadataProxyUrl}?t=${Date.now()}`;
                     const response = await fetch(urlWithTimestamp, { 
                         method: 'GET',
                         cache: 'no-cache'
@@ -1219,309 +1216,84 @@
                         const decoder = new TextDecoder('utf-8');
                         const text = decoder.decode(buffer);
                         
-                        console.log('📄 Resposta do servidor Python:', text.substring(0, 200));
+                        console.log('📄 Resposta do metadata.php:', text.substring(0, 200));
                         
                         if (text && text.trim().length > 5 && !text.includes('error') && !text.includes('Error')) {
                             const songTitle = text.trim();
-                            console.log('✅ Título encontrado via servidor Python:', songTitle);
+                            console.log('✅ Título encontrado via metadata.php:', songTitle);
                             parseAndDisplaySongTitle(songTitle);
                             return; // Sucesso, sai da função
                         } else {
-                            console.log('⚠️ Servidor Python retornou vazio ou erro');
+                            console.log('⚠️ metadata.php retornou vazio ou erro');
                         }
                     } else {
-                        console.log('⚠️ Erro HTTP do servidor Python:', response.status);
+                        console.log('⚠️ Erro HTTP do metadata.php:', response.status);
                     }
                 } catch (err) {
-                    console.log('❌ Erro ao acessar servidor Python:', err.message);
+                    console.log('❌ Erro ao acessar metadata.php:', err.message);
                 }
                 
-                // Fallback: tenta metadata.php se servidor Python falhar
-                console.log('⚠️ Servidor Python falhou, tentando metadata.php...');
+                // Fallback rápido: tenta APENAS o proxy mais rápido (codetabs)
+                console.log('⚠️ metadata.php falhou, tentando fallback rápido...');
                 
-                const streamUrl = 'https://usu300opw28m.shares.zrok.io/status-json.xsl';
                 const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
-                const streamUrl7html = 'https://usu300opw28m.shares.zrok.io/7.html';
+                const fastProxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}&t=${Date.now()}`;
                 
-                const proxyUrls = [
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}`,
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrl7html)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(streamUrlXML)}`
-                ];
-                
-                console.log('🔍 Iniciando busca de metadados via proxy CORS...');
-                console.log('URL original:', streamUrl);
-                
-                let metadataFound = false;
-                
-                for (const proxyUrl of proxyUrls) {
-                    try {
-                        // Adiciona timestamp para evitar cache do proxy
-                        const urlWithTimestamp = `${proxyUrl}&t=${Date.now()}`;
-                        console.log(`Tentando proxy: ${urlWithTimestamp.substring(0, 80)}...`);
+                try {
+                    const response = await fetch(fastProxyUrl, { 
+                        method: 'GET',
+                        mode: 'cors',
+                        cache: 'no-cache'
+                    });
+                    
+                    if (response.ok) {
+                        const buffer = await response.arrayBuffer();
+                        const decoder = new TextDecoder('utf-8');
+                        const text = decoder.decode(buffer);
                         
-                        const response = await fetch(urlWithTimestamp, { 
-                            method: 'GET',
-                            mode: 'cors',
-                            cache: 'no-cache'
-                        });
-                        
-                        console.log(`Status: ${response.status} ${response.statusText}`);
-                        
-                        if (response.ok) {
-                            // Lê como array buffer e converte para UTF-8 corretamente
-                            const buffer = await response.arrayBuffer();
-                            const decoder = new TextDecoder('utf-8');
-                            const text = decoder.decode(buffer);
-                            
-                            console.log('📄 Resposta recebida (primeiros 500 chars):', text.substring(0, 500));
-                            
-                            // Verifica se é página de erro do proxy e ignora
-                            if (text.includes('500 Internal') || text.includes('Error 500') || text.includes('Bad Gateway') || text.includes('Service Unavailable')) {
-                                console.log('⚠️ Proxy retornou erro HTTP, tentando próximo...');
-                                continue;
-                            }
-                            
-                            // Verifica se é nowplaying.txt (texto simples com nome da música)
-                            if (!text.includes('<') && !text.includes('{') && text.trim().length > 5) {
-                                console.log('✅ Detectado nowplaying.txt (texto simples)');
-                                const songTitle = text.trim();
-                                if (songTitle && songTitle.length > 0) {
-                                    console.log('✅ Título encontrado no nowplaying.txt:', songTitle);
+                        // Extrai rapidamente do HTML
+                        if (text.includes('Icecast Server')) {
+                            // Tenta extrair "Currently playing"
+                            const currentlyPlayingMatch = text.match(/Currently playing:[\s\S]*?<td[^>]*class="streamstats"[^>]*>([^<]*)<\/td>/i);
+                            if (currentlyPlayingMatch && currentlyPlayingMatch[1] && currentlyPlayingMatch[1].trim().length > 0) {
+                                const songTitle = currentlyPlayingMatch[1].trim();
+                                if (songTitle !== '&nbsp;' && songTitle !== '') {
+                                    console.log('✅ Título encontrado via fallback:', songTitle);
                                     parseAndDisplaySongTitle(songTitle);
-                                    metadataFound = true;
-                                    break;
+                                    return;
                                 }
-                            }
-                            // Verifica se é JSON válido
-                            else if (text.trim().startsWith('{')) {
-                                console.log('✅ Detectado formato JSON');
-                            }
-                            // Verifica se é XML válido (Icecast)
-                            else if (text.includes('<icestats>') || text.includes('<?xml')) {
-                                console.log('✅ Detectado formato XML Icecast');
-                            }
-                            // Verifica se é 7.html (formato simples com vírgulas)
-                            else if (text.includes('<body>') && text.match(/<body>[^,]*,[^,]*,[^,]*/)) {
-                                console.log('✅ Detectado formato 7.html');
-                            }
-                            // Verifica se é HTML de status do Icecast (página visual completa)
-                            else if (text.includes('Icecast Server') && (text.includes('Mountpoint') || text.includes('Currently playing'))) {
-                                console.log('✅ Detectado HTML de Status do Icecast - extraindo dados...');
-                            }
-                            // Ignora apenas páginas HTML completas de erro
-                            else if (text.includes('<!DOCTYPE html>') && text.includes('Error')) {
-                                console.log('⚠️ Página de erro HTML, ignorando...');
-                                continue;
                             }
                             
-                            console.log('Resposta:', text.substring(0, 300));
-                            
-                            // Tenta parsear JSON
-                            try {
-                                const json = JSON.parse(text);
-                                console.log('✅ JSON parseado');
-                                console.log('📋 Estrutura completa:', JSON.stringify(json, null, 2).substring(0, 1000));
+                            // Fallback: pega última música da playlist
+                            const playlistSection = text.match(/<div class="playlist-container">([\s\S]*?)<\/div>/i);
+                            if (playlistSection && playlistSection[1]) {
+                                const playlistHTML = playlistSection[1];
+                                const playlistRows = [...playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g)];
                                 
-                                if (json.icestats && json.icestats.source) {
-                                    const source = Array.isArray(json.icestats.source) 
-                                        ? json.icestats.source[0] 
-                                        : json.icestats.source;
-                                    
-                                    console.log('🎵 Dados da fonte:', source);
-                                    
-                                    // Tenta múltiplos campos onde o título pode estar
-                                    let songTitle = null;
-                                    
-                                    // Prioridade 1: metadata.x_icy_title (formato Icecast moderno)
-                                    if (source.metadata && source.metadata.x_icy_title) {
-                                        songTitle = source.metadata.x_icy_title;
-                                        console.log('✅ Título encontrado em metadata.x_icy_title:', songTitle);
-                                    }
-                                    // Prioridade 2: title (campo padrão)
-                                    else if (source.title) {
-                                        songTitle = source.title;
-                                        console.log('✅ Título encontrado em source.title:', songTitle);
-                                    }
-                                    // Prioridade 3: display-title
-                                    else if (source['display-title']) {
-                                        songTitle = source['display-title'];
-                                        console.log('✅ Título encontrado em display-title:', songTitle);
-                                    }
-                                    
-                                    if (songTitle) {
-                                        parseAndDisplaySongTitle(songTitle);
-                                        metadataFound = true;
-                                        break;
-                                    } else {
-                                        console.log('⚠️ Nenhum campo de título encontrado');
-                                        console.log('Campos disponíveis:', Object.keys(source));
-                                        if (source.metadata) {
-                                            console.log('Campos em metadata:', Object.keys(source.metadata));
+                                if (playlistRows.length > 0) {
+                                    // Pega a ÚLTIMA música (mais recente)
+                                    for (let i = playlistRows.length - 1; i >= 0; i--) {
+                                        const row = playlistRows[i];
+                                        const title = row[4].trim();
+                                        if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
+                                            console.log('✅ Título da playlist (mais recente):', title);
+                                            parseAndDisplaySongTitle(title);
+                                            return;
                                         }
                                     }
-                                } else {
-                                    console.log('⚠️ Campo icestats.source não encontrado');
-                                    console.log('Campos em icestats:', json.icestats ? Object.keys(json.icestats) : 'N/A');
                                 }
-                            } catch (e) {
-                                console.log('Não é JSON, tentando extrair de outros formatos...');
-                                console.log('🔍 Debug - text.includes("Icecast Server"):', text.includes('Icecast Server'));
-                                console.log('🔍 Debug - text.includes("Mountpoint"):', text.includes('Mountpoint'));
-                                console.log('🔍 Debug - text.includes("Currently playing"):', text.includes('Currently playing'));
-                                
-                                // Tenta parsear XML do Icecast PRIMEIRO
-                                if (text.includes('<icestats>') || text.includes('<?xml')) {
-                                    console.log('🔍 Tentando extrair metadados do XML Icecast...');
-                                    
-                                    // Extrai x_icy_title do XML
-                                    const icyTitleMatch = text.match(/<x_icy_title>([^<]*)<\/x_icy_title>/i);
-                                    if (icyTitleMatch && icyTitleMatch[1] && icyTitleMatch[1].trim()) {
-                                        const songTitle = icyTitleMatch[1].trim();
-                                        console.log('✅ Título encontrado no XML (x_icy_title):', songTitle);
-                                        parseAndDisplaySongTitle(songTitle);
-                                        metadataFound = true;
-                                        break;
-                                    }
-                                    
-                                    // Tenta extrair <title> dentro de <source>
-                                    const sourceTitleMatch = text.match(/<source[^>]*>[\s\S]*?<title>([^<]+)<\/title>/i);
-                                    if (sourceTitleMatch && sourceTitleMatch[1] && sourceTitleMatch[1].trim()) {
-                                        const songTitle = sourceTitleMatch[1].trim();
-                                        console.log('✅ Título encontrado no XML (source title):', songTitle);
-                                        parseAndDisplaySongTitle(songTitle);
-                                        metadataFound = true;
-                                        break;
-                                    }
-                                    
-                                    console.log('⚠️ Não encontrou título no XML Icecast');
-                                }
-                                // Tenta extrair de HTML de Status do Icecast
-                                else if (text.includes('Icecast Server') && (text.includes('Mountpoint') || text.includes('Currently playing'))) {
-                                    console.log('🔍 Extraindo metadados do HTML de Status...');
-                                    
-                                    // Extrai "Currently playing" do HTML
-                                    const currentlyPlayingMatch = text.match(/Currently playing:[\s\S]*?<td[^>]*class="streamstats"[^>]*>([^<]*)<\/td>/i);
-                                    if (currentlyPlayingMatch && currentlyPlayingMatch[1]) {
-                                        const songTitle = currentlyPlayingMatch[1].trim();
-                                        // Verifica se não está vazio ou com &nbsp;
-                                        if (songTitle.length > 0 && songTitle !== '&nbsp;' && songTitle !== '') {
-                                            console.log('✅ Título encontrado no HTML (Currently playing):', songTitle);
-                                            parseAndDisplaySongTitle(songTitle);
-                                            metadataFound = true;
-                                            break;
-                                        } else {
-                                            console.log('⚠️ Currently playing está vazio, tentando playlist...');
-                                        }
-                                    }
-                                    
-                                    // Fallback: tenta extrair da playlist (ÚLTIMA música = mais recente)
-                                    // A playlist do Icecast mostra histórico: primeira = mais antiga, última = mais recente
-                                    console.log('🔍 Procurando na playlist-container...');
-                                    
-                                    // Extrai a seção da playlist primeiro
-                                    const playlistSection = text.match(/<div class="playlist-container">([\s\S]*?)<\/div>/i);
-                                    if (playlistSection && playlistSection[1]) {
-                                        const playlistHTML = playlistSection[1];
-                                        console.log('✅ Encontrada playlist-container, extraindo músicas...');
-                                        
-                                        // Extrai TODAS as linhas da tabela dentro da playlist
-                                        const playlistRows = [...playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g)];
-                                        
-                                        console.log(`📊 Total de músicas na playlist: ${playlistRows.length}`);
-                                        
-                                        // Pega a ÚLTIMA música (mais recente) primeiro
-                                        for (let i = playlistRows.length - 1; i >= 0; i--) {
-                                            const row = playlistRows[i];
-                                            const title = row[4].trim();
-                                            console.log(`🎵 Linha ${i + 1} de ${playlistRows.length}: "${title}" (length: ${title.length}, tem " - ": ${title.includes(' - ')})`);
-                                            
-                                            // Filtra títulos válidos (deve ter " - " separando artista e música)
-                                            if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
-                                                console.log('✅ Título VÁLIDO encontrado na playlist HTML (mais recente):', title);
-                                                parseAndDisplaySongTitle(title);
-                                                metadataFound = true;
-                                                break;
-                                            } else {
-                                                console.log(`⚠️ Título INVÁLIDO ignorado: "${title.substring(0, 50)}"`);
-                                            }
-                                        }
-                                        
-                                        if (playlistRows.length === 0) {
-                                            console.log('⚠️ Nenhuma linha encontrada na playlist');
-                                        }
-                                    } else {
-                                        console.log('⚠️ playlist-container NÃO encontrada no HTML');
-                                        console.log('🔍 Tentando buscar por <tbody> diretamente...');
-                                        
-                                        // Fallback: tenta extrair do <tbody> geral
-                                        const tbodyMatch = text.match(/<tbody>([\s\S]*?)<\/tbody>/i);
-                                        if (tbodyMatch && tbodyMatch[1]) {
-                                            console.log('✅ Encontrado tbody, extraindo...');
-                                            const tbodyHTML = tbodyMatch[1];
-                                            const rows = [...tbodyHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g)];
-                                            
-                                            // Pega a ÚLTIMA música
-                                            for (let i = rows.length - 1; i >= 0; i--) {
-                                                const row = rows[i];
-                                                const title = row[4].trim();
-                                                if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
-                                                    console.log('✅ Título encontrado no tbody (mais recente):', title);
-                                                    parseAndDisplaySongTitle(title);
-                                                    metadataFound = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    
-                                    if (metadataFound) break;
-                                    
-                                    console.log('⚠️ Não encontrou título no HTML de Status');
-                                }
-                                
-                                // Tenta formato 7.html
-                                // Formato: listeners,peak_listeners,bitrate,status,current_song,...
-                                const htmlMatch = text.match(/<body>([^<]+)<\/body>/i);
-                                const bodyContent = htmlMatch ? htmlMatch[1] : text;
-                                const parts = bodyContent.split(',');
-                                
-                                if (parts.length >= 5) {
-                                    const currsong = parts[4].trim();
-                                    if (currsong && currsong.length > 0 && !currsong.includes('<')) {
-                                        console.log('✅ Título encontrado no 7.html:', currsong);
-                                        parseAndDisplaySongTitle(currsong);
-                                        metadataFound = true;
-                                        break;
-                                    }
-                                }
-                                
-                                // Tenta extrair título de XML (status.xsl) como fallback
-                                const titleMatch = text.match(/<title>([^<]+)<\/title>/i);
-                                if (titleMatch && titleMatch[1] && !titleMatch[1].includes('Icecast') && !titleMatch[1].includes('Status')) {
-                                    console.log('✅ Título encontrado no XML:', titleMatch[1]);
-                                    parseAndDisplaySongTitle(titleMatch[1]);
-                                    metadataFound = true;
-                                    break;
-                                }
-                                
-                                console.log('⚠️ Não conseguiu extrair título do formato HTML/XML');
                             }
                         }
-                    } catch (err) {
-                        console.log(`❌ Proxy falhou:`, err.message);
-                        continue;
                     }
+                } catch (err) {
+                    console.log('❌ Fallback também falhou:', err.message);
                 }
                 
-                if (!metadataFound) {
-                    console.log('⚠️ Nenhum proxy funcionou, usando fallback');
-                    displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo');
-                }
+                // Se tudo falhar, mantém o título anterior ou mostra padrão
+                console.log('⚠️ Não foi possível obter metadados, mantendo título atual');
                 
             } catch (error) {
                 console.error('❌ Erro geral:', error);
-                displayNowPlaying('Forró Stream MOC', 'Rádio Ao Vivo');
             }
         }
 
@@ -1531,7 +1303,7 @@
             
             console.log('🔤 Texto original:', text);
             
-            // Substitui caracteres com encoding errado
+            // Substitui caracteres com encoding errado (UTF-8 interpretado como Latin-1)
             const replacements = {
                 'Ã§': 'ç',
                 'Ã£': 'ã',
@@ -1546,7 +1318,9 @@
                 'Ãµ': 'õ',
                 'Ãœ': 'Ü',
                 'Ã': 'À',
-                'Ã±': 'ñ'
+                'Ã±': 'ñ',
+                '': 'Â',  // Caractere de substituição comum
+                '\ufffd': 'Â'  // Unicode replacement character
             };
             
             let fixed = text;
