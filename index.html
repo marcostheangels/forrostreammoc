@@ -562,7 +562,7 @@
             <div class="md:col-span-1 space-y-8">
                 
                 <div class="glass-panel p-6 md:p-8 rounded-3xl text-center border-4 border-amber-500/10 flex flex-col items-center gap-6 shadow-2xl animate-fade-in-up delay-200 hover-lift">
-                    <audio id="audioPlayer" src="https://usu300opw28m.shares.zrok.io/radio.mp3" preload="none"></audio>
+                    <audio id="audioPlayer" src="https://stream.forrostreammoc.shop/radio.mp3" preload="none"></audio>
 
                     <button id="playBtn" onclick="togglePlay()" class="relative group" aria-label="Tocar ou pausar a rádio">
                         <div id="playBtnRing" class="absolute inset-0 rounded-full border-4 border-amber-400/60 pulse-live-ring opacity-0"></div>
@@ -964,7 +964,7 @@
 
         // Contador REAL de ouvintes do stream
         let realListenerCount = 0;
-        const streamUrl = 'https://usu300opw28m.shares.zrok.io/radio.mp3';
+        const streamUrl = 'https://stream.forrostreammoc.shop/radio.mp3';
         let currentSongTitle = '';
         let currentSongArtist = '';
 
@@ -1200,7 +1200,7 @@
                 // Para GitHub Pages: usa APENAS proxies CORS (sem PHP)
                 console.log('🔍 Buscando metadados via proxy CORS...');
                 
-                const streamUrlXML = 'https://usu300opw28m.shares.zrok.io/status.xsl';
+                const streamUrlXML = 'https://stream.forrostreammoc.shop/status.xsl';
                 const fastProxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}&t=${Date.now()}`;
                 
                 try {
@@ -1497,9 +1497,9 @@
                 // Tenta obter status do stream via endpoint de status
                 // Para Zrok/Icecast, PRIORIZA XML (status.xsl) que está funcionando
                 const statusUrls = [
-                    'https://usu300opw28m.shares.zrok.io/status.xsl',  // XML - FUNCIONANDO
-                    'https://usu300opw28m.shares.zrok.io/7.html',      // Formato Shoutcast DNAS
-                    'https://usu300opw28m.shares.zrok.io/status-json.xsl'  // JSON (pode não funcionar)
+                    'https://stream.forrostreammoc.shop/status.xsl',  // XML - FUNCIONANDO
+                    'https://stream.forrostreammoc.shop/7.html',      // Formato Shoutcast DNAS
+                    'https://stream.forrostreammoc.shop/status-json.xsl'  // JSON (pode não funcionar)
                 ];
                 
                 let listenersFound = false;
