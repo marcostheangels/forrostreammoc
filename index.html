@@ -1197,91 +1197,73 @@
         // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
-                console.log(' Buscando metadados...');
-                        
-                // Tenta proxy local primeiro (mais rápido e confiável)
-                const localProxyUrl = '/api/metadata';
-                        
+                console.log('🔍 Buscando metadados...');
+                
+                // Usa Cloudflare Worker como proxy
+                const workerUrl = 'https://forro-stream-metadata.marcostheangels.workers.dev';
+                
                 try {
-                    const response = await fetch(localProxyUrl, { 
+                    const response = await fetch(workerUrl, { 
                         method: 'GET',
                         cache: 'no-cache',
                         headers: {
                             'Accept': 'application/json'
                         }
                     });
-                            
+                    
                     if (response.ok) {
                         const data = await response.json();
-                                
+                        
                         // Processa metadados
+                        processMetadata(data);
+                        return;
+                    } else {
+                        console.log('️ Worker retornou erro:', response.status);
+                    }
+                } catch (e) {
+                    console.log('⚠️ Erro ao buscar via Cloudflare Worker:', e.message);
+                }
+                
+                // Fallback: Tenta proxy local (se estiver rodando)
+                try {
+                    const localProxyUrl = '/api/metadata';
+                    const response = await fetch(localProxyUrl, { 
+                        method: 'GET',
+                        cache: 'no-cache'
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
                         processMetadata(data);
                         return;
                     }
                 } catch (e) {
-                    console.log('⚠️ Proxy local não disponível, tentando proxies externos...');
+                    console.log('️ Proxy local não disponível');
                 }
-                        
-                // Fallback: Tenta proxies CORS externos
-                const streamUrlJSON = 'https://stream.forrostreammoc.shop/status-json.xsl';
-                const proxies = [
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrlJSON)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(streamUrlJSON)}`
-                ];
-                        
-                let data = null;
-                        
-                for (let i = 0; i < proxies.length; i++) {
-                    try {
-                        console.log(`🔄 Tentando proxy externo ${i + 1}/${proxies.length}...`);
-                                
-                        const response = await fetch(proxies[i], { 
-                            method: 'GET',
-                            cache: 'no-cache'
-                        });
-                                
-                        if (response.ok) {
-                            const text = await response.text();
-                            try {
-                                data = JSON.parse(text);
-                                console.log(`✅ Proxy externo ${i + 1} funcionou!`);
-                                break;
-                            } catch (e) {
-                                console.log(`⚠️ Proxy ${i + 1} retornou JSON inválido`);
-                            }
-                        }
-                    } catch (e) {
-                        console.log(`⚠️ Proxy externo ${i + 1} falhou:`, e.message);
-                    }
-                }
-                        
-                if (data) {
-                    processMetadata(data);
-                } else {
-                    console.log('⚠️ Não foi possível obter metadados');
-                }
-                        
+                
+                console.log('️ Não foi possível obter metadados');
+                
             } catch (error) {
                 console.error('❌ Erro geral:', error);
             }
         }
-                
+        
         // Processa e exibe metadados
         function processMetadata(data) {
             if (!data || !data.icestats) {
-                console.log('️ JSON inválido');
+                console.log('⚠️ JSON inválido');
                 return;
             }
-                    
+            
             // Método 1: Tenta campo title principal
             let songTitle = data.icestats.source?.title;
-                    
+            
             // Método 2: Se title é null, usa x_icy_title
             if (!songTitle || songTitle === null) {
                 songTitle = data.icestats.source?.metadata?.x_icy_title;
                 console.log('📌 Usando x_icy_title:', songTitle);
             }
-                    
+            
             if (songTitle && songTitle.trim().length > 0) {
                 console.log('✅ Metadados encontrados:', songTitle);
                 parseAndDisplaySongTitle(songTitle);
