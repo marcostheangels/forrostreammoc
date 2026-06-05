@@ -1197,11 +1197,11 @@
         // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
-                // Para GitHub Pages: usa APENAS proxies CORS (sem PHP)
-                console.log('🔍 Buscando metadados via proxy CORS...');
+                console.log('🔍 Buscando metadados...');
                 
-                const streamUrlXML = 'https://stream.forrostreammoc.shop/status.xsl';
-                const fastProxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}&t=${Date.now()}`;
+                // PRIORIZA JSON status-json.xsl que tem x_icy_title
+                const streamUrlJSON = 'https://stream.forrostreammoc.shop/status-json.xsl';
+                const fastProxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlJSON)}&t=${Date.now()}`;
                 
                 try {
                     const response = await fetch(fastProxyUrl, { 
@@ -1211,46 +1211,83 @@
                     });
                     
                     if (response.ok) {
-                        const buffer = await response.arrayBuffer();
-                        const decoder = new TextDecoder('utf-8');
-                        const text = decoder.decode(buffer);
+                        const text = await response.text();
                         
-                        // Extrai rapidamente do HTML
-                        if (text.includes('Icecast Server')) {
-                            // Tenta extrair "Currently playing"
-                            const currentlyPlayingMatch = text.match(/Currently playing:[\s\S]*?<td[^>]*class="streamstats"[^>]*>([^<]*)<\/td>/i);
-                            if (currentlyPlayingMatch && currentlyPlayingMatch[1] && currentlyPlayingMatch[1].trim().length > 0) {
-                                const songTitle = currentlyPlayingMatch[1].trim();
-                                if (songTitle !== '&nbsp;' && songTitle !== '') {
-                                    console.log('✅ Título encontrado:', songTitle);
-                                    parseAndDisplaySongTitle(songTitle);
-                                    return;
-                                }
+                        // Tenta parsear como JSON
+                        try {
+                            const data = JSON.parse(text);
+                            
+                            // Método 1: Tenta campo title principal
+                            let songTitle = data.icestats?.source?.title;
+                            
+                            // Método 2: Se title é null, usa x_icy_title
+                            if (!songTitle || songTitle === null) {
+                                songTitle = data.icestats?.source?.metadata?.x_icy_title;
+                                console.log('📌 Usando x_icy_title:', songTitle);
                             }
                             
-                            // Fallback: pega última música da playlist
-                            const playlistSection = text.match(/<div class="playlist-container">([\s\S]*?)<\/div>/i);
-                            if (playlistSection && playlistSection[1]) {
-                                const playlistHTML = playlistSection[1];
-                                const playlistRows = [...playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g)];
-                                
-                                if (playlistRows.length > 0) {
-                                    // Pega a ÚLTIMA música (mais recente)
-                                    for (let i = playlistRows.length - 1; i >= 0; i--) {
-                                        const row = playlistRows[i];
-                                        const title = row[4].trim();
-                                        if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
-                                            console.log('✅ Título da playlist (mais recente):', title);
-                                            parseAndDisplaySongTitle(title);
-                                            return;
-                                        }
+                            if (songTitle && songTitle.trim().length > 0) {
+                                console.log('✅ Metadados encontrados:', songTitle);
+                                parseAndDisplaySongTitle(songTitle);
+                                return;
+                            }
+                        } catch (e) {
+                            console.log('⚠️ Não é JSON válido, tentando fallback HTML');
+                        }
+                    }
+                } catch (e) {
+                    console.log('⚠️ Erro ao buscar JSON:', e.message);
+                }
+                
+                // FALLBACK: Tenta status.xsl antigo
+                console.log('🔄 Tentando fallback HTML...');
+                const streamUrlXML = 'https://stream.forrostreammoc.shop/status.xsl';
+                const xmlProxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(streamUrlXML)}&t=${Date.now()}`;
+                
+                const response = await fetch(xmlProxyUrl, { 
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (response.ok) {
+                    const buffer = await response.arrayBuffer();
+                    const decoder = new TextDecoder('utf-8');
+                    const text = decoder.decode(buffer);
+                    
+                    // Extrai rapidamente do HTML
+                    if (text.includes('Icecast Server')) {
+                        // Tenta extrair "Currently playing"
+                        const currentlyPlayingMatch = text.match(/Currently playing:[\s\S]*?<td[^>]*class="streamstats"[^>]*>([^<]*)<\/td>/i);
+                        if (currentlyPlayingMatch && currentlyPlayingMatch[1] && currentlyPlayingMatch[1].trim().length > 0) {
+                            const songTitle = currentlyPlayingMatch[1].trim();
+                            if (songTitle !== '&nbsp;' && songTitle !== '') {
+                                console.log('✅ Título encontrado:', songTitle);
+                                parseAndDisplaySongTitle(songTitle);
+                                return;
+                            }
+                        }
+                        
+                        // Fallback: pega última música da playlist
+                        const playlistSection = text.match(/<div class="playlist-container">([\s\S]*?)<\/div>/i);
+                        if (playlistSection && playlistSection[1]) {
+                            const playlistHTML = playlistSection[1];
+                            const playlistRows = [...playlistHTML.matchAll(/<tr>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]*)<\/td>[\s\S]*?<td>([^<]+)<\/td>[\s\S]*?<\/tr>/g)];
+                            
+                            if (playlistRows.length > 0) {
+                                // Pega a ÚLTIMA música (mais recente)
+                                for (let i = playlistRows.length - 1; i >= 0; i--) {
+                                    const row = playlistRows[i];
+                                    const title = row[4].trim();
+                                    if (title && title.length > 5 && title.includes(' - ') && !title.includes('<')) {
+                                        console.log('✅ Título da playlist (mais recente):', title);
+                                        parseAndDisplaySongTitle(title);
+                                        return;
                                     }
                                 }
                             }
                         }
                     }
-                } catch (err) {
-                    console.log('❌ Erro ao buscar metadados:', err.message);
                 }
                 
                 // Se falhar, mantém o título anterior
