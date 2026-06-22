@@ -94,6 +94,185 @@
         .toast i {
             font-size: 24px;
         }
+        
+        /* 🎉 TEMA FESTA JUNINA 🎉 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        
+        @keyframes firefly {
+            0%, 100% { 
+                opacity: 0; 
+                transform: translate(0, 0); 
+            }
+            25% { 
+                opacity: 1; 
+                transform: translate(100px, -50px); 
+            }
+            50% { 
+                opacity: 0.8; 
+                transform: translate(200px, 0); 
+            }
+            75% { 
+                opacity: 1; 
+                transform: translate(100px, 50px); 
+            }
+        }
+        
+        .junina-banner {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 25%, #ffd700 50%, #ff6b35 75%, #f7931e 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .junina-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px);
+            pointer-events: none;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .junina-flag {
+            position: absolute;
+            width: 40px;
+            height: 50px;
+            animation: sway 3s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            z-index: 10;
+        }
+        
+        .junina-flag.red { background: linear-gradient(135deg, #ff0000, #cc0000); }
+        .junina-flag.blue { background: linear-gradient(135deg, #0066ff, #0044cc); }
+        .junina-flag.yellow { background: linear-gradient(135deg, #ffd700, #ffaa00); }
+        .junina-flag.green { background: linear-gradient(135deg, #00cc00, #009900); }
+        
+        .junina-lantern {
+            position: fixed;
+            width: 60px;
+            height: 80px;
+            background: radial-gradient(circle, #ffeb3b 0%, #ff9800 50%, #ff5722 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 0 40px #ffeb3b, 0 0 80px #ff9800;
+            animation: float 4s ease-in-out infinite;
+            z-index: 5;
+            opacity: 0.9;
+        }
+        
+        .junina-lantern::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 20px;
+            background: #8d6e63;
+        }
+        
+        .junina-firefly {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #ffff00, #ffeb3b);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffff00, 0 0 20px #ffeb3b;
+            animation: firefly 8s ease-in-out infinite;
+            z-index: 4;
+            pointer-events: none;
+        }
+        
+        .junina-corner-decoration {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            pointer-events: none;
+            z-index: 3;
+        }
+        
+        .junina-corner-decoration.top-left {
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), transparent);
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+        
+        .junina-corner-decoration.top-right {
+            top: 0;
+            right: 0;
+            background: linear-gradient(225deg, rgba(255, 215, 0, 0.3), transparent);
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+        }
+        
+        .junina-corner-decoration.bottom-left {
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(45deg, rgba(247, 147, 30, 0.3), transparent);
+            clip-path: polygon(0 0, 0 100%, 100% 100%);
+        }
+        
+        .junina-corner-decoration.bottom-right {
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(315deg, rgba(255, 107, 53, 0.3), transparent);
+            clip-path: polygon(100% 0, 0 100%, 100% 100%);
+        }
+        
+        .junina-title {
+            text-shadow: 
+                3px 3px 0 #ff6b35,
+                6px 6px 0 rgba(255, 107, 53, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .junina-card {
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .junina-card:hover {
+            border-color: #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            transform: translateY(-5px);
+        }
+        
+        .junina-badge {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+            animation: twinkle 2s ease-in-out infinite;
+        }
     </style>
     <style>
         body { 
@@ -282,7 +461,78 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden">
+    <!-- 🎉 BACKGROUND FESTA JUNINA REALISTA  -->
+    <div class="fixed inset-0 pointer-events-none z-0" style="background: linear-gradient(to bottom, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.5) 50%, rgba(15, 23, 42, 0.4) 100%), url('C:/Users/MARCOS/AppData/Roaming/QoderCN/SharedClientCache/cache/images/a7e7dcec/Gemini_Generated_Image_9jvxww9jvxww9jvx-3aed68ec.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.5;">
+    </div>
+    
+    <!-- Camada escura sobre o background para melhor legibilidade -->
+    <div class="fixed inset-0 bg-slate-950/50 pointer-events-none z-0"></div>
+    
+    <!-- 🎉 DECORAÇÕES FESTA JUNINA 🎉 -->
+    <!-- Decorações dos cantos -->
+    <div class="junina-corner-decoration top-left"></div>
+    <div class="junina-corner-decoration top-right"></div>
+    <div class="junina-corner-decoration bottom-left"></div>
+    <div class="junina-corner-decoration bottom-right"></div>
+    
+    <!-- Bandeirinhas adicionais no topo da página -->
+    <div style="position: fixed; top: 0; left: 0; right: 0; height: 40px; z-index: 15; pointer-events: none; overflow: hidden;">
+        <div class="junina-flag red" style="top: -5px; left: 3%; animation-delay: 0s;"></div>
+        <div class="junina-flag blue" style="top: -5px; left: 8%; animation-delay: 0.2s;"></div>
+        <div class="junina-flag yellow" style="top: -5px; left: 13%; animation-delay: 0.4s;"></div>
+        <div class="junina-flag green" style="top: -5px; left: 18%; animation-delay: 0.6s;"></div>
+        <div class="junina-flag red" style="top: -5px; left: 23%; animation-delay: 0.8s;"></div>
+        <div class="junina-flag blue" style="top: -5px; left: 28%; animation-delay: 1s;"></div>
+        <div class="junina-flag yellow" style="top: -5px; left: 33%; animation-delay: 1.2s;"></div>
+        <div class="junina-flag green" style="top: -5px; left: 38%; animation-delay: 1.4s;"></div>
+        <div class="junina-flag red" style="top: -5px; left: 43%; animation-delay: 1.6s;"></div>
+        <div class="junina-flag blue" style="top: -5px; left: 48%; animation-delay: 1.8s;"></div>
+        <div class="junina-flag yellow" style="top: -5px; left: 53%; animation-delay: 2s;"></div>
+        <div class="junina-flag green" style="top: -5px; left: 58%; animation-delay: 2.2s;"></div>
+        <div class="junina-flag red" style="top: -5px; left: 63%; animation-delay: 2.4s;"></div>
+        <div class="junina-flag blue" style="top: -5px; left: 68%; animation-delay: 2.6s;"></div>
+        <div class="junina-flag yellow" style="top: -5px; left: 73%; animation-delay: 2.8s;"></div>
+        <div class="junina-flag green" style="top: -5px; left: 78%; animation-delay: 3s;"></div>
+        <div class="junina-flag red" style="top: -5px; left: 83%; animation-delay: 3.2s;"></div>
+        <div class="junina-flag blue" style="top: -5px; left: 88%; animation-delay: 3.4s;"></div>
+        <div class="junina-flag yellow" style="top: -5px; left: 93%; animation-delay: 3.6s;"></div>
+    </div>
+    
+    <!-- Lanternas flutuantes -->
+    <div class="junina-lantern" style="top: 10%; left: 5%; animation-delay: 0s;"></div>
+    <div class="junina-lantern" style="top: 20%; right: 8%; animation-delay: 1s;"></div>
+    <div class="junina-lantern" style="bottom: 30%; left: 3%; animation-delay: 2s;"></div>
+    <div class="junina-lantern" style="bottom: 15%; right: 5%; animation-delay: 3s;"></div>
+    
+    <!-- Vagalumes -->
+    <div class="junina-firefly" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
+    <div class="junina-firefly" style="top: 40%; right: 15%; animation-delay: 2s;"></div>
+    <div class="junina-firefly" style="bottom: 25%; left: 30%; animation-delay: 4s;"></div>
+    <div class="junina-firefly" style="top: 60%; right: 25%; animation-delay: 6s;"></div>
+    <div class="junina-firefly" style="bottom: 40%; left: 15%; animation-delay: 1s;"></div>
+    
+    
+    <!-- Banner de Festa Junina no topo -->
+    <div class="junina-banner py-3 px-6 text-center relative z-20">
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+            <span class="text-2xl">🎊</span>
+            <div>
+                <p class="text-white font-bold text-lg md:text-xl junina-title">🔥 ARRAIÁ DO FORRÓ STREAM MOC 🔥</p>
+                <p class="text-yellow-200 text-sm md:text-base">Festa Junina 2026 • São João com muito forró!</p>
+            </div>
+            <span class="text-2xl">🎊</span>
+        </div>
+        <!-- Bandeirinhas decorativas -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="junina-flag red" style="top: -5px; left: 10%; animation-delay: 0s;"></div>
+            <div class="junina-flag blue" style="top: -5px; left: 25%; animation-delay: 0.5s;"></div>
+            <div class="junina-flag yellow" style="top: -5px; left: 40%; animation-delay: 1s;"></div>
+            <div class="junina-flag green" style="top: -5px; left: 55%; animation-delay: 1.5s;"></div>
+            <div class="junina-flag red" style="top: -5px; left: 70%; animation-delay: 2s;"></div>
+            <div class="junina-flag blue" style="top: -5px; left: 85%; animation-delay: 2.5s;"></div>
+        </div>
+    </div>
 
     <header class="bg-slate-900/80 backdrop-blur-lg border-b border-amber-500/20 sticky top-0 z-50 shadow-lg">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -373,7 +623,11 @@
 
                         <div class="flex-grow flex flex-col gap-6 w-full text-center md:text-left">
                             <div class="space-y-1">
-                                <h1 class="font-header text-5xl font-extrabold tracking-tighter text-white leading-tight">Forró Stream MOC</h1>
+                                <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
+                                    <span class="junina-badge">🎉 FESTA JUNINA 2026 🎉</span>
+                                    <span class="text-2xl animate-bounce">🔥</span>
+                                </div>
+                                <h1 class="font-header text-5xl font-extrabold tracking-tighter text-white leading-tight junina-title">Forró Stream MOC</h1>
                                 <p class="text-slate-400 text-lg flex items-center justify-center md:justify-start gap-2.5">
                                     <i class="fa-solid fa-headphones text-sm text-amber-500"></i> O melhor do Forró 24h por dia
                                 </p>
@@ -459,7 +713,7 @@
                 <div class="glass-panel p-6 rounded-2xl border border-slate-800 shadow-xl animate-fade-in-up delay-100" id="grade-section">
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="font-header text-xl font-bold text-white flex items-center gap-3">
-                            <i class="fa-solid fa-calendar-days text-amber-500"></i> Grade de Programação
+                            <i class="fa-solid fa-chart-line text-amber-500"></i> Painel Ao Vivo
                         </h2>
                         <div class="text-right">
                             <p class="text-xs text-slate-400">Horário Local</p>
@@ -467,93 +721,139 @@
                         </div>
                     </div>
                     
-                    <!-- Banner do Programa Atual -->
-                    <div id="currentProgramBanner" class="mb-4 p-4 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-red-500/20 border border-amber-500/40 rounded-xl backdrop-blur animate-pulse-slow">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
-                                <i class="fa-solid fa-broadcast-tower text-xl text-white"></i>
+                    <!-- Últimas Músicas Tocadas -->
+                    <div class="mb-6 p-5 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 border border-purple-500/30 rounded-xl backdrop-blur">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
+                                <i class="fa-solid fa-clock-rotate-left text-lg text-white"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white">Últimas Músicas Tocadas</p>
+                                <p class="text-xs text-slate-400">Histórico em tempo real</p>
+                            </div>
+                        </div>
+                        <div id="recentSongs" class="space-y-2">
+                            <div class="flex items-center gap-3 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50">
+                                <div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-music text-xs text-white"></i>
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <p class="text-sm font-medium text-white truncate">Carregando histórico...</p>
+                                    <p class="text-xs text-slate-400">Aguarde</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pedir Música - Destaque -->
+                    <div class="mb-6 p-5 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 border-2 border-green-500/40 rounded-xl backdrop-blur hover:border-green-400/60 transition-all duration-300 cursor-pointer group" onclick="window.open('https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!', '_blank')">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-brands fa-whatsapp text-3xl text-white"></i>
                             </div>
                             <div class="flex-grow">
-                                <p class="text-xs text-amber-300 font-bold uppercase tracking-wider">Programa Atual</p>
-                                <p class="text-base font-bold text-white" id="currentProgramName">Carregando...</p>
-                                <p class="text-xs text-slate-300" id="currentProgramTime">--:--</p>
+                                <p class="text-base font-bold text-white mb-1">Peça Sua Música!</p>
+                                <p class="text-sm text-slate-300">Clique aqui e envie seu pedido pelo WhatsApp</p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <span class="text-xs bg-green-500/30 text-green-300 px-2 py-1 rounded-full font-medium">📱 Rápido</span>
+                                    <span class="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-1 rounded-full font-medium">✅ Fácil</span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
-                                <span class="text-xs font-bold text-green-400">AO VIVO</span>
+                            <i class="fa-solid fa-arrow-right text-2xl text-green-400 group-hover:translate-x-2 transition-transform"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 🎊 CARD ESPECIAL FESTA JUNINA 🎊 -->
+                    <div class="mb-6 p-5 bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-red-500/20 border-2 border-orange-500/40 rounded-xl backdrop-blur junina-card relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-400/20 to-transparent rounded-full -mr-16 -mt-16"></div>
+                        <div class="flex items-start gap-4 relative z-10">
+                            <div class="text-5xl animate-bounce" style="animation-duration: 2s;">🎆</div>
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                                    <span class="junina-badge">ESPECIAL</span>
+                                    Arraiá do Forró
+                                </h3>
+                                <p class="text-sm text-slate-300 mb-3">
+                                    🔥 São João com muito forró pé-de-serra! Músicas tradicionais, quadrilha e muita diversão!
+                                </p>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
+                                        <i class="fa-solid fa-fire text-orange-400"></i>
+                                        <span class="text-slate-300">Fogueira Virtual</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
+                                        <i class="fa-solid fa-corn text-yellow-400"></i>
+                                        <span class="text-slate-300">Comidas Típicas</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
+                                        <i class="fa-solid fa-music text-purple-400"></i>
+                                        <span class="text-slate-300">Quadrilha</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
+                                        <i class="fa-solid fa-star text-amber-400"></i>
+                                        <span class="text-slate-300">24h no Ar</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Countdown para o próximo programa -->
-                    <div class="mb-4 p-3 bg-slate-900/80 border border-slate-700 rounded-lg text-center">
-                        <p class="text-xs text-slate-400 mb-1">Próximo programa em:</p>
-                        <p class="text-xl font-bold text-gradient font-mono" id="nextProgramCountdown">--:--:--</p>
+                    <!-- Estatísticas da Rádio -->
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div class="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-center hover:border-blue-400/50 transition-all">
+                            <i class="fa-solid fa-database text-2xl text-blue-400 mb-2"></i>
+                            <p class="text-xs text-slate-400 mb-1">Total de Visitas</p>
+                            <p class="text-2xl font-black text-blue-400" id="totalVisitorsStats">0</p>
+                        </div>
+                        <div class="p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-xl text-center hover:border-amber-400/50 transition-all">
+                            <i class="fa-solid fa-broadcast-tower text-2xl text-amber-400 mb-2"></i>
+                            <p class="text-xs text-slate-400 mb-1">Status</p>
+                            <p class="text-lg font-bold text-green-400 flex items-center justify-center gap-2">
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                NO AR
+                            </p>
+                        </div>
                     </div>
                     
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-amber-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Manhã Animada MOC', '06:00 - 10:00', 'O melhor forró para começar o dia com energia! Músicas animadas, notícias e muita diversão.', 'Manhã')">
-                            <div class="absolute inset-0 bg-gradient-to-r from-amber-500/0 to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-amber-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
-                                <i class="fa-solid fa-sun text-2xl text-slate-950"></i>
-                            </div>
-                            <div class="flex-grow relative z-10">
-                                <p class="text-sm font-bold text-white">Manhã Animada MOC</p>
-                                <p class="text-xs text-slate-400">06:00 - 10:00 • O melhor para começar o dia</p>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">🎵 Forró Animado</span>
-                                    <span class="text-[10px] bg-orange-500/20 text-orange-300 px-2 py-0.5 rounded-full">☀️ Manhã</span>
-                                </div>
-                            </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-manha">NO AR</span>
-                        </div>
+                    <!-- Informações Úteis -->
+                    <div class="p-5 bg-slate-900/60 border border-slate-700 rounded-xl space-y-4">
+                        <h3 class="font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-amber-500"></i>
+                            Informações Importantes
+                        </h3>
                         
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-blue-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Forró no Trabalho', '10:00 - 14:00', 'Trilha sonora perfeita para o seu expediente! Forró tranquilo e produtivo.', 'Tarde')">
-                            <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
-                                <i class="fa-solid fa-briefcase text-2xl text-white"></i>
-                            </div>
-                            <div class="flex-grow relative z-10">
-                                <p class="text-sm font-bold text-white">Forró no Trabalho</p>
-                                <p class="text-xs text-slate-400">10:00 - 14:00 • Trilha sonora do seu expediente</p>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">💼 Trabalho</span>
-                                    <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full">🎶 Relaxante</span>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fa-solid fa-location-dot text-red-400 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-white">Localização</p>
+                                    <p class="text-xs text-slate-400">Montes Claros - MG, Brasil</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-tarde">NO AR</span>
-                        </div>
-                        
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-purple-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Noite do Forró', '14:00 - 20:00', 'Os clássicos do forró que marcaram época! Xote, baião e muito mais.', 'Noite')">
-                            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
-                                <i class="fa-solid fa-moon text-2xl text-white"></i>
-                            </div>
-                            <div class="flex-grow relative z-10">
-                                <p class="text-sm font-bold text-white">Noite do Forró</p>
-                                <p class="text-xs text-slate-400">14:00 - 20:00 • Os clássicos do forró</p>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full"> Noite</span>
-                                    <span class="text-[10px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full">⭐ Clássicos</span>
+                            
+                            <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fa-solid fa-clock text-blue-400 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-white">Funcionamento</p>
+                                    <p class="text-xs text-slate-400">24 horas por dia, 7 dias por semana</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-noite">NO AR</span>
-                        </div>
-                        
-                        <div class="flex items-center gap-4 bg-slate-900/60 backdrop-blur p-4 rounded-lg hover:bg-slate-800/60 hover:border-l-4 hover:border-red-500 transition-all duration-300 cursor-pointer group relative overflow-hidden" onclick="showProgramDetails('Madrugada VIP', '20:00 - 06:00', 'Sucessos sem parar! A melhor seleção para sua madrugada.', 'Madrugada')">
-                            <div class="absolute inset-0 bg-gradient-to-r from-red-500/0 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-red-500/50 transition-all duration-300 group-hover:scale-110 relative z-10">
-                                <i class="fa-solid fa-star text-2xl text-white"></i>
-                            </div>
-                            <div class="flex-grow relative z-10">
-                                <p class="text-sm font-bold text-white">Madrugada VIP</p>
-                                <p class="text-xs text-slate-400">20:00 - 06:00 • Sucessos sem parar</p>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] bg-red-500/20 text-red-300 px-2 py-0.5 rounded-full">🌟 VIP</span>
-                                    <span class="text-[10px] bg-orange-500/20 text-orange-300 px-2 py-0.5 rounded-full">🔥 Sucessos</span>
+                            
+                            <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fa-solid fa-guitar text-purple-400 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-white">Gêneros Musicais</p>
+                                    <p class="text-xs text-slate-400">Forró Tradicional, Universitário, Eletrônico, Xote, Baião</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-medium text-green-400 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20 hidden relative z-10" id="prog-madrugada">NO AR</span>
+                            
+                            <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                <i class="fa-solid fa-headset text-green-400 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-white">Contato Comercial</p>
+                                    <p class="text-xs text-slate-400">(38) 99855-8528 • contato@forrostreammoc.com</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -718,13 +1018,33 @@
         </section>
     </main>
 
-    <footer class="bg-slate-900 text-center py-8 border-t border-slate-800 mt-12 text-sm text-slate-500 shadow-inner">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
-        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/20 shadow-inner">
+    <footer class="bg-slate-900 text-center py-8 border-t border-slate-800 mt-12 text-sm text-slate-500 shadow-inner relative overflow-hidden">
+        <!-- Decoração de fundo do footer - bandeirolas bem discretas -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none" style="top: 0; height: 25px;">
+            <div class="junina-flag red" style="top: 3px; left: 5%; animation-delay: 0s;"></div>
+            <div class="junina-flag blue" style="top: 3px; left: 20%; animation-delay: 0.5s;"></div>
+            <div class="junina-flag yellow" style="top: 3px; left: 35%; animation-delay: 1s;"></div>
+            <div class="junina-flag green" style="top: 3px; left: 50%; animation-delay: 1.5s;"></div>
+            <div class="junina-flag red" style="top: 3px; left: 65%; animation-delay: 2s;"></div>
+            <div class="junina-flag blue" style="top: 3px; left: 80%; animation-delay: 2.5s;"></div>
+        </div>
+        
+    <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 relative z-10">
+        <!-- Badge Festa Junina no Footer -->
+        <div class="mb-2">
+            <span class="junina-badge text-sm px-4 py-2">🎊 Viva São João! 🎊</span>
+        </div>
+        
+        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/20 shadow-inner junina-card">
              <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Logo Mini Forró Stream MOC" class="w-full h-full object-cover">
         </div>
-            <p class="font-header text-2xl font-bold text-gradient leading-none">FORRÓ STREAM MOC</p>
+            <p class="font-header text-2xl font-bold text-gradient leading-none junina-title">FORRÓ STREAM MOC</p>
             <p>&copy; 2026. A Rádio Profissional do Forró em Montes Claros/MG.</p>
+            <p class="text-xs text-orange-400 mt-1 flex items-center justify-center gap-2">
+                <span class="animate-pulse">🔥</span>
+                Especial Festa Junina 2026
+                <span class="animate-pulse">🔥</span>
+            </p>
             
             <!-- Logo RadiosNet -->
             <div class="mt-4 mb-2">
@@ -756,6 +1076,86 @@
     </footer>
 
     <script v="20260118">
+        // 🎉 EFEITOS ESPECIAIS FESTA JUNINA 🎉
+        function createJuninaEffects() {
+            // Criar confetes ao clicar no player
+            const playBtn = document.getElementById('playBtn');
+            if (playBtn) {
+                playBtn.addEventListener('click', function(e) {
+                    createConfetti(e.clientX, e.clientY);
+                });
+            }
+            
+            // Efeito de brilho nos cards juninos
+            const juninaCards = document.querySelectorAll('.junina-card');
+            juninaCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    createSparkles(this);
+                });
+            });
+        }
+        
+        function createConfetti(x, y) {
+            const colors = ['#ff6b35', '#f7931e', '#ffd700', '#ff0000', '#0066ff', '#00cc00'];
+            const emojis = ['🎊', '🎉', '✨', '⭐', '🔥', '🎆'];
+            
+            for (let i = 0; i < 12; i++) {
+                const confetti = document.createElement('div');
+                confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                confetti.style.position = 'fixed';
+                confetti.style.left = x + 'px';
+                confetti.style.top = y + 'px';
+                confetti.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                confetti.style.pointerEvents = 'none';
+                confetti.style.zIndex = '9999';
+                confetti.style.transition = 'all 1s ease-out';
+                
+                document.body.appendChild(confetti);
+                
+                const angle = (Math.PI * 2 * i) / 12;
+                const velocity = Math.random() * 100 + 50;
+                
+                setTimeout(() => {
+                    confetti.style.transform = `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity - 100}px) rotate(${Math.random() * 360}deg)`;
+                    confetti.style.opacity = '0';
+                }, 10);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 1000);
+            }
+        }
+        
+        function createSparkles(element) {
+            const rect = element.getBoundingClientRect();
+            const sparkles = ['✨', '⭐', '💫'];
+            
+            for (let i = 0; i < 5; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+                sparkle.style.position = 'absolute';
+                sparkle.style.left = (Math.random() * rect.width) + 'px';
+                sparkle.style.top = (Math.random() * rect.height) + 'px';
+                sparkle.style.fontSize = '20px';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.animation = 'twinkle 1s ease-out forwards';
+                sparkle.style.zIndex = '100';
+                
+                element.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        }
+        
+        // Inicializa efeitos juninos quando DOM estiver pronto
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', createJuninaEffects);
+        } else {
+            createJuninaEffects();
+        }
+        
         // Adiciona clique em todo o card do player para iniciar
         const playerCard = document.getElementById('playerCard');
         if (playerCard) {
@@ -806,6 +1206,9 @@
                         statusText.innerText = "No Ar - Forró Stream MOC Forró De Minas Uai";
                         statusText.className = "text-xl font-semibold text-green-400";
                         waveform.classList.remove('hidden'); // Mostra waveform no ar
+                        
+                        // Mensagem especial de Festa Junina ao dar PLAY
+                        showToast('🎊 Bem-vindo ao Arraiá do Forró! 🔥 São João 2026!', 4000);
                         
                         // Incrementa contador de ouvintes quando dá PLAY
                         incrementListenerCounter();
@@ -948,32 +1351,62 @@
                     </div>
                 `;
             }).join('');
+            
+            // Atualiza também o painel ao vivo
+            updateRecentSongsPanel();
+        }
+        
+        // Atualiza o painel "Últimas Músicas Tocadas" no Painel Ao Vivo
+        function updateRecentSongsPanel() {
+            const recentContainer = document.getElementById('recentSongs');
+            if (!recentContainer) return;
+            
+            if (songHistory.length === 0) {
+                recentContainer.innerHTML = `
+                    <div class="flex items-center gap-3 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50">
+                        <div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-music text-xs text-white"></i>
+                        </div>
+                        <div class="flex-grow min-w-0">
+                            <p class="text-sm font-medium text-white truncate">Aguardando músicas...</p>
+                            <p class="text-xs text-slate-400">Toque a rádio para começar</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Mostra as últimas 3 músicas
+            const recentSongsList = songHistory.slice(0, 3);
+            
+            recentContainer.innerHTML = recentSongsList.map((song, index) => {
+                const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const isFirst = index === 0;
+                return `
+                    <div class="flex items-center gap-3 p-3 ${isFirst ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/40' : 'bg-slate-900/60 border-slate-700/50'} rounded-lg border transition-all hover:scale-105">
+                        <div class="w-8 h-8 ${isFirst ? 'bg-gradient-to-br from-purple-400 to-pink-500 animate-pulse' : 'bg-gradient-to-br from-amber-400 to-orange-500'} rounded-full flex items-center justify-center flex-shrink-0">
+                            ${isFirst ? '<i class="fa-solid fa-volume-high text-xs text-white"></i>' : '<i class="fa-solid fa-music text-xs text-white"></i>'}
+                        </div>
+                        <div class="flex-grow min-w-0">
+                            <p class="text-sm font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p>
+                            <p class="text-xs ${isFirst ? 'text-purple-300' : 'text-slate-400'}">${isFirst ? 'Tocando agora • ' : ''}${time}</p>
+                        </div>
+                        ${isFirst ? '<span class="text-xs bg-purple-500/30 text-purple-300 px-2 py-1 rounded-full font-bold">AO VIVO</span>' : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         // Função removida - Área VIP desativada
 
-        // Detectar programa atual baseado no horário
-        function updateCurrentProgram() {
+        // Atualizar relógio local
+        function updateClock() {
             const now = new Date();
-            const hour = now.getHours();
-            
-            // Esconder todos os badges "NO AR"
-            document.querySelectorAll('[id^="prog-"]').forEach(el => el.classList.add('hidden'));
-            
-            let currentProgram;
-            if (hour >= 6 && hour < 10) {
-                currentProgram = 'prog-manha';
-            } else if (hour >= 10 && hour < 14) {
-                currentProgram = 'prog-tarde';
-            } else if (hour >= 14 && hour < 20) {
-                currentProgram = 'prog-noite';
-            } else {
-                currentProgram = 'prog-madrugada';
-            }
-            
-            const activeBadge = document.getElementById(currentProgram);
-            if (activeBadge) {
-                activeBadge.classList.remove('hidden');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const clockElement = document.getElementById('currentTime');
+            if (clockElement) {
+                clockElement.textContent = `${hours}:${minutes}`;
             }
         }
 
@@ -1200,6 +1633,14 @@
                 const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
                 
                 element.textContent = currentValue.toLocaleString('pt-BR');
+                
+                // Sincroniza também o painel ao vivo se for o totalVisitors
+                if (elementId === 'totalVisitors') {
+                    const statsElement = document.getElementById('totalVisitorsStats');
+                    if (statsElement) {
+                        statsElement.textContent = currentValue.toLocaleString('pt-BR');
+                    }
+                }
                 
                 if (progress < 1) {
                     requestAnimationFrame(updateCounter);
@@ -1432,11 +1873,6 @@
             }
         }
 
-        // Função para mostrar detalhes do programa
-        function showProgramDetails(name, time, description, period) {
-            showToast(`📻 ${name}: ${description}`, 4000);
-        }
-
         // Atualizar relógio local
         function updateClock() {
             const now = new Date();
@@ -1445,75 +1881,6 @@
             const clockElement = document.getElementById('currentTime');
             if (clockElement) {
                 clockElement.textContent = `${hours}:${minutes}`;
-            }
-        }
-
-        // Atualizar banner do programa atual
-        function updateCurrentProgramBanner() {
-            const hour = new Date().getHours();
-            let programName = '';
-            let programTime = '';
-            
-            if (hour >= 6 && hour < 10) {
-                programName = 'Manhã Animada MOC';
-                programTime = '06:00 - 10:00';
-            } else if (hour >= 10 && hour < 14) {
-                programName = 'Forró no Trabalho';
-                programTime = '10:00 - 14:00';
-            } else if (hour >= 14 && hour < 20) {
-                programName = 'Noite do Forró';
-                programTime = '14:00 - 20:00';
-            } else {
-                programName = 'Madrugada VIP';
-                programTime = '20:00 - 06:00';
-            }
-            
-            const nameElement = document.getElementById('currentProgramName');
-            const timeElement = document.getElementById('currentProgramTime');
-            
-            if (nameElement) nameElement.textContent = programName;
-            if (timeElement) timeElement.textContent = programTime;
-        }
-
-        // Countdown para o próximo programa
-        function updateNextProgramCountdown() {
-            const now = new Date();
-            const hour = now.getHours();
-            const minute = now.getMinutes();
-            const second = now.getSeconds();
-            
-            let nextProgramHour = 0;
-            
-            // Determina a hora do próximo programa
-            if (hour < 6) {
-                nextProgramHour = 6; // Manhã às 06:00
-            } else if (hour < 10) {
-                nextProgramHour = 10; // Trabalho às 10:00
-            } else if (hour < 14) {
-                nextProgramHour = 14; // Noite às 14:00
-            } else if (hour < 20) {
-                nextProgramHour = 20; // Madrugada às 20:00
-            } else {
-                nextProgramHour = 30; // Manhã do próximo dia (24 + 6)
-            }
-            
-            // Calcula segundos restantes
-            const currentSeconds = hour * 3600 + minute * 60 + second;
-            const nextProgramSeconds = nextProgramHour * 3600;
-            let remainingSeconds = nextProgramSeconds - currentSeconds;
-            
-            if (remainingSeconds <= 0) {
-                remainingSeconds += 24 * 3600; // Próximo dia
-            }
-            
-            const hoursLeft = Math.floor(remainingSeconds / 3600);
-            const minutesLeft = Math.floor((remainingSeconds % 3600) / 60);
-            const secondsLeft = remainingSeconds % 60;
-            
-            const countdownElement = document.getElementById('nextProgramCountdown');
-            if (countdownElement) {
-                countdownElement.textContent = 
-                    `${hoursLeft.toString().padStart(2, '0')}:${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
             }
         }
 
@@ -1680,9 +2047,6 @@
             console.log('✅ DOMContentLoaded disparado!');
             console.log('🔄 Iniciando todas as funções...');
             
-            updateCurrentProgram();
-            console.log('✅ updateCurrentProgram() executado');
-            
             // Inicializar contador de visitantes
             initializeVisitorCounter();
             console.log('✅ initializeVisitorCounter() executado');
@@ -1706,19 +2070,11 @@
             attemptAutoPlay();
             console.log('✅ attemptAutoPlay() chamado');
             
-            // Inicializar relógio e countdown
+            // Inicializar relógio
             updateClock();
-            updateCurrentProgramBanner();
-            updateNextProgramCountdown();
             
             // Atualiza relógio a cada segundo
             setInterval(updateClock, 1000);
-            
-            // Atualiza countdown a cada segundo
-            setInterval(updateNextProgramCountdown, 1000);
-            
-            // Atualiza banner do programa a cada minuto
-            setInterval(updateCurrentProgramBanner, 60000);
             
             // Busca contador REAL imediatamente
             fetchRealListeners();
@@ -1758,10 +2114,6 @@
             // Atualiza música tocando a cada 2 segundos (MAIS RÁPIDO)
             setInterval(fetchNowPlaying, 2000);
             console.log('⏱️ Intervalo fetchNowPlaying configurado (2s)');
-            
-            // Verificar programa atual a cada minuto
-            setInterval(updateCurrentProgram, 60000);
-            console.log('⏱️ Intervalo updateCurrentProgram configurado (60s)');
         });
 
         // Toggle menu mobile
