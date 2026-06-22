@@ -561,7 +561,7 @@
 
             <div class="md:col-span-1 space-y-8">
                 
-                <div class="glass-panel p-6 md:p-8 rounded-3xl text-center border-4 border-amber-500/10 flex flex-col items-center gap-6 shadow-2xl animate-fade-in-up delay-200 hover-lift">
+                <div class="glass-panel p-6 md:p-8 rounded-3xl text-center border-4 border-amber-500/10 flex flex-col items-center gap-6 shadow-2xl animate-fade-in-up delay-200 hover-lift" id="playerCard">
                     <audio id="audioPlayer" src="https://stream.forrostreammoc.shop/radio.mp3" preload="none"></audio>
 
                     <button id="playBtn" onclick="togglePlay()" class="relative group" aria-label="Tocar ou pausar a rádio">
@@ -756,6 +756,21 @@
     </footer>
 
     <script v="20260118">
+        // Adiciona clique em todo o card do player para iniciar
+        const playerCard = document.getElementById('playerCard');
+        if (playerCard) {
+            playerCard.addEventListener('click', function(e) {
+                // Só toca se não clicou nos controles de volume, timer ou compartilhar
+                if (!e.target.closest('#volumeSlider') && 
+                    !e.target.closest('#sleepTimerBtn') && 
+                    !e.target.closest('[onclick*="shareRadio"]')) {
+                    if (audio.paused) {
+                        togglePlay();
+                    }
+                }
+            });
+        }
+
         console.log('🚀 Script do site carregado com sucesso!');
         console.log('📻 Iniciando Forró Stream MOC...');
         
