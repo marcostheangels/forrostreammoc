@@ -1,0 +1,24 @@
+{
+  "name": "Forró Stream MOC",
+  "short_name": "Forró MOC",
+  "description": "A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG.",
+  "start_url": "./index_final.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
