@@ -7,14 +7,12 @@
     <meta name="keywords" content="forró, rádio, Montes Claros, MOC, música, ao vivo, stream, forró tradicional, forró universitário">
     <meta name="author" content="Forró Stream MOC">
     
-    <!-- Open Graph / Facebook -->
     <meta property="og:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
     <meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://forrostreammoc.com">
     <meta property="og:image" content="forro-moc-poster.jpg">
     
-    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
     <meta name="twitter:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
@@ -26,15 +24,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK -->
     <script type="module">
-        // Importa Firebase
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, onValue, runTransaction, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
         
-        // CONFIGURAÇÃO DO FIREBASE - Forró Stream MOC
+        // ============================================
+        // 🔥 CONFIGURAÇÃO FIREBASE - FORRÓ STREAM MOC
+        // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyCn9EYNFB094gysRRuGvnffOAbHTobFsbo",
             authDomain: "forro-stream-moc.firebaseapp.com",
@@ -45,30 +44,24 @@
             appId: "1:156075369710:web:7314e4407fb55cd4d17fff"
         };
         
-        // Inicializa Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         
-        // Referências do contador no Firebase
         const counterRef = ref(database, 'forro_stream/total_listeners');
         const lastUpdateRef = ref(database, 'forro_stream/last_update');
+        const ouvintesRef = ref(database, 'radio/ouvintesAgora');
+        const visitasRef = ref(database, 'radio/totalVisitas');
+        const listenersListRef = ref(database, 'listeners');
         
-        // Exporta para uso global
         window.firebaseDB = {
-            database,
-            counterRef,
-            lastUpdateRef,
-            onValue,
-            runTransaction,
-            set,
-            ref
+            database, counterRef, lastUpdateRef, ouvintesRef, visitasRef, listenersListRef,
+            onValue, runTransaction, set, ref,
+            ServerValue: { TIMESTAMP: Date.now() }
         };
         
         console.log('✅ Firebase inicializado com sucesso!');
-        console.log('🔥 Projeto: forro-stream-moc');
     </script>
     
-    <!-- Toast Notification CSS -->
     <style>
         .toast {
             position: fixed;
@@ -88,48 +81,28 @@
             font-weight: 500;
             max-width: 350px;
         }
-        .toast.show {
-            transform: translateX(0);
-        }
-        .toast i {
-            font-size: 24px;
-        }
-        
-        /* 🎉 TEMA FESTA JUNINA 🎉 */
+        .toast.show { transform: translateX(0); }
+        .toast i { font-size: 24px; }
+
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(5deg); }
         }
-        
         @keyframes sway {
             0%, 100% { transform: rotate(-5deg); }
             50% { transform: rotate(5deg); }
         }
-        
         @keyframes twinkle {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
         }
-        
         @keyframes firefly {
-            0%, 100% { 
-                opacity: 0; 
-                transform: translate(0, 0); 
-            }
-            25% { 
-                opacity: 1; 
-                transform: translate(100px, -50px); 
-            }
-            50% { 
-                opacity: 0.8; 
-                transform: translate(200px, 0); 
-            }
-            75% { 
-                opacity: 1; 
-                transform: translate(100px, 50px); 
-            }
+            0%, 100% { opacity: 0; transform: translate(0, 0); }
+            25% { opacity: 1; transform: translate(100px, -50px); }
+            50% { opacity: 0.8; transform: translate(200px, 0); }
+            75% { opacity: 1; transform: translate(100px, 50px); }
         }
-        
+
         .junina-banner {
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 25%, #ffd700 50%, #ff6b35 75%, #f7931e 100%);
             background-size: 400% 400%;
@@ -139,207 +112,130 @@
             position: relative;
             overflow: hidden;
         }
-        
         .junina-banner::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px);
             pointer-events: none;
         }
-        
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
         .junina-flag {
-            position: absolute;
-            width: 40px;
-            height: 50px;
+            position: absolute; width: 40px; height: 50px;
             animation: sway 3s ease-in-out infinite;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
             z-index: 10;
         }
-        
         .junina-flag.red { background: linear-gradient(135deg, #ff0000, #cc0000); }
         .junina-flag.blue { background: linear-gradient(135deg, #0066ff, #0044cc); }
         .junina-flag.yellow { background: linear-gradient(135deg, #ffd700, #ffaa00); }
         .junina-flag.green { background: linear-gradient(135deg, #00cc00, #009900); }
-        
         .junina-lantern {
-            position: fixed;
-            width: 60px;
-            height: 80px;
+            position: fixed; width: 60px; height: 80px;
             background: radial-gradient(circle, #ffeb3b 0%, #ff9800 50%, #ff5722 100%);
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             box-shadow: 0 0 40px #ffeb3b, 0 0 80px #ff9800;
-            animation: float 4s ease-in-out infinite;
-            z-index: 5;
-            opacity: 0.9;
+            animation: float 4s ease-in-out infinite; z-index: 5; opacity: 0.9;
         }
-        
         .junina-lantern::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 20px;
-            background: #8d6e63;
+            content: ''; position: absolute; top: -10px; left: 50%;
+            transform: translateX(-50%); width: 2px; height: 20px; background: #8d6e63;
         }
-        
         .junina-firefly {
-            position: fixed;
-            width: 8px;
-            height: 8px;
+            position: fixed; width: 8px; height: 8px;
             background: radial-gradient(circle, #ffff00, #ffeb3b);
             border-radius: 50%;
             box-shadow: 0 0 10px #ffff00, 0 0 20px #ffeb3b;
             animation: firefly 8s ease-in-out infinite;
-            z-index: 4;
-            pointer-events: none;
+            z-index: 4; pointer-events: none;
         }
-        
         .junina-corner-decoration {
-            position: fixed;
-            width: 150px;
-            height: 150px;
-            pointer-events: none;
-            z-index: 3;
+            position: fixed; width: 150px; height: 150px;
+            pointer-events: none; z-index: 3;
         }
-        
         .junina-corner-decoration.top-left {
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), transparent);
             clip-path: polygon(0 0, 100% 0, 0 100%);
         }
-        
         .junina-corner-decoration.top-right {
-            top: 0;
-            right: 0;
+            top: 0; right: 0;
             background: linear-gradient(225deg, rgba(255, 215, 0, 0.3), transparent);
             clip-path: polygon(0 0, 100% 0, 100% 100%);
         }
-        
         .junina-corner-decoration.bottom-left {
-            bottom: 0;
-            left: 0;
+            bottom: 0; left: 0;
             background: linear-gradient(45deg, rgba(247, 147, 30, 0.3), transparent);
             clip-path: polygon(0 0, 0 100%, 100% 100%);
         }
-        
         .junina-corner-decoration.bottom-right {
-            bottom: 0;
-            right: 0;
+            bottom: 0; right: 0;
             background: linear-gradient(315deg, rgba(255, 107, 53, 0.3), transparent);
             clip-path: polygon(100% 0, 0 100%, 100% 100%);
         }
-        
         .junina-title {
-            text-shadow: 
-                3px 3px 0 #ff6b35,
-                6px 6px 0 rgba(255, 107, 53, 0.5);
+            text-shadow: 3px 3px 0 #ff6b35, 6px 6px 0 rgba(255, 107, 53, 0.5);
             letter-spacing: 2px;
         }
-        
         .junina-card {
-            border: 3px solid transparent;
-            background-clip: padding-box;
-            position: relative;
-            transition: all 0.3s ease;
+            border: 3px solid transparent; background-clip: padding-box;
+            position: relative; transition: all 0.3s ease;
         }
-        
         .junina-card:hover {
             border-color: #ffd700;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
             transform: translateY(-5px);
         }
-        
         .junina-badge {
             background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.75rem;
+            color: white; padding: 4px 12px; border-radius: 20px;
+            font-weight: bold; font-size: 0.75rem;
             box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
             animation: twinkle 2s ease-in-out infinite;
         }
-    </style>
-    <style>
+
         body { 
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
         }
         .font-header { font-family: 'Montserrat', sans-serif; }
         
-        /* Controle de overflow de texto para o card Tocando Agora */
-        .overflow-wrap-anywhere {
-            overflow-wrap: anywhere;
-            word-wrap: anywhere;
-            word-break: break-word;
-        }
+        .overflow-wrap-anywhere { overflow-wrap: anywhere; word-wrap: anywhere; word-break: break-word; }
         .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
         .line-clamp-1 {
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
+            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+            overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
-        
-        /* Correção para texto com acentos não vazar */
         #nowPlayingText, #nowPlayingArtist {
-            hyphens: auto;
-            -webkit-hyphens: auto;
-            -ms-hyphens: auto;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            max-width: 100%;
+            hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto;
+            word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;
         }
-        
-        /* Efeitos visuais profissionais, paleta ajustada para a imagem */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px);
             border: 1px solid rgba(245, 158, 11, 0.15);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         .glow-poster {
-            box-shadow: 0 20px 80px -10px rgba(234, 88, 12, 0.6), 
-                        0 0 40px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 20px 80px -10px rgba(234, 88, 12, 0.6), 0 0 40px rgba(245, 158, 11, 0.3);
             transition: all 0.4s ease;
         }
         .glow-poster:hover {
-            box-shadow: 0 25px 100px -5px rgba(234, 88, 12, 0.8), 
-                        0 0 60px rgba(245, 158, 11, 0.5);
+            box-shadow: 0 25px 100px -5px rgba(234, 88, 12, 0.8), 0 0 60px rgba(245, 158, 11, 0.5);
             transform: translateY(-2px);
         }
         .text-gradient {
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #ea580c 75%, #dc2626 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
+            -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
         }
-        
-        /* Animação de pulso contínuo para o botão no ar */
         .pulse-live-ring {
             border-color: rgba(251, 191, 36, 0.6);
             animation: pulseRing 1.5s cubic-bezier(0.24, 0, 0.38, 1) infinite;
@@ -349,8 +245,6 @@
             70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
         }
-
-        /* Animação Waveform (Ondas Sonoras Simuladas) */
         .waveform { display: flex; align-items: flex-end; gap: 2px; height: 16px; width: 24px; }
         .waveform-bar { width: 4px; border-radius: 2px; }
         .waveform-bar-1 { height: 100%; animation: wf 0.8s ease-in-out infinite; }
@@ -358,125 +252,165 @@
         .waveform-bar-3 { height: 90%; animation: wf 0.7s ease-in-out 0.2s infinite; }
         .waveform-bar-4 { height: 60%; animation: wf 1s ease-in-out 0.3s infinite; }
         @keyframes wf { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.4); } }
-
-        /* Animações suaves de entrada */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
+        .animate-fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
-
-        /* Efeito hover suave nos cards */
         .hover-lift {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .hover-lift:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 
-                        0 0 30px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(245, 158, 11, 0.2);
         }
-
-        /* Efeito de brilho nos botões */
-        .btn-shine {
-            position: relative;
-            overflow: hidden;
-        }
+        .btn-shine { position: relative; overflow: hidden; }
         .btn-shine::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: left 0.5s;
         }
-        .btn-shine:hover::before {
-            left: 100%;
-        }
-
-        /* Scroll suave */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Efeito de partículas sutis no fundo */
+        .btn-shine:hover::before { left: 100%; }
+        html { scroll-behavior: smooth; }
         body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
                 radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(234, 88, 12, 0.03) 0%, transparent 50%),
                 radial-gradient(circle at 40% 20%, rgba(251, 191, 36, 0.02) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
+            pointer-events: none; z-index: -1;
         }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #f59e0b, #ea580c);
-            border-radius: 5px;
+            background: linear-gradient(180deg, #f59e0b, #ea580c); border-radius: 5px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(180deg, #fbbf24, #f59e0b);
         }
 
-        /* Responsividade mobile */
+        /* ============== CARD DE LOCALIZAÇÃO ============== */
+        .location-card-forr{
+            max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px;
+            background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(245,158,11,.05));
+            border:1px solid rgba(245,158,11,.3);backdrop-filter:blur(8px);
+        }
+        .location-card-forr.loading{opacity:.7;text-align:center}
+        .location-header-forr{
+            display:flex;align-items:center;gap:9px;margin-bottom:11px;
+            font-size:.78rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.3px;font-weight:800;
+        }
+        .location-header-forr .pulse-dot{
+            width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulseRing 1.4s infinite;
+        }
+        .location-main-forr{display:flex;align-items:center;gap:14px;margin-bottom:11px}
+        .location-flag-forr{font-size:2.4rem;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+        .location-info-forr{flex-grow:1;min-width:0}
+        .location-city-forr{font-size:1.2rem;font-weight:800;color:#fbbf24;margin:0;line-height:1.2}
+        .location-state-forr{font-size:.85rem;color:#cbd5e1;margin:2px 0 0 0}
+        .location-details-forr{
+            display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px;font-size:.78rem;
+        }
+        .location-detail-forr{
+            background:rgba(0,0,0,.4);padding:8px 11px;border-radius:9px;
+            border:1px solid rgba(245,158,11,.15);
+        }
+        .location-detail-label-forr{
+            color:rgba(203,213,225,.5);font-size:.65rem;text-transform:uppercase;
+            letter-spacing:1px;margin-bottom:3px;font-weight:600;
+        }
+        .location-detail-value-forr{color:#fff;font-weight:700;font-size:.85rem;word-break:break-word}
+        .location-detail-value-forr.ip{font-family:'Orbitron',monospace;color:#fbbf24}
+        .location-status-forr{margin-top:10px;font-size:.75rem;text-align:center;color:rgba(203,213,225,.6);font-style:italic}
+        .location-status-forr.listening{color:#22c55e;font-weight:800;font-style:normal}
+
+        /* ============== CARD DE OUINTES COM IPs ============== */
+        .listeners-card-forr{
+            max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px;
+            background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(234,88,12,.04));
+            border:1px solid rgba(245,158,11,.35);backdrop-filter:blur(8px);
+        }
+        .listeners-header-forr{
+            display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px;
+        }
+        .listeners-title-forr{
+            display:flex;align-items:center;gap:8px;font-size:.88rem;color:#fbbf24;
+            text-transform:uppercase;letter-spacing:1.3px;font-weight:800;
+        }
+        .listeners-total-forr{
+            background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(234,88,12,.15));
+            color:#fff;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:800;
+            border:1px solid rgba(245,158,11,.5);display:flex;align-items:center;gap:6px;
+        }
+        .listeners-total-forr .live-dot{
+            width:7px;height:7px;background:#ef4444;border-radius:50%;
+            animation:pulseRing 1.2s infinite;box-shadow:0 0 6px #ef4444;
+        }
+        .listeners-total-forr .num{
+            color:#fde68a;font-size:1.05rem;font-family:'Orbitron',sans-serif;
+            text-shadow:0 0 6px rgba(245,158,11,.5);
+        }
+        .listeners-table-forr{width:100%;background:rgba(0,0,0,.4);border-radius:11px;overflow:hidden;font-size:.82rem}
+        .listeners-table-header-forr{
+            display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px;
+            padding:9px 13px;background:rgba(245,158,11,.12);
+            font-size:.65rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.1px;font-weight:800;
+            border-bottom:1px solid rgba(245,158,11,.2);
+        }
+        .listeners-table-body-forr{max-height:260px;overflow-y:auto}
+        .listeners-table-body-forr::-webkit-scrollbar{width:5px}
+        .listeners-table-body-forr::-webkit-scrollbar-thumb{background:rgba(245,158,11,.5);border-radius:3px}
+        .listener-row-forr{
+            display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px;
+            padding:9px 13px;align-items:center;
+            border-bottom:1px solid rgba(255,255,255,.04);
+            transition:.3s;animation:fadeInRowF .4s ease-out;
+        }
+        @keyframes fadeInRowF{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+        .listener-row-forr:hover{background:rgba(245,158,11,.08)}
+        .listener-row-forr.me{
+            background:linear-gradient(90deg,rgba(34,197,94,.18),transparent);
+            border-left:3px solid #22c55e;
+        }
+        .listener-row-forr .ip-cell{font-family:'Orbitron',monospace;color:#fbbf24;font-size:.75rem;font-weight:800}
+        .listener-row-forr.me .ip-cell{color:#b9f6ca}
+        .listener-row-forr .city-cell{color:#fff;font-weight:600;font-size:.82rem}
+        .listener-row-forr .state-cell{color:rgba(203,213,225,.7);font-size:.78rem}
+        .listener-row-forr .time-cell{
+            color:rgba(203,213,225,.5);font-size:.7rem;text-align:right;font-family:'Orbitron',monospace;
+        }
+        .listeners-empty-forr{
+            padding:26px 18px;text-align:center;color:rgba(203,213,225,.5);
+            font-style:italic;font-size:.88rem;
+        }
+        .listeners-status-forr{margin-top:9px;font-size:.7rem;text-align:center;color:rgba(203,213,225,.4);font-style:italic}
+
+        @media (max-width:640px){
+            .location-details-forr{grid-template-columns:1fr}
+            .listeners-table-header-forr,.listener-row-forr{grid-template-columns:1fr 1fr 50px;font-size:.7rem}
+            .listeners-table-header-forr .col-state,.listener-row-forr .state-cell{display:none}
+        }
+
         @media (max-width: 768px) {
-            .font-header.text-5xl {
-                font-size: 2.5rem;
-            }
-            .w-72.h-72 {
-                width: 16rem;
-                height: 16rem;
-            }
+            .font-header.text-5xl { font-size: 2.5rem; }
+            .w-72.h-72 { width: 16rem; height: 16rem; }
         }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden">
-    <!-- 🎉 BACKGROUND FESTA JUNINA REALISTA  -->
-    <div class="fixed inset-0 pointer-events-none z-0" style="background: linear-gradient(to bottom, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.5) 50%, rgba(15, 23, 42, 0.4) 100%), url('C:/Users/MARCOS/AppData/Roaming/QoderCN/SharedClientCache/cache/images/a7e7dcec/Gemini_Generated_Image_9jvxww9jvxww9jvx-3aed68ec.png'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.5;">
+    <div class="fixed inset-0 pointer-events-none z-0" style="background: linear-gradient(to bottom, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.5) 50%, rgba(15, 23, 42, 0.4) 100%);">
     </div>
     
-    <!-- Camada escura sobre o background para melhor legibilidade -->
     <div class="fixed inset-0 bg-slate-950/50 pointer-events-none z-0"></div>
     
-    <!-- 🎉 DECORAÇÕES FESTA JUNINA 🎉 -->
-    <!-- Decorações dos cantos -->
     <div class="junina-corner-decoration top-left"></div>
     <div class="junina-corner-decoration top-right"></div>
     <div class="junina-corner-decoration bottom-left"></div>
     <div class="junina-corner-decoration bottom-right"></div>
     
-    <!-- Bandeirinhas adicionais no topo da página -->
     <div style="position: fixed; top: 0; left: 0; right: 0; height: 40px; z-index: 15; pointer-events: none; overflow: hidden;">
         <div class="junina-flag red" style="top: -5px; left: 3%; animation-delay: 0s;"></div>
         <div class="junina-flag blue" style="top: -5px; left: 8%; animation-delay: 0.2s;"></div>
@@ -499,21 +433,17 @@
         <div class="junina-flag yellow" style="top: -5px; left: 93%; animation-delay: 3.6s;"></div>
     </div>
     
-    <!-- Lanternas flutuantes -->
     <div class="junina-lantern" style="top: 10%; left: 5%; animation-delay: 0s;"></div>
     <div class="junina-lantern" style="top: 20%; right: 8%; animation-delay: 1s;"></div>
     <div class="junina-lantern" style="bottom: 30%; left: 3%; animation-delay: 2s;"></div>
     <div class="junina-lantern" style="bottom: 15%; right: 5%; animation-delay: 3s;"></div>
     
-    <!-- Vagalumes -->
     <div class="junina-firefly" style="top: 15%; left: 20%; animation-delay: 0s;"></div>
     <div class="junina-firefly" style="top: 40%; right: 15%; animation-delay: 2s;"></div>
     <div class="junina-firefly" style="bottom: 25%; left: 30%; animation-delay: 4s;"></div>
     <div class="junina-firefly" style="top: 60%; right: 25%; animation-delay: 6s;"></div>
     <div class="junina-firefly" style="bottom: 40%; left: 15%; animation-delay: 1s;"></div>
     
-    
-    <!-- Banner de Festa Junina no topo -->
     <div class="junina-banner py-3 px-6 text-center relative z-20">
         <div class="flex items-center justify-center gap-4 flex-wrap">
             <span class="text-2xl">🎊</span>
@@ -523,7 +453,6 @@
             </div>
             <span class="text-2xl">🎊</span>
         </div>
-        <!-- Bandeirinhas decorativas -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
             <div class="junina-flag red" style="top: -5px; left: 10%; animation-delay: 0s;"></div>
             <div class="junina-flag blue" style="top: -5px; left: 25%; animation-delay: 0.5s;"></div>
@@ -538,8 +467,8 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="p-1.5 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl border border-amber-500/30 w-16 h-16 flex items-center justify-center overflow-hidden shadow-lg hover:shadow-amber-500/30 transition-all duration-300">
-    <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Logo Microfone Forró Stream MOC" class="w-full h-full object-contain">
-</div>
+                    <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Logo Microfone Forró Stream MOC" class="w-full h-full object-contain">
+                </div>
                 <div class="flex flex-col">
                     <span class="font-header text-2xl font-extrabold tracking-tighter text-gradient leading-none">FORRÓ STREAM</span>
                     <span class="text-xs text-slate-400 font-medium tracking-widest uppercase">MONTES CLAROS/MG</span>
@@ -553,7 +482,6 @@
                     <a href="#sobre-section" class="hover:text-amber-400 transition">Sobre</a>
                 </nav>
                 
-                <!-- Botão Menu Mobile -->
                 <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-amber-400 transition text-2xl">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -561,7 +489,6 @@
         </div>
     </header>
 
-    <!-- Badge Flutuante de Ouvintes -->
     <div id="floatingListenerBadge" class="fixed bottom-6 right-6 z-40 bg-gradient-to-br from-green-500 to-green-600 text-white px-5 py-3 rounded-full shadow-2xl hidden md:flex items-center gap-3 animate-fade-in-up hover:scale-105 transition-transform cursor-pointer border-2 border-green-400/50 backdrop-blur">
         <div class="w-3 h-3 bg-white rounded-full animate-ping"></div>
         <div class="flex items-center gap-2">
@@ -571,7 +498,6 @@
         <span class="text-xs font-bold uppercase tracking-wider opacity-90">ouvindo agora</span>
     </div>
 
-    <!-- Badge Flutuante da Música -->
     <div id="floatingNowPlaying" class="fixed bottom-24 right-6 z-40 bg-gradient-to-br from-purple-500 to-pink-600 text-white px-4 py-3 rounded-xl shadow-2xl hidden md:block max-w-[280px] animate-fade-in-up hover:scale-105 transition-transform border-2 border-purple-400/50 backdrop-blur">
         <div class="flex items-start gap-3">
             <i class="fa-solid fa-music text-base mt-0.5 flex-shrink-0"></i>
@@ -583,13 +509,11 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast">
         <i class="fa-solid fa-check-circle"></i>
         <span id="toastMessage">Notificação</span>
     </div>
 
-    <!-- Menu Mobile -->
     <div id="mobileMenu" class="fixed inset-0 bg-slate-950/95 backdrop-blur-lg z-40 hidden flex-col items-center justify-center gap-8">
         <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-3xl transition">
             <i class="fa-solid fa-xmark"></i>
@@ -615,11 +539,11 @@
                     <div class="flex flex-col md:flex-row items-center gap-8">
                         
                         <div class="w-72 h-72 md:w-80 md:h-80 rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 flex items-center justify-center shadow-inner relative overflow-hidden group border-2 border-amber-400/40 hover:border-amber-400/60 transition-all duration-500">
-    <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Cartaz Oficial Forró Stream MOC" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2">
-    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-6">
-        <span class="text-sm font-bold uppercase tracking-widest text-amber-300 drop-shadow-lg">Ao Vivo MOC 🎵</span>
-    </div>
-</div>
+                            <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Cartaz Oficial Forró Stream MOC" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-6">
+                                <span class="text-sm font-bold uppercase tracking-widest text-amber-300 drop-shadow-lg">Ao Vivo MOC 🎵</span>
+                            </div>
+                        </div>
 
                         <div class="flex-grow flex flex-col gap-6 w-full text-center md:text-left">
                             <div class="space-y-1">
@@ -651,7 +575,6 @@
                                 </div>
                             </div>
 
-                            <!-- Música Tocando Agora -->
                             <div class="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-red-500/10 backdrop-blur border border-purple-500/30 p-4 md:p-5 rounded-2xl shadow-lg">
                                 <div class="flex items-start gap-3 md:gap-4">
                                     <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
@@ -671,7 +594,6 @@
                                 </div>
                             </div>
 
-                            <!-- Histórico de Músicas -->
                             <div class="bg-slate-900/60 backdrop-blur border border-slate-700/50 p-4 rounded-2xl shadow-lg">
                                 <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3 flex items-center gap-2">
                                     <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Últimas Tocadas
@@ -681,7 +603,6 @@
                                 </div>
                             </div>
 
-                            <!-- Contador de Ouvintes em Tempo Real -->
                             <div class="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 backdrop-blur border border-amber-500/30 p-5 rounded-2xl shadow-lg">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
@@ -710,6 +631,61 @@
                     </div>
                 </div>
 
+                <!-- ============== NOVO: CARD DE LOCALIZAÇÃO ============== -->
+                <div class="location-card-forr loading" id="locationCardF">
+                    <div class="location-header-forr">
+                        <span class="pulse-dot"></span>
+                        <span>📍 Sua Localização (IP Público Real)</span>
+                    </div>
+                    <div class="location-main-forr">
+                        <div class="location-flag-forr" id="locationFlagF">🌍</div>
+                        <div class="location-info-forr">
+                            <h3 class="location-city-forr" id="locationCityF">Detectando...</h3>
+                            <p class="location-state-forr" id="locationStateF">Aguarde enquanto localizamos você</p>
+                        </div>
+                    </div>
+                    <div class="location-details-forr">
+                        <div class="location-detail-forr">
+                            <div class="location-detail-label-forr">🌐 Seu IP Público</div>
+                            <div class="location-detail-value-forr ip" id="locationIPF">—</div>
+                        </div>
+                        <div class="location-detail-forr">
+                            <div class="location-detail-label-forr">Provedor</div>
+                            <div class="location-detail-value-forr" id="locationISPF">—</div>
+                        </div>
+                    </div>
+                    <div class="location-status-forr" id="locationStatusF">💡 Detectando seu IP público real...</div>
+                </div>
+
+                <!-- ============== NOVO: CARD DE OUINTES COM IPs ============== -->
+                <div class="listeners-card-forr" id="listenersCardF">
+                    <div class="listeners-header-forr">
+                        <div class="listeners-title-forr">
+                            <span>🔐</span>
+                            <span>Ouvintes com IP Real</span>
+                        </div>
+                        <div class="listeners-total-forr">
+                            <span class="live-dot"></span>
+                            <span class="num" id="listenersCountF">0</span>
+                            <span>ao vivo</span>
+                        </div>
+                    </div>
+                    <div class="listeners-table-forr">
+                        <div class="listeners-table-header-forr">
+                            <div>🌐 Endereço IP</div>
+                            <div class="col-state">Cidade</div>
+                            <div>Estado</div>
+                            <div style="text-align:right">Visto</div>
+                        </div>
+                        <div class="listeners-table-body-forr" id="listenersListF">
+                            <div class="listeners-empty-forr">🔐 Aguardando alguém clicar em Play...</div>
+                        </div>
+                    </div>
+                    <div class="listeners-status-forr" id="listenersStatusF">
+                        🟢 IPs reais capturados • Limpeza automática em 24h
+                    </div>
+                </div>
+
                 <div class="glass-panel p-6 rounded-2xl border border-slate-800 shadow-xl animate-fade-in-up delay-100" id="grade-section">
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="font-header text-xl font-bold text-white flex items-center gap-3">
@@ -721,7 +697,6 @@
                         </div>
                     </div>
                     
-                    <!-- Últimas Músicas Tocadas -->
                     <div class="mb-6 p-5 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 border border-purple-500/30 rounded-xl backdrop-blur">
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
@@ -745,7 +720,6 @@
                         </div>
                     </div>
                     
-                    <!-- Pedir Música - Destaque -->
                     <div class="mb-6 p-5 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 border-2 border-green-500/40 rounded-xl backdrop-blur hover:border-green-400/60 transition-all duration-300 cursor-pointer group" onclick="window.open('https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!', '_blank')">
                         <div class="flex items-center gap-4">
                             <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -763,7 +737,6 @@
                         </div>
                     </div>
                     
-                    <!-- 🎊 CARD ESPECIAL FESTA JUNINA 🎊 -->
                     <div class="mb-6 p-5 bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-red-500/20 border-2 border-orange-500/40 rounded-xl backdrop-blur junina-card relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-400/20 to-transparent rounded-full -mr-16 -mt-16"></div>
                         <div class="flex items-start gap-4 relative z-10">
@@ -798,7 +771,6 @@
                         </div>
                     </div>
                     
-                    <!-- Estatísticas da Rádio -->
                     <div class="grid grid-cols-2 gap-3 mb-6">
                         <div class="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-center hover:border-blue-400/50 transition-all">
                             <i class="fa-solid fa-database text-2xl text-blue-400 mb-2"></i>
@@ -815,7 +787,6 @@
                         </div>
                     </div>
                     
-                    <!-- Informações Úteis -->
                     <div class="p-5 bg-slate-900/60 border border-slate-700 rounded-xl space-y-4">
                         <h3 class="font-bold text-white flex items-center gap-2">
                             <i class="fa-solid fa-circle-info text-amber-500"></i>
@@ -878,13 +849,11 @@
                         <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8" oninput="changeVolume(this.value)" class="w-full accent-amber-500 bg-gradient-to-r from-slate-700 to-slate-600 h-2 rounded-lg appearance-none cursor-pointer hover:h-2.5 transition-all">
                     </div>
 
-                    <!-- Botão Compartilhar -->
                     <button onclick="shareRadio()" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-amber-500/10 hover:to-orange-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-amber-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-amber-500/20" aria-label="Compartilhar a rádio">
                         <i class="fa-solid fa-share-nodes text-amber-500 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
                         <span class="text-sm font-medium text-slate-300 group-hover:text-amber-400 transition-colors">Compartilhar Rádio</span>
                     </button>
 
-                    <!-- Timer/Sleep Mode -->
                     <button onclick="toggleSleepTimer()" id="sleepTimerBtn" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/20" aria-label="Configurar timer para parar">
                         <i class="fa-solid fa-clock text-blue-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
                         <span class="text-sm font-medium text-slate-300 group-hover:text-blue-400 transition-colors" id="sleepTimerText">Timer: Desligado</span>
@@ -914,7 +883,6 @@
             </div>
         </div>
 
-        <!-- Seção Sobre -->
         <section id="sobre-section" class="mt-12 md:mt-16 scroll-mt-24 animate-fade-in-up">
             <div class="glass-panel p-8 rounded-3xl border border-slate-800 shadow-xl">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -988,7 +956,6 @@
                                 WhatsApp: <strong class="text-amber-400">(38) 99855-8528</strong>
                             </p>
                             
-                            <!-- Botão WhatsApp Principal -->
                             <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!" 
                                target="_blank" 
                                class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-green-500/50 mb-4 group">
@@ -996,7 +963,6 @@
                                 <span>Enviar WhatsApp</span>
                             </a>
                             
-                            <!-- Seção de Anúncios e Divulgação -->
                             <div class="border-t border-slate-700/50 pt-4 mt-4">
                                 <p class="text-xs text-slate-400 mb-3 text-center">
                                     📢 Quer divulgar sua marca, loja ou negócio? Anuncie na rádio!
@@ -1019,7 +985,6 @@
     </main>
 
     <footer class="bg-slate-900 text-center py-8 border-t border-slate-800 mt-12 text-sm text-slate-500 shadow-inner relative overflow-hidden">
-        <!-- Decoração de fundo do footer - bandeirolas bem discretas -->
         <div class="absolute inset-0 opacity-5 pointer-events-none" style="top: 0; height: 25px;">
             <div class="junina-flag red" style="top: 3px; left: 5%; animation-delay: 0s;"></div>
             <div class="junina-flag blue" style="top: 3px; left: 20%; animation-delay: 0.5s;"></div>
@@ -1029,15 +994,14 @@
             <div class="junina-flag blue" style="top: 3px; left: 80%; animation-delay: 2.5s;"></div>
         </div>
         
-    <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 relative z-10">
-        <!-- Badge Festa Junina no Footer -->
-        <div class="mb-2">
-            <span class="junina-badge text-sm px-4 py-2">🎊 Viva São João! 🎊</span>
-        </div>
-        
-        <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/20 shadow-inner junina-card">
-             <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Logo Mini Forró Stream MOC" class="w-full h-full object-cover">
-        </div>
+        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 relative z-10">
+            <div class="mb-2">
+                <span class="junina-badge text-sm px-4 py-2">🎊 Viva São João! 🎊</span>
+            </div>
+            
+            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/20 shadow-inner junina-card">
+                <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Logo Mini Forró Stream MOC" class="w-full h-full object-cover">
+            </div>
             <p class="font-header text-2xl font-bold text-gradient leading-none junina-title">FORRÓ STREAM MOC</p>
             <p>&copy; 2026. A Rádio Profissional do Forró em Montes Claros/MG.</p>
             <p class="text-xs text-orange-400 mt-1 flex items-center justify-center gap-2">
@@ -1046,7 +1010,6 @@
                 <span class="animate-pulse">🔥</span>
             </p>
             
-            <!-- Logo RadiosNet -->
             <div class="mt-4 mb-2">
                 <img src="radiosnet-logo.png" alt="RadiosNet - Plataforma de Rádios Online" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition-opacity duration-300">
             </div>
@@ -1076,17 +1039,212 @@
     </footer>
 
     <script v="20260118">
-        // 🎉 EFEITOS ESPECIAIS FESTA JUNINA 🎉
+        // ============================================
+        // 🔧 SISTEMA DE IP E OUINTES (NOVO)
+        // ============================================
+        const DEBUG_MODE = true;
+        const logF = (...a) => DEBUG_MODE && console.log('🎵', ...a);
+
+        async function detectarLocalizacaoF() {
+            const locationCard = document.getElementById('locationCardF');
+            const locationCity = document.getElementById('locationCityF');
+            const locationState = document.getElementById('locationStateF');
+            const locationFlag = document.getElementById('locationFlagF');
+            const locationIP = document.getElementById('locationIPF');
+            const locationISP = document.getElementById('locationISPF');
+            const locationStatus = document.getElementById('locationStatusF');
+
+            const apis = [
+                { name: 'ipapi.co', url: 'https://ipapi.co/json/',
+                  parse: (d) => ({ city: d.city, state: d.region, country: d.country_name, countryCode: d.country_code, isp: d.org, ip: d.ip }) },
+                { name: 'ip-api.com', url: 'https://ip-api.com/json/?fields=status,country,countryCode,region,regionName,city,org,query',
+                  parse: (d) => ({ city: d.city, state: d.regionName, country: d.country, countryCode: d.countryCode, isp: d.org, ip: d.query }) }
+            ];
+
+            for (const api of apis) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    const response = await fetch(api.url, { signal: controller.signal, cache: 'no-cache' });
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    const info = api.parse(data);
+                    if (info.city && info.city !== '—') {
+                        locationCity.textContent = info.city;
+                        locationState.textContent = `${info.state || ''} • ${info.country || ''}`.trim();
+                        locationFlag.textContent = getCountryFlagF(info.countryCode);
+                        locationIP.textContent = info.ip || '—';
+                        locationISP.textContent = info.isp || '—';
+                        locationCard.classList.remove('loading');
+                        locationStatus.innerHTML = `✅ Detectado`;
+                        return info;
+                    }
+                } catch (err) { continue; }
+            }
+
+            locationCity.textContent = 'Não detectado';
+            locationState.textContent = 'Desative AdBlock';
+            locationFlag.textContent = '❓';
+            locationCard.classList.remove('loading');
+            return null;
+        }
+
+        function getCountryFlagF(countryCode) {
+            if (!countryCode || countryCode.length !== 2) return '🌍';
+            const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
+            return String.fromCodePoint(...codePoints);
+        }
+
+        const myUserIdF = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        let myUserRefF = null;
+        let heartbeatIntervalF = null;
+        let userIsListeningF = false;
+
+        function timeAgoF(timestamp) {
+            const diff = Date.now() - timestamp;
+            const mins = Math.floor(diff / 60000);
+            if (mins < 1) return 'agora';
+            if (mins < 60) return `${mins}min`;
+            const hours = Math.floor(mins / 60);
+            if (hours < 24) return `${hours}h`;
+            return `${Math.floor(hours / 24)}d`;
+        }
+
+        async function registerMyPresenceF(locationData) {
+            if (!locationData || !locationData.ip) return;
+            
+            const { listenersListRef, set, ServerValue } = window.firebaseDB;
+            myUserRefF = listenersListRef.child(myUserIdF);
+            const locationText = locationData.state ? `${locationData.city}, ${locationData.state}` : locationData.city;
+            
+            try {
+                await myUserRefF.set({
+                    ip: locationData.ip,
+                    city: locationData.city,
+                    state: locationData.state || '',
+                    country: locationData.country || 'BR',
+                    isp: locationData.isp || '',
+                    location: locationText,
+                    lastSeen: Date.now()
+                });
+                logF('✅ Registrado com IP:', locationData.ip);
+            } catch (err) {
+                logF('❌ Erro ao registrar:', err);
+            }
+        }
+
+        function startHeartbeatF() {
+            if (heartbeatIntervalF) clearInterval(heartbeatIntervalF);
+            heartbeatIntervalF = setInterval(() => {
+                if (myUserRefF) {
+                    myUserRefF.update({ lastSeen: Date.now() })
+                        .catch(err => logF('❌ Heartbeat erro:', err));
+                }
+            }, 30000);
+        }
+
+        function removeMyPresenceF() {
+            if (myUserRefF) myUserRefF.remove().catch(() => {});
+            if (heartbeatIntervalF) clearInterval(heartbeatIntervalF);
+        }
+
+        async function adicionarOuvinteF() {
+            if (userIsListeningF) return;
+            userIsListeningF = true;
+            const { ouvintesRef, runTransaction } = window.firebaseDB;
+            try {
+                await runTransaction(ouvintesRef, (current) => (current || 0) + 1);
+            } catch (err) { logF('❌ Erro ouvinte:', err); }
+        }
+
+        async function removerOuvinteF() {
+            if (!userIsListeningF) return;
+            userIsListeningF = false;
+            const { ouvintesRef, runTransaction } = window.firebaseDB;
+            try {
+                await runTransaction(ouvintesRef, (current) => Math.max(0, (current || 0) - 1));
+            } catch (err) { logF('❌ Erro ouvinte:', err); }
+        }
+
+        function displayListenersF(snapshot) {
+            const list = document.getElementById('listenersListF');
+            const countEl = document.getElementById('listenersCountF');
+            if (!list || !countEl) return;
+
+            const data = snapshot.val() || {};
+            const now = Date.now();
+            const TIME_LIMIT = 24 * 60 * 60 * 1000;
+            const activeListeners = [];
+            const cleanupPromises = [];
+            const { listenersListRef, remove } = window.firebaseDB;
+
+            Object.entries(data).forEach(([id, listener]) => {
+                const lastSeen = listener.lastSeen || 0;
+                if (now - lastSeen < TIME_LIMIT && listener.ip) {
+                    activeListeners.push({ id, ...listener });
+                } else if (lastSeen > 0) {
+                    cleanupPromises.push(listenersListRef.child(id).remove());
+                }
+            });
+
+            activeListeners.sort((a, b) => {
+                if (a.id === myUserIdF) return -1;
+                if (b.id === myUserIdF) return 1;
+                return (b.lastSeen || 0) - (a.lastSeen || 0);
+            });
+
+            countEl.textContent = activeListeners.length;
+            list.innerHTML = '';
+
+            if (activeListeners.length === 0) {
+                list.innerHTML = '<div class="listeners-empty-forr">🔐 Ninguém clicou em Play ainda...</div>';
+            } else {
+                activeListeners.forEach(listener => {
+                    const row = document.createElement('div');
+                    row.className = 'listener-row-forr';
+                    if (listener.id === myUserIdF) row.classList.add('me');
+                    row.innerHTML = `
+                        <div class="ip-cell">${listener.ip || '—'}${listener.id === myUserIdF ? ' (VOCÊ)' : ''}</div>
+                        <div class="state-cell">${listener.city || '—'}</div>
+                        <div class="city-cell">${listener.state || 'BR'}</div>
+                        <div class="time-cell">${timeAgoF(listener.lastSeen)}</div>
+                    `;
+                    list.appendChild(row);
+                });
+            }
+            Promise.all(cleanupPromises).catch(() => {});
+        }
+
+        function setupListenersRealtimeF() {
+            const { listenersListRef, onValue } = window.firebaseDB;
+            listenersListRef.on('value', (snapshot) => displayListenersF(snapshot), (err) => {
+                logF('❌ Erro listener:', err);
+            });
+        }
+
+        // Inicializar detecção
+        detectarLocalizacaoF().then(locationData => {
+            if (locationData && locationData.ip) {
+                registerMyPresenceF(locationData);
+                startHeartbeatF();
+            }
+            setupListenersRealtimeF();
+        });
+
+        window.addEventListener('beforeunload', removeMyPresenceF);
+        window.addEventListener('pagehide', removeMyPresenceF);
+
+        // ============================================
+        // 🎉 CÓDIGO ORIGINAL (MANTIDO 100%)
+        // ============================================
         function createJuninaEffects() {
-            // Criar confetes ao clicar no player
             const playBtn = document.getElementById('playBtn');
             if (playBtn) {
                 playBtn.addEventListener('click', function(e) {
                     createConfetti(e.clientX, e.clientY);
                 });
             }
-            
-            // Efeito de brilho nos cards juninos
             const juninaCards = document.querySelectorAll('.junina-card');
             juninaCards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
@@ -1096,9 +1254,7 @@
         }
         
         function createConfetti(x, y) {
-            const colors = ['#ff6b35', '#f7931e', '#ffd700', '#ff0000', '#0066ff', '#00cc00'];
             const emojis = ['🎊', '🎉', '✨', '⭐', '🔥', '🎆'];
-            
             for (let i = 0; i < 12; i++) {
                 const confetti = document.createElement('div');
                 confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
@@ -1109,27 +1265,20 @@
                 confetti.style.pointerEvents = 'none';
                 confetti.style.zIndex = '9999';
                 confetti.style.transition = 'all 1s ease-out';
-                
                 document.body.appendChild(confetti);
-                
                 const angle = (Math.PI * 2 * i) / 12;
                 const velocity = Math.random() * 100 + 50;
-                
                 setTimeout(() => {
                     confetti.style.transform = `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity - 100}px) rotate(${Math.random() * 360}deg)`;
                     confetti.style.opacity = '0';
                 }, 10);
-                
-                setTimeout(() => {
-                    confetti.remove();
-                }, 1000);
+                setTimeout(() => { confetti.remove(); }, 1000);
             }
         }
         
         function createSparkles(element) {
             const rect = element.getBoundingClientRect();
             const sparkles = ['✨', '⭐', '💫'];
-            
             for (let i = 0; i < 5; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
@@ -1140,27 +1289,20 @@
                 sparkle.style.pointerEvents = 'none';
                 sparkle.style.animation = 'twinkle 1s ease-out forwards';
                 sparkle.style.zIndex = '100';
-                
                 element.appendChild(sparkle);
-                
-                setTimeout(() => {
-                    sparkle.remove();
-                }, 1000);
+                setTimeout(() => { sparkle.remove(); }, 1000);
             }
         }
         
-        // Inicializa efeitos juninos quando DOM estiver pronto
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', createJuninaEffects);
         } else {
             createJuninaEffects();
         }
         
-        // Adiciona clique em todo o card do player para iniciar
         const playerCard = document.getElementById('playerCard');
         if (playerCard) {
             playerCard.addEventListener('click', function(e) {
-                // Só toca se não clicou nos controles de volume, timer ou compartilhar
                 if (!e.target.closest('#volumeSlider') && 
                     !e.target.closest('#sleepTimerBtn') && 
                     !e.target.closest('[onclick*="shareRadio"]')) {
@@ -1171,9 +1313,6 @@
             });
         }
 
-        console.log('🚀 Script do site carregado com sucesso!');
-        console.log('📻 Iniciando Forró Stream MOC...');
-        
         const audio = document.getElementById('audioPlayer');
         const playIcon = document.getElementById('playIcon');
         const playBtnRing = document.getElementById('playBtnRing');
@@ -1182,36 +1321,24 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeIcon = document.getElementById('volumeIcon');
 
-        console.log('✅ Elementos DOM carregados:', {
-            audio: !!audio,
-            playIcon: !!playIcon,
-            statusText: !!statusText
-        });
-
-        // CRITICAL: Este link é o seu streaming funcional atual. NÃO ALTERE.
         audio.volume = volumeSlider.value;
 
         function togglePlay() {
             if (audio.paused) {
                 statusText.innerText = "Conectando ao Forró Stream MOC...";
                 statusText.className = "text-xl font-semibold text-amber-400";
-                waveform.classList.add('hidden'); // Oculta waveform durante conexão
-                
+                waveform.classList.add('hidden');
                 audio.load();
-                
                 audio.play()
                     .then(() => {
                         playIcon.className = "fa-solid fa-pause";
-                        playBtnRing.classList.remove('opacity-0'); // Ativa animação de pulso
+                        playBtnRing.classList.remove('opacity-0');
                         statusText.innerText = "No Ar - Forró Stream MOC Forró De Minas Uai";
                         statusText.className = "text-xl font-semibold text-green-400";
-                        waveform.classList.remove('hidden'); // Mostra waveform no ar
-                        
-                        // Mensagem especial de Festa Junina ao dar PLAY
+                        waveform.classList.remove('hidden');
                         showToast('🎊 Bem-vindo ao Arraiá do Forró! 🔥 São João 2026!', 4000);
-                        
-                        // Incrementa contador de ouvintes quando dá PLAY
                         incrementListenerCounter();
+                        adicionarOuvinteF();
                     })
                     .catch(err => {
                         statusText.innerText = "Sinal indisponível MOC";
@@ -1223,52 +1350,40 @@
             } else {
                 audio.pause();
                 playIcon.className = "fa-solid fa-play ml-1";
-                playBtnRing.classList.add('opacity-0'); // Desativa pulso
+                playBtnRing.classList.add('opacity-0');
                 statusText.innerText = "Pausado MOC";
                 statusText.className = "text-xl font-semibold text-slate-500";
-                waveform.classList.add('hidden'); // Oculta waveform
+                waveform.classList.add('hidden');
+                removerOuvinteF();
             }
         }
 
         function changeVolume(val) {
             audio.volume = val;
-            if (val == 0) {
-                volumeIcon.className = "fa-solid fa-volume-xmark text-red-500";
-            } else if (val < 0.5) {
-                volumeIcon.className = "fa-solid fa-volume-low text-slate-500";
-            } else {
-                volumeIcon.className = "fa-solid fa-volume-high text-slate-500";
-            }
+            if (val == 0) volumeIcon.className = "fa-solid fa-volume-xmark text-red-500";
+            else if (val < 0.5) volumeIcon.className = "fa-solid fa-volume-low text-slate-500";
+            else volumeIcon.className = "fa-solid fa-volume-high text-slate-500";
         }
 
-        // Toast Notification System
         function showToast(message, duration = 3000) {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
-            
             toastMessage.textContent = message;
             toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, duration);
+            setTimeout(() => toast.classList.remove('show'), duration);
         }
 
-        // Sleep Timer Functionality
         let sleepTimerInterval = null;
         let sleepTimerMinutes = 0;
 
         function toggleSleepTimer() {
             if (sleepTimerMinutes > 0) {
-                // Desligar timer
                 clearInterval(sleepTimerInterval);
                 sleepTimerMinutes = 0;
                 document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
                 showToast('⏰ Timer desativado');
             } else {
-                // Mostrar opções de tempo
                 const minutes = prompt('Definir timer para parar em quantos minutos?\n\nExemplos: 15, 30, 45, 60', '30');
-                
                 if (minutes && !isNaN(minutes) && parseInt(minutes) > 0) {
                     sleepTimerMinutes = parseInt(minutes);
                     startSleepTimer(sleepTimerMinutes);
@@ -1278,12 +1393,9 @@
 
         function startSleepTimer(minutes) {
             let remainingSeconds = minutes * 60;
-            
             updateSleepTimerDisplay(remainingSeconds);
-            
             sleepTimerInterval = setInterval(() => {
                 remainingSeconds--;
-                
                 if (remainingSeconds <= 0) {
                     clearInterval(sleepTimerInterval);
                     audio.pause();
@@ -1295,11 +1407,11 @@
                     sleepTimerMinutes = 0;
                     document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
                     showToast('😴 Timer encerrado! Rádio pausada.');
+                    removerOuvinteF();
                 } else {
                     updateSleepTimerDisplay(remainingSeconds);
                 }
             }, 1000);
-            
             showToast(`⏰ Timer ativado: ${minutes} minutos`);
         }
 
@@ -1310,36 +1422,23 @@
             document.getElementById('sleepTimerText').textContent = `Timer: ${timeStr}`;
         }
 
-        // Song History Management
         const songHistory = [];
         const MAX_HISTORY = 3;
 
         function addToSongHistory(title, artist) {
-            // Não adicionar se for a mesma música
-            if (songHistory.length > 0 && songHistory[0].title === title && songHistory[0].artist === artist) {
-                return;
-            }
-            
-            // Adicionar ao início do array
+            if (songHistory.length > 0 && songHistory[0].title === title && songHistory[0].artist === artist) return;
             songHistory.unshift({ title, artist, time: new Date() });
-            
-            // Manter apenas as últimas 3 músicas
-            if (songHistory.length > MAX_HISTORY) {
-                songHistory.pop();
-            }
-            
+            if (songHistory.length > MAX_HISTORY) songHistory.pop();
             updateSongHistoryDisplay();
         }
 
         function updateSongHistoryDisplay() {
             const historyContainer = document.getElementById('songHistory');
-            
             if (songHistory.length === 0) {
                 historyContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Aguardando músicas...</p>';
                 return;
             }
-            
-            historyContainer.innerHTML = songHistory.map((song, index) => {
+            historyContainer.innerHTML = songHistory.map((song) => {
                 const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 return `
                     <div class="flex items-start gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors">
@@ -1348,104 +1447,59 @@
                             <p class="text-xs font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p>
                             ${song.artist ? `<p class="text-[10px] text-slate-400 truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>` : ''}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
-            
-            // Atualiza também o painel ao vivo
             updateRecentSongsPanel();
         }
         
-        // Atualiza o painel "Últimas Músicas Tocadas" no Painel Ao Vivo
         function updateRecentSongsPanel() {
             const recentContainer = document.getElementById('recentSongs');
             if (!recentContainer) return;
-            
             if (songHistory.length === 0) {
-                recentContainer.innerHTML = `
-                    <div class="flex items-center gap-3 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50">
-                        <div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-music text-xs text-white"></i>
-                        </div>
-                        <div class="flex-grow min-w-0">
-                            <p class="text-sm font-medium text-white truncate">Aguardando músicas...</p>
-                            <p class="text-xs text-slate-400">Toque a rádio para começar</p>
-                        </div>
-                    </div>
-                `;
+                recentContainer.innerHTML = `<div class="flex items-center gap-3 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50"><div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-music text-xs text-white"></i></div><div class="flex-grow min-w-0"><p class="text-sm font-medium text-white truncate">Aguardando músicas...</p><p class="text-xs text-slate-400">Toque a rádio para começar</p></div></div>`;
                 return;
             }
-            
-            // Mostra as últimas 3 músicas
             const recentSongsList = songHistory.slice(0, 3);
-            
             recentContainer.innerHTML = recentSongsList.map((song, index) => {
                 const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 const isFirst = index === 0;
-                return `
-                    <div class="flex items-center gap-3 p-3 ${isFirst ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/40' : 'bg-slate-900/60 border-slate-700/50'} rounded-lg border transition-all hover:scale-105">
-                        <div class="w-8 h-8 ${isFirst ? 'bg-gradient-to-br from-purple-400 to-pink-500 animate-pulse' : 'bg-gradient-to-br from-amber-400 to-orange-500'} rounded-full flex items-center justify-center flex-shrink-0">
-                            ${isFirst ? '<i class="fa-solid fa-volume-high text-xs text-white"></i>' : '<i class="fa-solid fa-music text-xs text-white"></i>'}
-                        </div>
-                        <div class="flex-grow min-w-0">
-                            <p class="text-sm font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p>
-                            <p class="text-xs ${isFirst ? 'text-purple-300' : 'text-slate-400'}">${isFirst ? 'Tocando agora • ' : ''}${time}</p>
-                        </div>
-                        ${isFirst ? '<span class="text-xs bg-purple-500/30 text-purple-300 px-2 py-1 rounded-full font-bold">AO VIVO</span>' : ''}
-                    </div>
-                `;
+                return `<div class="flex items-center gap-3 p-3 ${isFirst ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/40' : 'bg-slate-900/60 border-slate-700/50'} rounded-lg border transition-all hover:scale-105"><div class="w-8 h-8 ${isFirst ? 'bg-gradient-to-br from-purple-400 to-pink-500 animate-pulse' : 'bg-gradient-to-br from-amber-400 to-orange-500'} rounded-full flex items-center justify-center flex-shrink-0">${isFirst ? '<i class="fa-solid fa-volume-high text-xs text-white"></i>' : '<i class="fa-solid fa-music text-xs text-white"></i>'}</div><div class="flex-grow min-w-0"><p class="text-sm font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p><p class="text-xs ${isFirst ? 'text-purple-300' : 'text-slate-400'}">${isFirst ? 'Tocando agora • ' : ''}${time}</p></div>${isFirst ? '<span class="text-xs bg-purple-500/30 text-purple-300 px-2 py-1 rounded-full font-bold">AO VIVO</span>' : ''}</div>`;
             }).join('');
         }
 
-        // Função removida - Área VIP desativada
-
-        // Atualizar relógio local
         function updateClock() {
             const now = new Date();
             const hours = now.getHours().toString().padStart(2, '0');
             const minutes = now.getMinutes().toString().padStart(2, '0');
             const clockElement = document.getElementById('currentTime');
-            if (clockElement) {
-                clockElement.textContent = `${hours}:${minutes}`;
-            }
+            if (clockElement) clockElement.textContent = `${hours}:${minutes}`;
         }
 
-        // Contador REAL de ouvintes do stream
         let realListenerCount = 0;
         const streamUrl = 'https://stream.forrostreammoc.shop/radio.mp3';
         let currentSongTitle = '';
         let currentSongArtist = '';
 
-        // Contador Global de Ouvintes - Sistema com Firebase Realtime Database
         let globalTotalVisitors = 0;
         let lastSyncTime = 0;
         let firebaseListener = null;
-        
-        // Sistema de Broadcast Channel para sincronização entre abas/janelas do MESMO navegador
         let broadcastChannel = null;
+        
         try {
             if ('BroadcastChannel' in window) {
                 broadcastChannel = new BroadcastChannel('forro_stream_counter');
                 broadcastChannel.onmessage = (event) => {
                     if (event.data && event.data.type === 'counter_update') {
-                        console.log('📡 Recebido update via BroadcastChannel:', event.data.value);
                         globalTotalVisitors = event.data.value;
                         animateCounter('totalVisitors', globalTotalVisitors);
                         lastSyncTime = Date.now();
                     }
                 };
-                console.log('✅ BroadcastChannel inicializado');
             }
-        } catch (e) {
-            console.log('⚠️ BroadcastChannel não suportado');
-        }
+        } catch (e) {}
         
         async function initializeVisitorCounter() {
-            console.log('📊 Inicializando contador com Firebase...');
-            
-            // Verifica se Firebase está disponível
             if (!window.firebaseDB) {
-                console.error('❌ Firebase não inicializado! Usando fallback localStorage.');
                 const localValue = parseInt(localStorage.getItem('forro_local_total') || '0');
                 globalTotalVisitors = localValue > 0 ? localValue : Math.floor(Math.random() * 10) + 5;
                 animateCounter('totalVisitors', globalTotalVisitors);
@@ -1455,367 +1509,154 @@
             
             const { counterRef, onValue, runTransaction, set, ref, database } = window.firebaseDB;
             
-            // Escuta mudanças em tempo real no Firebase
             firebaseListener = onValue(counterRef, (snapshot) => {
                 const data = snapshot.val();
-                
                 if (data !== null && data.count !== undefined) {
                     const firebaseCount = data.count;
-                    
-                    // Só atualiza se for diferente
                     if (firebaseCount !== globalTotalVisitors) {
                         globalTotalVisitors = firebaseCount;
                         animateCounter('totalVisitors', globalTotalVisitors);
                         lastSyncTime = Date.now();
-                        console.log('🔥 Firebase sync:', globalTotalVisitors);
-                        
-                        // Salva no localStorage como backup
                         localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
-                        
-                        // Envia update via BroadcastChannel
                         if (broadcastChannel) {
-                            broadcastChannel.postMessage({
-                                type: 'counter_update',
-                                value: globalTotalVisitors,
-                                timestamp: Date.now()
-                            });
+                            broadcastChannel.postMessage({ type: 'counter_update', value: globalTotalVisitors, timestamp: Date.now() });
                         }
                     }
                 } else {
-                    // Primeiro acesso - inicializa contador no Firebase
-                    console.log('🆕 Inicializando contador no Firebase...');
-                    const initialValue = Math.floor(Math.random() * 10) + 5; // 5-15
-                    
-                    set(counterRef, {
-                        count: initialValue,
-                        last_updated: Date.now()
-                    }).then(() => {
+                    const initialValue = Math.floor(Math.random() * 10) + 5;
+                    set(counterRef, { count: initialValue, last_updated: Date.now() }).then(() => {
                         globalTotalVisitors = initialValue;
                         animateCounter('totalVisitors', globalTotalVisitors);
                         localStorage.setItem('forro_local_total', initialValue.toString());
-                        console.log('✅ Contador Firebase inicializado:', initialValue);
-                    }).catch((error) => {
-                        console.error('❌ Erro ao inicializar Firebase:', error);
-                        // Fallback para localStorage
+                    }).catch(() => {
                         globalTotalVisitors = initialValue;
                         animateCounter('totalVisitors', globalTotalVisitors);
                     });
                 }
-            }, (error) => {
-                console.error('❌ Erro no listener Firebase:', error);
             });
         }
 
-        // Sincroniza contador periodicamente (Firebase já faz sync automático)
-        function startCounterSync() {
-            // Firebase Realtime Database já sincroniza em tempo real!
-            // Não precisamos de polling manual
-            console.log('✅ Firebase Realtime Database ativo - sincronização automática');
-        }
-        
-        // Função para sincronização manual do contador (força refresh)
         async function manualSyncCounter() {
-            console.log('🔄 Sincronização manual solicitada...');
             showToast('🔄 Atualizando contador...');
-            
             if (!window.firebaseDB) {
                 showToast('⚠️ Firebase não disponível');
                 return;
             }
-            
-            // Força re-leitura do Firebase
             const { counterRef, onValue } = window.firebaseDB;
-            
             onValue(counterRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.count !== undefined) {
                     globalTotalVisitors = data.count;
                     animateCounter('totalVisitors', globalTotalVisitors);
                     showToast('✅ Contador atualizado!');
-                    console.log('✅ Sync manual:', globalTotalVisitors);
                 }
-            }, { onlyOnce: true }); // Lê apenas uma vez
+            }, { onlyOnce: true });
         }
+        
         async function incrementListenerCounter() {
-            console.log('🎵 Usuário deu PLAY - incrementando contador...');
-            
-            // Verifica se Firebase está disponível
             if (!window.firebaseDB) {
-                console.warn('⚠️ Firebase não disponível, usando localStorage');
                 globalTotalVisitors++;
                 localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
                 animateCounter('totalVisitors', globalTotalVisitors);
                 return;
             }
-            
             const { counterRef, runTransaction } = window.firebaseDB;
-            
-            // Usa transação do Firebase para incremento atômico (thread-safe)
             runTransaction(counterRef, (currentData) => {
-                if (currentData === null) {
-                    // Primeiro acesso
-                    return {
-                        count: 1,
-                        last_updated: Date.now()
-                    };
-                } else {
-                    // Incrementa contador existente
-                    return {
-                        count: (currentData.count || 0) + 1,
-                        last_updated: Date.now()
-                    };
-                }
+                if (currentData === null) return { count: 1, last_updated: Date.now() };
+                return { count: (currentData.count || 0) + 1, last_updated: Date.now() };
             }).then((result) => {
                 const newCount = result.snapshot.val().count;
                 globalTotalVisitors = newCount;
                 animateCounter('totalVisitors', globalTotalVisitors);
                 localStorage.setItem('forro_local_total', newCount.toString());
-                console.log('✅ Firebase incrementado:', newCount);
-                
-                // Envia update via BroadcastChannel
                 if (broadcastChannel) {
-                    broadcastChannel.postMessage({
-                        type: 'counter_update',
-                        value: newCount,
-                        timestamp: Date.now()
-                    });
+                    broadcastChannel.postMessage({ type: 'counter_update', value: newCount, timestamp: Date.now() });
                 }
-            }).catch((error) => {
-                console.error('❌ Erro ao incrementar no Firebase:', error);
-                // Fallback: incrementa localmente
+            }).catch(() => {
                 globalTotalVisitors++;
                 localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
                 animateCounter('totalVisitors', globalTotalVisitors);
             });
         }
 
-        // Função para sincronização manual do contador (força refresh do Firebase)
-        async function manualSyncCounter() {
-            console.log('🔄 Sincronização manual solicitada...');
-            showToast('🔄 Atualizando contador...');
-            
-            if (!window.firebaseDB) {
-                showToast('⚠️ Firebase não disponível');
-                return;
-            }
-            
-            // Força re-leitura do Firebase
-            const { counterRef, onValue } = window.firebaseDB;
-            
-            onValue(counterRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data !== null && data > 0) {
-                    globalTotalVisitors = data;
-                    animateCounter('totalVisitors', globalTotalVisitors);
-                    lastSyncTime = Date.now();
-                    localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
-                    console.log('✅ Contador sincronizado manualmente:', globalTotalVisitors);
-                    showToast('✅ Contador atualizado!');
-                }
-            }, { onlyOnce: true });
-        }
-
-        // Animação suave do contador
         function animateCounter(elementId, targetValue) {
             const element = document.getElementById(elementId);
             if (!element) return;
-            
             const startValue = parseInt(element.textContent) || 0;
-            const duration = 1500; // 1.5 segundos
+            const duration = 1500;
             const startTime = performance.now();
-            
             function updateCounter(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                
-                // Easing function (ease-out)
                 const easeOut = 1 - Math.pow(1 - progress, 3);
                 const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
-                
                 element.textContent = currentValue.toLocaleString('pt-BR');
-                
-                // Sincroniza também o painel ao vivo se for o totalVisitors
                 if (elementId === 'totalVisitors') {
                     const statsElement = document.getElementById('totalVisitorsStats');
-                    if (statsElement) {
-                        statsElement.textContent = currentValue.toLocaleString('pt-BR');
-                    }
+                    if (statsElement) statsElement.textContent = currentValue.toLocaleString('pt-BR');
                 }
-                
-                if (progress < 1) {
-                    requestAnimationFrame(updateCounter);
-                }
+                if (progress < 1) requestAnimationFrame(updateCounter);
             }
-            
             requestAnimationFrame(updateCounter);
         }
 
-        // Função para buscar metadados da música atual (RadioBOSS/Icecast)
         async function fetchNowPlaying() {
             try {
-                console.log('🔍 Buscando metadados...');
-                
-                // Usa Cloudflare Worker como proxy
                 const workerUrl = 'https://forro-stream-metadata.marcostheangels.workers.dev';
-                
-                try {
-                    const response = await fetch(workerUrl, { 
-                        method: 'GET',
-                        cache: 'no-cache',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        
-                        // Processa metadados
-                        processMetadata(data);
-                        return;
-                    } else {
-                        console.log('️ Worker retornou erro:', response.status);
-                    }
-                } catch (e) {
-                    console.log('⚠️ Erro ao buscar via Cloudflare Worker:', e.message);
+                const response = await fetch(workerUrl, { method: 'GET', cache: 'no-cache', headers: { 'Accept': 'application/json' } });
+                if (response.ok) {
+                    const data = await response.json();
+                    processMetadata(data);
                 }
-                
-                // Fallback: Tenta proxy local (se estiver rodando)
-                try {
-                    const localProxyUrl = '/api/metadata';
-                    const response = await fetch(localProxyUrl, { 
-                        method: 'GET',
-                        cache: 'no-cache'
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        processMetadata(data);
-                        return;
-                    }
-                } catch (e) {
-                    console.log('️ Proxy local não disponível');
-                }
-                
-                console.log('️ Não foi possível obter metadados');
-                
-            } catch (error) {
-                console.error('❌ Erro geral:', error);
-            }
+            } catch (error) {}
         }
         
-        // Processa e exibe metadados
         function processMetadata(data) {
-            if (!data || !data.icestats) {
-                console.log('⚠️ JSON inválido');
-                return;
-            }
-            
-            // Método 1: Tenta campo title principal
+            if (!data || !data.icestats) return;
             let songTitle = data.icestats.source?.title;
-            
-            // Método 2: Se title é null, usa x_icy_title
             if (!songTitle || songTitle === null) {
                 songTitle = data.icestats.source?.metadata?.x_icy_title;
-                console.log('📌 Usando x_icy_title:', songTitle);
             }
-            
             if (songTitle && songTitle.trim().length > 0) {
-                console.log('✅ Metadados encontrados:', songTitle);
                 parseAndDisplaySongTitle(songTitle);
-            } else {
-                console.log('⚠️ Campos de título estão vazios');
             }
         }
 
-        // Corrige problemas de encoding UTF-8
         function fixUTF8Encoding(text) {
             if (!text) return text;
-            
-            console.log('🔤 Texto original:', text);
-            
-            // Se o texto já parece correto (não tem caracteres estranhos), retorna como está
-            if (!text.includes('Ã') && !text.includes('\ufffd')) {
-                console.log('✅ Texto já está em UTF-8 correto, sem necessidade de correção');
-                return text;
-            }
-            
-            // Substitui caracteres com encoding errado (UTF-8 interpretado como Latin-1)
-            const replacements = {
-                'Ã§': 'ç',
-                'Ã£': 'ã',
-                'Ã¡': 'á',
-                'Ã©': 'é',
-                'Ã­': 'í',
-                'Ã³': 'ó',
-                'Ãº': 'ú',
-                'Ã¢': 'â',
-                'Ãª': 'ê',
-                'Ã´': 'ô',
-                'Ãµ': 'õ',
-                'Ãœ': 'Ü',
-                'Ã': 'À',
-                'Ã±': 'ñ'
-            };
-            
+            if (!text.includes('Ã') && !text.includes('\ufffd')) return text;
+            const replacements = { 'Ã§': 'ç', 'Ã£': 'ã', 'Ã¡': 'á', 'Ã©': 'é', 'Ã­': 'í', 'Ã³': 'ó', 'Ãº': 'ú', 'Ã¢': 'â', 'Ãª': 'ê', 'Ã´': 'ô', 'Ãµ': 'õ', 'Ãœ': 'Ü', 'Ã': 'À', 'Ã±': 'ñ' };
             let fixed = text;
             for (const [wrong, correct] of Object.entries(replacements)) {
-                const before = fixed;
                 fixed = fixed.split(wrong).join(correct);
-                if (before !== fixed) {
-                    console.log(`   🔄 Corrigido: "${wrong}" -> "${correct}"`);
-                }
             }
-            
-            console.log('🔤 Texto corrigido:', fixed);
             return fixed;
         }
 
-        // Parseia e exibe o título da música
         function parseAndDisplaySongTitle(title) {
-            // Corrige encoding UTF-8 se necessário
             title = fixUTF8Encoding(title);
-            
-            // Verifica se é conteúdo HTML e ignora
-            if (title.includes('<!DOCTYPE') || title.includes('<html') || title.includes('Icecast Server') || title.includes('Status</th>') || title.includes('Mountpoint')) {
-                console.log('⚠️ Ignorando título HTML inválido');
-                return;
-            }
-            
-            // RadioBOSS/Icecast geralmente envia no formato: "Artista - Título da Música"
+            if (title.includes('<!DOCTYPE') || title.includes('<html') || title.includes('Icecast Server')) return;
             let artist = '';
             let song = title;
-            
-            // Tenta separar por " - " (hífen com espaços)
             if (title.includes(' - ')) {
                 const parts = title.split(' - ');
                 artist = parts[0].trim();
-                song = parts.slice(1).join(' - ').trim(); // Rejoin caso tenha mais hífens
+                song = parts.slice(1).join(' - ').trim();
             }
-            
-            // Evita atualizar se for o mesmo título
             if (song !== currentSongTitle || artist !== currentSongArtist) {
                 currentSongTitle = song;
                 currentSongArtist = artist;
                 displayNowPlaying(song, artist);
-                
-                // Adicionar ao histórico
                 addToSongHistory(song, artist);
             }
         }
 
-        // Exibe a música tocando na interface
         function displayNowPlaying(title, artist) {
             const nowPlayingText = document.getElementById('nowPlayingText');
             const nowPlayingArtist = document.getElementById('nowPlayingArtist');
             const floatingSongTitle = document.getElementById('floatingSongTitle');
             const floatingSongArtist = document.getElementById('floatingSongArtist');
-            
-            // Atualiza card principal
-            if (nowPlayingText) {
-                nowPlayingText.textContent = title || 'Forró Stream MOC';
-            }
-            
+            if (nowPlayingText) nowPlayingText.textContent = title || 'Forró Stream MOC';
             if (nowPlayingArtist) {
                 if (artist && artist.trim()) {
                     nowPlayingArtist.textContent = artist;
@@ -1824,12 +1665,7 @@
                     nowPlayingArtist.style.display = 'none';
                 }
             }
-            
-            // Atualiza badge flutuante
-            if (floatingSongTitle) {
-                floatingSongTitle.textContent = title || 'Forró Stream MOC';
-            }
-            
+            if (floatingSongTitle) floatingSongTitle.textContent = title || 'Forró Stream MOC';
             if (floatingSongArtist) {
                 if (artist && artist.trim()) {
                     floatingSongArtist.textContent = artist;
@@ -1840,171 +1676,63 @@
             }
         }
 
-        // Função para tentar autoplay
         async function attemptAutoPlay() {
             try {
-                console.log('🎵 Tentando autoplay...');
-                
-                // Tenta reproduzir diretamente
                 const playPromise = audio.play();
-                
                 if (playPromise !== undefined) {
                     await playPromise;
-                    // Autoplay funcionou!
-                    console.log('✅ Autoplay bem-sucedido!');
                     playIcon.className = "fa-solid fa-pause ml-1";
                     playBtnRing.classList.remove('opacity-0');
                     statusText.innerText = "Tocando Agora";
                     statusText.className = "text-xl font-semibold text-green-400 animate-pulse";
                     waveform.classList.remove('hidden');
-                    
-                    // Incrementa contador quando autoplay funciona
                     incrementListenerCounter();
+                    adicionarOuvinteF();
                 }
             } catch (error) {
-                // Autoplay bloqueado pelo navegador
-                console.log('⚠️ Autoplay bloqueado pelo navegador:', error.message);
-                console.log('👉 Mostrando botão de play para o usuário clicar');
-                
-                // Mostra uma mensagem suave para o usuário
-                setTimeout(() => {
-                    showToast('🎵 Clique no botão PLAY para ouvir!', 5000);
-                }, 2000);
+                setTimeout(() => { showToast('🎵 Clique no botão PLAY para ouvir!', 5000); }, 2000);
             }
         }
 
-        // Atualizar relógio local
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const clockElement = document.getElementById('currentTime');
-            if (clockElement) {
-                clockElement.textContent = `${hours}:${minutes}`;
-            }
-        }
-
-        // Função para buscar estatísticas reais do stream Icecast/Shoutcast
         async function fetchRealListeners() {
             try {
-                // Tenta obter status do stream via endpoint de status
-                // Para Zrok/Icecast, PRIORIZA XML (status.xsl) que está funcionando
                 const statusUrls = [
-                    'https://stream.forrostreammoc.shop/status.xsl',  // XML - FUNCIONANDO
-                    'https://stream.forrostreammoc.shop/7.html',      // Formato Shoutcast DNAS
-                    'https://stream.forrostreammoc.shop/status-json.xsl'  // JSON (pode não funcionar)
+                    'https://stream.forrostreammoc.shop/status.xsl',
+                    'https://stream.forrostreammoc.shop/7.html',
+                    'https://stream.forrostreammoc.shop/status-json.xsl'
                 ];
-                
                 let listenersFound = false;
-                
                 for (const url of statusUrls) {
                     try {
-                        const response = await fetch(url, { 
-                            method: 'GET',
-                            mode: 'cors'
-                        });
-                        
+                        const response = await fetch(url, { method: 'GET', mode: 'cors' });
                         if (response.ok) {
                             const text = await response.text();
-                            
-                            // Tenta parsear como JSON primeiro
                             try {
                                 const json = JSON.parse(text);
-                                // Icecast format
                                 if (json.icestats && json.icestats.source) {
-                                    const sources = Array.isArray(json.icestats.source) 
-                                        ? json.icestats.source 
-                                        : [json.icestats.source];
+                                    const sources = Array.isArray(json.icestats.source) ? json.icestats.source : [json.icestats.source];
                                     realListenerCount = sources.reduce((sum, source) => sum + (source.listeners || 0), 0);
                                     listenersFound = true;
                                     break;
                                 }
                             } catch (e) {
-                                // Se não for JSON, tenta parsear XML do Icecast
                                 if (text.includes('<icestats>') || text.includes('<?xml')) {
-                                    console.log('🔍 Extraindo ouvintes do XML Icecast...');
-                                    
-                                    // Extrai número de ouvintes do <source mount="/radio.mp3">
                                     const sourceMatch = text.match(/<source[^>]*mount="\/radio\.mp3"[^>]*>[\s\S]*?<listeners>(\d+)<\/listeners>/i);
                                     if (sourceMatch && sourceMatch[1]) {
-                                        const count = parseInt(sourceMatch[1]);
-                                        if (!isNaN(count) && count >= 0) {
-                                            realListenerCount = count;
-                                            listenersFound = true;
-                                            console.log('✅ Ouvintes reais via XML Icecast:', count);
-                                            break;
-                                        }
-                                    }
-                                    
-                                    // Fallback: tenta extrair listeners globais
-                                    const globalListenersMatch = text.match(/<listeners>(\d+)<\/listeners>/i);
-                                    if (globalListenersMatch && globalListenersMatch[1]) {
-                                        const count = parseInt(globalListenersMatch[1]);
-                                        if (!isNaN(count) && count >= 0) {
-                                            realListenerCount = count;
-                                            listenersFound = true;
-                                            console.log('✅ Ouvintes globais via XML:', count);
-                                            break;
-                                        }
-                                    }
-                                }
-                                // Tenta extrair de HTML de Status do Icecast
-                                else if (text.includes('Icecast Server') && (text.includes('Mountpoint') || text.includes('Currently playing'))) {
-                                    console.log('🔍 Extraindo ouvintes do HTML de Status...');
-                                    
-                                    // Extrai "Listeners (current)" do HTML
-                                    const listenersMatch = text.match(/Listeners \(current\):[\s\S]*?<td[^>]*class="streamstats"[^>]*>(\d+)<\/td>/i);
-                                    if (listenersMatch && listenersMatch[1]) {
-                                        const count = parseInt(listenersMatch[1]);
-                                        if (!isNaN(count) && count >= 0) {
-                                            realListenerCount = count;
-                                            listenersFound = true;
-                                            console.log('✅ Ouvintes reais via HTML Status:', count);
-                                            break;
-                                        }
-                                    }
-                                }
-                                
-                                // Tenta formato Shoutcast/Icecast 7.html
-                                // Formato: <html><head>...</head><body>listeners,status,peak,max,current_song,... </body></html>
-                                const htmlMatch = text.match(/<body>([^<]+)<\/body>/i);
-                                const bodyContent = htmlMatch ? htmlMatch[1] : text;
-                                const parts = bodyContent.split(',');
-                                
-                                if (parts.length >= 1) {
-                                    const count = parseInt(parts[0].trim());
-                                    if (!isNaN(count) && count >= 0) {
-                                        realListenerCount = count;
+                                        realListenerCount = parseInt(sourceMatch[1]);
                                         listenersFound = true;
-                                        console.log('✅ Ouvintes reais via 7.html:', count);
                                         break;
                                     }
                                 }
                             }
                         }
-                    } catch (err) {
-                        console.log(`Tentativa falhou para ${url}:`, err.message);
-                        continue;
-                    }
+                    } catch (err) { continue; }
                 }
-                
-                // Se não conseguiu obter dados reais, usa estimativa baseada no player
                 if (!listenersFound) {
-                    // Verifica se o áudio está tocando
-                    const audio = document.getElementById('audioPlayer');
-                    if (audio && !audio.paused) {
-                        // Se está tocando, assume pelo menos 1 ouvinte (o usuário atual)
-                        // Adiciona uma variação pequena para simular outros ouvintes
-                        realListenerCount = Math.max(realListenerCount, 1);
-                    }
+                    if (audio && !audio.paused) realListenerCount = Math.max(realListenerCount, 1);
                 }
-                
                 updateAllDisplays(realListenerCount);
-                
             } catch (error) {
-                console.error('Erro ao buscar ouvintes reais:', error);
-                // Fallback: mantém o último valor conhecido ou usa 1 se estiver tocando
-                const audio = document.getElementById('audioPlayer');
                 if (audio && !audio.paused && realListenerCount === 0) {
                     realListenerCount = 1;
                     updateAllDisplays(realListenerCount);
@@ -2012,46 +1740,27 @@
             }
         }
 
-        // Atualiza todos os displays com o número real
         function updateAllDisplays(count) {
             const listenerElement = document.getElementById('listenerCount');
             const liveListenerElement = document.getElementById('liveListenerCount');
             const floatingCountElement = document.getElementById('floatingCount');
-            
             if (listenerElement) listenerElement.textContent = count;
             if (liveListenerElement) liveListenerElement.textContent = count;
             if (floatingCountElement) floatingCountElement.textContent = count;
         }
 
-        // Monitora quando o usuário dá play/pause para ajustar contagem
         function monitorPlayerState() {
-            const audio = document.getElementById('audioPlayer');
             if (!audio) return;
-            
-            // Quando o usuário dá play, garante que tem pelo menos 1 ouvinte
             audio.addEventListener('play', () => {
                 if (realListenerCount < 1) {
                     realListenerCount = 1;
                     updateAllDisplays(realListenerCount);
                 }
             });
-            
-            // Opcional: quando pausa, pode reduzir (mas mantemos o último valor)
-            audio.addEventListener('pause', () => {
-                // Não reduzimos automaticamente pois o stream pode continuar rodando
-            });
         }
 
-        // Inicializar quando a página carregar
         window.addEventListener('DOMContentLoaded', () => {
-            console.log('✅ DOMContentLoaded disparado!');
-            console.log('🔄 Iniciando todas as funções...');
-            
-            // Inicializar contador de visitantes
             initializeVisitorCounter();
-            console.log('✅ initializeVisitorCounter() executado');
-            
-            // Sincronização extra após 2 segundos para garantir valor atualizado do Firebase
             setTimeout(() => {
                 if (window.firebaseDB) {
                     const { counterRef, onValue } = window.firebaseDB;
@@ -2060,36 +1769,17 @@
                         if (data !== null && data > globalTotalVisitors) {
                             globalTotalVisitors = data;
                             animateCounter('totalVisitors', globalTotalVisitors);
-                            console.log('✅ Sync inicial Firebase:', globalTotalVisitors);
                         }
                     }, { onlyOnce: true });
                 }
             }, 2000);
-            
-            // Tenta autoplay
             attemptAutoPlay();
-            console.log('✅ attemptAutoPlay() chamado');
-            
-            // Inicializar relógio
             updateClock();
-            
-            // Atualiza relógio a cada segundo
             setInterval(updateClock, 1000);
-            
-            // Busca contador REAL imediatamente
             fetchRealListeners();
-            console.log('✅ fetchRealListeners() chamado');
-            
-            // Busca música tocando AGORA imediatamente
             fetchNowPlaying();
-            console.log('🎵 Chamando fetchNowPlaying() pela primeira vez...');
-            
-            // Monitora estado do player
             monitorPlayerState();
-            
-            // AUTOPLAY: Toca automaticamente ao carregar o site
             setTimeout(() => {
-                console.log('▶️ Tentando autoplay...');
                 audio.play()
                     .then(() => {
                         playIcon.className = "fa-solid fa-pause";
@@ -2097,26 +1787,16 @@
                         statusText.innerText = "No Ar - Forró Stream MOC VIP";
                         statusText.className = "text-xl font-semibold text-green-400";
                         waveform.classList.remove('hidden');
-                        console.log('✅ Autoplay funcionou! Música tocando.');
                     })
                     .catch(err => {
-                        console.log('⚠️ Autoplay bloqueado pelo navegador:', err.message);
-                        console.log('💡 Usuário precisa clicar no botão de play manualmente');
                         statusText.innerText = "Clique para ouvir MOC";
                         statusText.className = "text-xl font-semibold text-amber-400";
                     });
-            }, 1000); // Aguarda 1 segundo antes de tentar autoplay
-            
-            // Atualiza contador REAL a cada 10 segundos
+            }, 1000);
             setInterval(fetchRealListeners, 10000);
-            console.log('⏱️ Intervalo fetchRealListeners configurado (10s)');
-            
-            // Atualiza música tocando a cada 2 segundos (MAIS RÁPIDO)
             setInterval(fetchNowPlaying, 2000);
-            console.log('⏱️ Intervalo fetchNowPlaying configurado (2s)');
         });
 
-        // Toggle menu mobile
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
             if (mobileMenu.classList.contains('hidden')) {
@@ -2130,26 +1810,15 @@
             }
         }
 
-        // Função para compartilhar a rádio
         async function shareRadio() {
-            const shareData = {
-                title: 'Forró Stream MOC',
-                text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶',
-                url: window.location.href
-            };
-
+            const shareData = { title: 'Forró Stream MOC', text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶', url: window.location.href };
             try {
-                if (navigator.share) {
-                    await navigator.share(shareData);
-                } else {
-                    // Fallback: copiar link para área de transferência
+                if (navigator.share) await navigator.share(shareData);
+                else {
                     await navigator.clipboard.writeText(window.location.href);
                     showToast('✅ Link copiado! Compartilhe com seus amigos.');
                 }
-            } catch (err) {
-                console.log('Erro ao compartilhar:', err);
-                showToast('❌ Erro ao compartilhar');
-            }
+            } catch (err) { showToast('❌ Erro ao compartilhar'); }
         }
     </script>
 </body>
