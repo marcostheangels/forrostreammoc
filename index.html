@@ -13,7 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
   
   <style>
-    .toast { position: fixed; bottom: 100px; right: 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); display: flex; align-items: center; gap: 12px; z-index: 9999; transform: translateX(400px); transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); font-weight: 500; max-width: 350px; }
+    /* CSS JUNINA MANTIDO */
+    .toast { position: fixed; bottom: 100px; right: 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); display: flex; align-items: center; gap: 12px; z-index: 9999; transform: translateX(400px); transition: transform 0.4s; font-weight: 500; max-width: 350px; }
     .toast.show { transform: translateX(0); }
     .toast i { font-size: 24px; }
     @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
@@ -42,10 +43,8 @@
     .junina-badge { background: linear-gradient(135deg, #ff6b35, #f7931e); color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.75rem; box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4); animation: twinkle 2s ease-in-out infinite; }
     body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
     .font-header { font-family: 'Montserrat', sans-serif; }
-    .overflow-wrap-anywhere { overflow-wrap: anywhere; word-wrap: anywhere; word-break: break-word; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-    .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-    #nowPlayingText, #nowPlayingArtist { hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; }
+    #nowPlayingText, #nowPlayingArtist { hyphens: auto; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; }
     .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(245, 158, 11, 0.15); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
     .glow-poster { box-shadow: 0 20px 80px -10px rgba(234, 88, 12, 0.6), 0 0 40px rgba(245, 158, 11, 0.3); transition: all 0.4s ease; }
     .glow-poster:hover { box-shadow: 0 25px 100px -5px rgba(234, 88, 12, 0.8), 0 0 60px rgba(245, 158, 11, 0.5); transform: translateY(-2px); }
@@ -89,46 +88,35 @@
     .location-status-forr{margin-top:10px;font-size:.75rem;text-align:center;color:rgba(203,213,225,.6);font-style:italic}
     .location-status-forr.listening{color:#22c55e;font-weight:800;font-style:normal}
 
-    .unified-stats-card{ max-width:600px;margin:18px auto 0;padding:20px;border-radius:18px; background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(168,85,247,.08),rgba(245,158,11,.05)); border:1px solid rgba(34,197,94,.35);backdrop-filter:blur(8px); }
-    .unified-header{ display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px; }
-    .unified-title{ display:flex;align-items:center;gap:9px;font-size:.95rem;color:#a7f3d0; text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
-    .unified-title .icon{ font-size:1.3rem;animation:pulseRing 2s infinite; }
-    .unified-refresh{ background:rgba(34,197,94,.15); color:#86efac;padding:4px 10px;border-radius:999px; font-size:.7rem;font-weight:700; border:1px solid rgba(34,197,94,.3); display:flex;align-items:center;gap:5px; }
-    .unified-refresh .dot{ width:6px;height:6px;background:#22c55e;border-radius:50%; animation:pulseRing 1.2s infinite; }
-    .stat-row{ display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px; }
-    .stat-box{ background:rgba(0,0,0,.4);padding:14px 10px;border-radius:12px; text-align:center;position:relative;overflow:hidden; transition:.3s; }
-    .stat-box:hover{ transform:translateY(-2px); }
-    .stat-box.site{ border:1px solid rgba(34,197,94,.4); }
-    .stat-box.radio{ border:1px solid rgba(168,85,247,.4); }
-    .stat-box.total{ border:1px solid rgba(245,158,11,.5); background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(234,88,12,.08)); }
-    .stat-box .icon{ font-size:1.3rem;margin-bottom:4px;display:block; }
-    .stat-box.site .icon{ color:#22c55e; }
-    .stat-box.radio .icon{ color:#a855f7; }
-    .stat-box.total .icon{ color:#fbbf24;font-size:1.5rem; }
-    .stat-box .label{ font-size:.62rem;color:rgba(255,255,255,.65);text-transform:uppercase; letter-spacing:.8px;font-weight:700;margin-bottom:3px; }
-    .stat-box .value{ font-family:'Orbitron',sans-serif;font-size:1.65rem;font-weight:900; line-height:1;color:#fff; }
-    .stat-box.site .value{ color:#86efac; }
-    .stat-box.radio .value{ color:#d8b4fe; }
-    .stat-box.total .value{ color:#fde68a;font-size:1.85rem; text-shadow:0 0 8px rgba(245,158,11,.5); }
-    .unified-bar{ display:flex;align-items:center;gap:8px;padding-top:12px; border-top:1px solid rgba(255,255,255,.08); }
-    .unified-bar-label{ font-size:.7rem;color:rgba(255,255,255,.5);text-transform:uppercase; letter-spacing:1px;font-weight:700; }
-    .unified-bar-track{ flex-grow:1;height:6px;background:rgba(255,255,255,.05);border-radius:3px; overflow:hidden;display:flex; }
-    .unified-bar-site{ height:100%;background:linear-gradient(90deg,#22c55e,#10b981); transition:width .5s ease; }
-    .unified-bar-radio{ height:100%;background:linear-gradient(90deg,#a855f7,#ec4899); transition:width .5s ease; }
+    /* 🆕 DOIS CARDS SEPARADOS: SITE e RADIOSNET */
+    .stats-grid{ display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px auto 0;max-width:600px; }
+    .stats-card{ padding:18px;border-radius:18px; text-align:center;backdrop-filter:blur(8px); position:relative;overflow:hidden; }
+    .stats-card.site-card{ background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(34,197,94,.05)); border:1px solid rgba(34,197,94,.4); }
+    .stats-card.radio-card{ background:linear-gradient(135deg,rgba(168,85,247,.10),rgba(168,85,247,.05)); border:1px solid rgba(168,85,247,.4); }
+    .stats-card .header{ display:flex;align-items:center;justify-content:center;gap:6px; font-size:.78rem;text-transform:uppercase;letter-spacing:1.3px;font-weight:800;margin-bottom:8px; }
+    .stats-card.site-card .header{ color:#86efac; }
+    .stats-card.radio-card .header{ color:#d8b4fe; }
+    .stats-card .value{ font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;line-height:1;margin:4px 0; }
+    .stats-card.site-card .value{ color:#86efac;text-shadow:0 0 8px rgba(34,197,94,.3); }
+    .stats-card.radio-card .value{ color:#d8b4fe;text-shadow:0 0 8px rgba(168,85,247,.3); }
+    .stats-card .icon{ font-size:1.3rem; }
+    .stats-card .footer{ font-size:.65rem;color:rgba(255,255,255,.4);margin-top:6px; }
+    .stats-card .live-indicator{ display:inline-block;width:6px;height:6px;background:#22c55e;border-radius:50%; margin-right:4px;animation:pulseRing 1.2s infinite; }
+    .stats-card.radio-card .live-indicator{ background:#a855f7; }
 
+    /* CARD DE LISTA DE IPs */
     .listeners-card-forr{ max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px; background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(234,88,12,.04)); border:1px solid rgba(245,158,11,.35);backdrop-filter:blur(8px); }
     .listeners-header-forr{ display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px; }
     .listeners-title-forr{ display:flex;align-items:center;gap:8px;font-size:.88rem;color:#fbbf24; text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
     .listeners-total-forr{ background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(234,88,12,.15)); color:#fff;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:800; border:1px solid rgba(245,158,11,.5);display:flex;align-items:center;gap:6px; }
     .listeners-total-forr .live-dot{ width:7px;height:7px;background:#ef4444;border-radius:50%; animation:pulseRing 1.2s infinite;box-shadow:0 0 6px #ef4444; }
-    .listeners-total-forr .num{ color:#fde68a;font-size:1.05rem;font-family:'Orbitron',sans-serif; text-shadow:0 0 6px rgba(245,158,11,.5); }
+    .listeners-total-forr .num{ color:#fde68a;font-size:1.05rem;font-family:'Orbitron',sans-serif; }
     .listeners-table-forr{width:100%;background:rgba(0,0,0,.4);border-radius:11px;overflow:hidden;font-size:.82rem}
     .listeners-table-header-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;background:rgba(245,158,11,.12); font-size:.65rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.1px;font-weight:800; border-bottom:1px solid rgba(245,158,11,.2); }
     .listeners-table-body-forr{max-height:260px;overflow-y:auto}
     .listeners-table-body-forr::-webkit-scrollbar{width:5px}
     .listeners-table-body-forr::-webkit-scrollbar-thumb{background:rgba(245,158,11,.5);border-radius:3px}
-    .listener-row-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;align-items:center; border-bottom:1px solid rgba(255,255,255,.04); transition:.3s;animation:fadeInRowF .4s ease-out; }
-    @keyframes fadeInRowF{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .listener-row-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;align-items:center; border-bottom:1px solid rgba(255,255,255,.04); transition:.3s; }
     .listener-row-forr:hover{background:rgba(245,158,11,.08)}
     .listener-row-forr.me{ background:linear-gradient(90deg,rgba(34,197,94,.18),transparent); border-left:3px solid #22c55e; }
     .listener-row-forr .ip-cell{font-family:'Orbitron',monospace;color:#fbbf24;font-size:.75rem;font-weight:800}
@@ -143,8 +131,7 @@
         .location-details-forr{grid-template-columns:1fr}
         .listeners-table-header-forr,.listener-row-forr{grid-template-columns:1fr 1fr 50px;font-size:.7rem}
         .listeners-table-header-forr .col-state,.listener-row-forr .state-cell{display:none}
-        .stat-row{grid-template-columns:1fr;gap:8px}
-        .stat-box .value{font-size:1.4rem}
+        .stats-grid{grid-template-columns:1fr;gap:10px}
     }
     @media (max-width: 768px) { .font-header.text-5xl { font-size: 2.5rem; } .w-72.h-72 { width: 16rem; height: 16rem; } }
   </style>
@@ -239,8 +226,8 @@
       <i class="fa-solid fa-music text-base mt-0.5 flex-shrink-0"></i>
       <div class="flex-grow min-w-0" style="overflow: hidden;">
         <p class="text-[10px] font-bold uppercase opacity-90 mb-0.5">Tocando Agora</p>
-        <p id="floatingSongTitle" class="text-xs font-bold leading-tight" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; overflow-wrap: anywhere;">Carregando...</p>
-        <p id="floatingSongArtist" class="text-[10px] opacity-90 mt-0.5" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word; overflow-wrap: anywhere;"></p>
+        <p id="floatingSongTitle" class="text-xs font-bold leading-tight" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;">Carregando...</p>
+        <p id="floatingSongArtist" class="text-[10px] opacity-90 mt-0.5" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;"></p>
       </div>
     </div>
   </div>
@@ -338,39 +325,26 @@
           <div class="location-status-forr" id="locationStatusF">💡 Detectando seu IP público real...</div>
         </div>
 
-        <div class="unified-stats-card" id="unifiedStatsCard">
-          <div class="unified-header">
-            <div class="unified-title">
-              <span class="icon">📊</span>
-              <span>Ouvintes em Tempo Real</span>
+        <!-- 🆕 DOIS CARDS SEPARADOS: SITE e RADIOSNET -->
+        <div class="stats-grid">
+          <div class="stats-card site-card">
+            <div class="header">
+              <span class="live-indicator"></span>
+              <span><i class="fa-solid fa-globe icon"></i> NO SITE</span>
             </div>
-            <div class="unified-refresh">
-              <span class="dot"></span>
-              <span>Atualiza a cada 2s</span>
-            </div>
-          </div>
-          <div class="stat-row">
-            <div class="stat-box site">
-              <span class="icon">🎵</span>
-              <div class="label">No Site</div>
-              <div class="value" id="statSiteCount">0</div>
-            </div>
-            <div class="stat-box radio">
-              <span class="icon">📻</span>
-              <div class="label">RadiosNet</div>
-              <div class="value" id="statRadioCount">0</div>
-            </div>
-            <div class="stat-box total">
-              <span class="icon">🌐</span>
-              <div class="label">Total</div>
-              <div class="value" id="statTotalCount">0</div>
+            <div class="value" id="statSiteCount">0</div>
+            <div class="footer">
+              <i class="fa-solid fa-play" style="color:#22c55e"></i> Quem deu Play aqui
             </div>
           </div>
-          <div class="unified-bar">
-            <span class="unified-bar-label">📈</span>
-            <div class="unified-bar-track">
-              <div class="unified-bar-site" id="barSite" style="width: 0%"></div>
-              <div class="unified-bar-radio" id="barRadio" style="width: 0%"></div>
+          <div class="stats-card radio-card">
+            <div class="header">
+              <span class="live-indicator"></span>
+              <span><i class="fa-solid fa-satellite-dish icon"></i> NO RADIOSNET</span>
+            </div>
+            <div class="value" id="statRadioCount">0</div>
+            <div class="footer">
+              <i class="fa-solid fa-signal" style="color:#a855f7"></i> Ouvindo via Icecast
             </div>
           </div>
         </div>
@@ -427,9 +401,9 @@
           </div>
           <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="p-4 bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/40 rounded-xl text-center">
-              <i class="fa-solid fa-users text-2xl text-green-400 mb-2 animate-pulse"></i>
-              <p class="text-xs text-slate-400 mb-1">Online Agora</p>
-              <p class="text-2xl font-black text-green-400" id="listenerCountNow">0</p>
+              <i class="fa-solid fa-signal text-2xl text-green-400 mb-2 animate-pulse"></i>
+              <p class="text-xs text-slate-400 mb-1">Online Total</p>
+              <p class="text-2xl font-black text-green-400" id="totalOnlineDisplay">0</p>
               <p class="text-[10px] text-green-400/80 mt-1">em tempo real</p>
             </div>
             <div class="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-center">
@@ -613,18 +587,15 @@
     }
 
     // ============================================
-    // 🆕 SISTEMA CORRIGIDO - SEM DUPLICAÇÃO
+    // 🆕 SISTEMA DE OUINTES - VERSÃO FINAL CORRIGIDA
     // ============================================
     const myUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     let myUserRef = null;
     let heartbeatInterval = null;
     let myLocationData = null;
-
-    // Variáveis
-    let siteOnlineCount = 0;     
-    let radioOnlineCount = 0;    
-    let totalAccumulated = 0;    
-    let rawIcecastCount = 0;      // Valor bruto do Icecast
+    let totalAccumulated = 0;
+    let icecastListeners = 0; // Número TOTAL do Icecast (inclui site + radio)
+    let siteOnlineCount = 0;  // Pessoas no site (Firebase)
 
     function timeAgo(timestamp) {
         const diff = Date.now() - timestamp;
@@ -638,9 +609,7 @@
 
     async function updateLastSeen() {
         if (myUserRef) {
-            try {
-                await myUserRef.update({ lastSeen: firebase.database.ServerValue.TIMESTAMP });
-            } catch (err) {}
+            try { await myUserRef.update({ lastSeen: firebase.database.ServerValue.TIMESTAMP }); } catch (err) {}
         }
     }
 
@@ -651,13 +620,9 @@
         const locationText = locationData.state ? `${locationData.city}, ${locationData.state}` : locationData.city;
         try {
             await myUserRef.set({
-                ip: locationData.ip,
-                city: locationData.city,
-                state: locationData.state || '',
-                country: locationData.country || 'BR',
-                isp: locationData.isp || '',
-                location: locationText,
-                lastSeen: firebase.database.ServerValue.TIMESTAMP
+                ip: locationData.ip, city: locationData.city, state: locationData.state || '',
+                country: locationData.country || 'BR', isp: locationData.isp || '',
+                location: locationText, lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
         } catch (err) { console.log('❌ ERRO:', err); }
     }
@@ -673,36 +638,24 @@
         if (heartbeatInterval) clearInterval(heartbeatInterval);
     }
 
-    // 🆕 FUNÇÃO INTELIGENTE: Calcula contadores sem duplicar
+    // 🆕 FUNÇÃO INTELIGENTE - Calcula Site e RadiosNet
+    // O Icecast conta o TOTAL de conexões (inclui quem está no site)
+    // O Firebase conta quem está no SITE
+    // RadiosNet = Icecast - Site (se for maior)
     function updateAllDisplays() {
-        // LÓGICA INTELIGENTE:
-        // - Se tem gente no site E no Icecast, o Icecast inclui o site
-        // - O site conta quem deu play (lastSeen < 5 min)
-        // - O Icecast mostra o número TOTAL (incluindo o site)
-        // - O "RadiosNet" mostra APENAS quem está NO RadiosNet (não no site)
-        //   = Icecast - Site (se Icecast >= Site)
-        // - O "Total" mostra SEMPRE o Icecast (que é o total real de conexões)
-        
         const siteOnly = siteOnlineCount;
-        const icecastTotal = rawIcecastCount;
-        // Quem está SÓ no RadiosNet (não no site):
+        const icecastTotal = icecastListeners;
+        // Se Icecast for >= Site, então Icecast - Site = quem está SÓ no radio
+        // Se Icecast < Site, então todo mundo está no site (radio = 0)
         const radioOnly = Math.max(0, icecastTotal - siteOnly);
-        // Total = Icecast (que é a fonte da verdade)
-        const totalOnline = icecastTotal;
+        const totalOnline = Math.max(icecastTotal, siteOnly);
         
         document.getElementById('statSiteCount').textContent = siteOnly;
         document.getElementById('statRadioCount').textContent = radioOnly;
-        document.getElementById('statTotalCount').textContent = totalOnline;
         document.getElementById('floatingCount').textContent = totalOnline;
-        document.getElementById('listenerCountNow').textContent = totalOnline;
+        document.getElementById('totalOnlineDisplay').textContent = totalOnline;
         document.getElementById('listenerCount').textContent = totalOnline;
         document.getElementById('totalVisitsAccumulated').textContent = totalAccumulated.toLocaleString('pt-BR');
-        
-        const maxVal = Math.max(totalOnline, 1);
-        const sitePct = (siteOnly / maxVal) * 100;
-        const radioPct = (radioOnly / maxVal) * 100;
-        document.getElementById('barSite').style.width = sitePct + '%';
-        document.getElementById('barRadio').style.width = radioPct + '%';
     }
 
     // CONTADOR DO SITE: pessoas que deram play (lastSeen < 5 min)
@@ -767,13 +720,13 @@
         }
     }
 
-    // BUSCA OUVINTES DO ICECAST (RadiosNet) - A cada 2s
+    // BUSCA OUVINTES DO ICECAST (atualiza a cada 2s)
     async function fetchRadioOnline() {
         try {
             const response = await fetch(ICECAST_PROXY_URL, { cache: 'no-cache' });
             if (response.ok) {
                 const data = await response.json();
-                rawIcecastCount = data.listeners || 0;
+                icecastListeners = data.listeners || 0;
                 updateAllDisplays();
             }
         } catch (err) {}
@@ -788,9 +741,7 @@
         countedThisSession = '1';
         sessionStorage.setItem('fsmoc_visit_counted', '1');
         counterRef.transaction((current) => {
-            if (current === null || current.count === undefined) {
-                return { count: 1, last_updated: Date.now() };
-            }
+            if (current === null || current.count === undefined) return { count: 1, last_updated: Date.now() };
             return { count: current.count + 1, last_updated: Date.now() };
         }).then(r => {
             totalAccumulated = r.snapshot.val().count;
@@ -891,10 +842,7 @@
         const shareData = { title: 'Forró Stream MOC', text: 'Ouça a melhor rádio de forró 24 horas!', url: window.location.href };
         try {
             if (navigator.share) await navigator.share(shareData);
-            else {
-                await navigator.clipboard.writeText(window.location.href);
-                showToast('✅ Link copiado!');
-            }
+            else { await navigator.clipboard.writeText(window.location.href); showToast('✅ Link copiado!'); }
         } catch (err) { showToast('❌ Erro'); }
     }
 
