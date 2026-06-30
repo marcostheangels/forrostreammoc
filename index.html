@@ -3,22 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Forró Stream MOC - A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG. Ouça os maiores sucessos do forró tradicional, universitário e eletrônico.">
-  <meta name="keywords" content="forró, rádio, Montes Claros, MOC, música, ao vivo, stream, forró tradicional, forró universitário">
-  <meta name="author" content="Forró Stream MOC">
-  
-  <meta property="og:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
-  <meta property="og:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://forrostreammoc.com">
-  <meta property="og:image" content="forro-moc-poster.jpg">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Forró Stream MOC | Rádio de Forró 24h Ao Vivo">
-  <meta name="twitter:description" content="A sua rádio de forró favorita em Montes Claros/MG. Programação 24 horas com o melhor do forró!">
-  <meta name="twitter:image" content="forro-moc-poster.jpg">
-  <meta name="theme-color" content="#f59e0b">
-  <link rel="icon" type="image/jpeg" href="forro-moc-poster.jpg">
+  <meta name="description" content="Forró Stream MOC - A melhor rádio de forró 24 horas ao vivo em Montes Claros/MG.">
+  <meta name="keywords" content="forró, rádio, Montes Claros, MOC, música, ao vivo">
   <title>Forró Stream MOC | A Sua Rádio de Forró 24h Ao Vivo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -103,29 +89,6 @@
     .location-status-forr{margin-top:10px;font-size:.75rem;text-align:center;color:rgba(203,213,225,.6);font-style:italic}
     .location-status-forr.listening{color:#22c55e;font-weight:800;font-style:normal}
 
-    .listeners-card-forr{ max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px; background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(234,88,12,.04)); border:1px solid rgba(245,158,11,.35);backdrop-filter:blur(8px); }
-    .listeners-header-forr{ display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px; }
-    .listeners-title-forr{ display:flex;align-items:center;gap:8px;font-size:.88rem;color:#fbbf24; text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
-    .listeners-total-forr{ background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(234,88,12,.15)); color:#fff;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:800; border:1px solid rgba(245,158,11,.5);display:flex;align-items:center;gap:6px; }
-    .listeners-total-forr .live-dot{ width:7px;height:7px;background:#ef4444;border-radius:50%; animation:pulseRing 1.2s infinite;box-shadow:0 0 6px #ef4444; }
-    .listeners-total-forr .num{ color:#fde68a;font-size:1.05rem;font-family:'Orbitron',sans-serif; text-shadow:0 0 6px rgba(245,158,11,.5); }
-    .listeners-table-forr{width:100%;background:rgba(0,0,0,.4);border-radius:11px;overflow:hidden;font-size:.82rem}
-    .listeners-table-header-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;background:rgba(245,158,11,.12); font-size:.65rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.1px;font-weight:800; border-bottom:1px solid rgba(245,158,11,.2); }
-    .listeners-table-body-forr{max-height:260px;overflow-y:auto}
-    .listeners-table-body-forr::-webkit-scrollbar{width:5px}
-    .listeners-table-body-forr::-webkit-scrollbar-thumb{background:rgba(245,158,11,.5);border-radius:3px}
-    .listener-row-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;align-items:center; border-bottom:1px solid rgba(255,255,255,.04); transition:.3s;animation:fadeInRowF .4s ease-out; }
-    @keyframes fadeInRowF{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-    .listener-row-forr:hover{background:rgba(245,158,11,.08)}
-    .listener-row-forr.me{ background:linear-gradient(90deg,rgba(34,197,94,.18),transparent); border-left:3px solid #22c55e; }
-    .listener-row-forr .ip-cell{font-family:'Orbitron',monospace;color:#fbbf24;font-size:.75rem;font-weight:800}
-    .listener-row-forr.me .ip-cell{color:#b9f6ca}
-    .listener-row-forr .city-cell{color:#fff;font-weight:600;font-size:.82rem}
-    .listener-row-forr .state-cell{color:rgba(203,213,225,.7);font-size:.78rem}
-    .listener-row-forr .time-cell{ color:rgba(203,213,225,.5);font-size:.7rem;text-align:right;font-family:'Orbitron',monospace; }
-    .listeners-empty-forr{ padding:26px 18px;text-align:center;color:rgba(203,213,225,.5); font-style:italic;font-size:.88rem; }
-    .listeners-status-forr{margin-top:9px;font-size:.7rem;text-align:center;color:rgba(203,213,225,.4);font-style:italic}
-
     .unified-stats-card{ max-width:600px;margin:18px auto 0;padding:20px;border-radius:18px; background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(168,85,247,.08),rgba(245,158,11,.05)); border:1px solid rgba(34,197,94,.35);backdrop-filter:blur(8px); }
     .unified-header{ display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px; }
     .unified-title{ display:flex;align-items:center;gap:9px;font-size:.95rem;color:#a7f3d0; text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
@@ -152,6 +115,29 @@
     .unified-bar-track{ flex-grow:1;height:6px;background:rgba(255,255,255,.05);border-radius:3px; overflow:hidden;display:flex; }
     .unified-bar-site{ height:100%;background:linear-gradient(90deg,#22c55e,#10b981); transition:width .5s ease; }
     .unified-bar-radio{ height:100%;background:linear-gradient(90deg,#a855f7,#ec4899); transition:width .5s ease; }
+
+    .listeners-card-forr{ max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px; background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(234,88,12,.04)); border:1px solid rgba(245,158,11,.35);backdrop-filter:blur(8px); }
+    .listeners-header-forr{ display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px; }
+    .listeners-title-forr{ display:flex;align-items:center;gap:8px;font-size:.88rem;color:#fbbf24; text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
+    .listeners-total-forr{ background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(234,88,12,.15)); color:#fff;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:800; border:1px solid rgba(245,158,11,.5);display:flex;align-items:center;gap:6px; }
+    .listeners-total-forr .live-dot{ width:7px;height:7px;background:#ef4444;border-radius:50%; animation:pulseRing 1.2s infinite;box-shadow:0 0 6px #ef4444; }
+    .listeners-total-forr .num{ color:#fde68a;font-size:1.05rem;font-family:'Orbitron',sans-serif; text-shadow:0 0 6px rgba(245,158,11,.5); }
+    .listeners-table-forr{width:100%;background:rgba(0,0,0,.4);border-radius:11px;overflow:hidden;font-size:.82rem}
+    .listeners-table-header-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;background:rgba(245,158,11,.12); font-size:.65rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.1px;font-weight:800; border-bottom:1px solid rgba(245,158,11,.2); }
+    .listeners-table-body-forr{max-height:260px;overflow-y:auto}
+    .listeners-table-body-forr::-webkit-scrollbar{width:5px}
+    .listeners-table-body-forr::-webkit-scrollbar-thumb{background:rgba(245,158,11,.5);border-radius:3px}
+    .listener-row-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;align-items:center; border-bottom:1px solid rgba(255,255,255,.04); transition:.3s;animation:fadeInRowF .4s ease-out; }
+    @keyframes fadeInRowF{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .listener-row-forr:hover{background:rgba(245,158,11,.08)}
+    .listener-row-forr.me{ background:linear-gradient(90deg,rgba(34,197,94,.18),transparent); border-left:3px solid #22c55e; }
+    .listener-row-forr .ip-cell{font-family:'Orbitron',monospace;color:#fbbf24;font-size:.75rem;font-weight:800}
+    .listener-row-forr.me .ip-cell{color:#b9f6ca}
+    .listener-row-forr .city-cell{color:#fff;font-weight:600;font-size:.82rem}
+    .listener-row-forr .state-cell{color:rgba(203,213,225,.7);font-size:.78rem}
+    .listener-row-forr .time-cell{ color:rgba(203,213,225,.5);font-size:.7rem;text-align:right;font-family:'Orbitron',monospace; }
+    .listeners-empty-forr{ padding:26px 18px;text-align:center;color:rgba(203,213,225,.5); font-style:italic;font-size:.88rem; }
+    .listeners-status-forr{margin-top:9px;font-size:.7rem;text-align:center;color:rgba(203,213,225,.4);font-style:italic}
 
     @media (max-width:640px){
         .location-details-forr{grid-template-columns:1fr}
@@ -212,14 +198,6 @@
         <p class="text-yellow-200 text-sm md:text-base">Festa Junina 2026 • São João com muito forró!</p>
       </div>
       <span class="text-2xl">🎊</span>
-    </div>
-    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-      <div class="junina-flag red" style="top: -5px; left: 10%; animation-delay: 0s;"></div>
-      <div class="junina-flag blue" style="top: -5px; left: 25%; animation-delay: 0.5s;"></div>
-      <div class="junina-flag yellow" style="top: -5px; left: 40%; animation-delay: 1s;"></div>
-      <div class="junina-flag green" style="top: -5px; left: 55%; animation-delay: 1.5s;"></div>
-      <div class="junina-flag red" style="top: -5px; left: 70%; animation-delay: 2s;"></div>
-      <div class="junina-flag blue" style="top: -5px; left: 85%; animation-delay: 2.5s;"></div>
     </div>
   </div>
 
@@ -331,14 +309,6 @@
                   </div>
                 </div>
               </div>
-              <div class="bg-slate-900/60 backdrop-blur border border-slate-700/50 p-4 rounded-2xl shadow-lg">
-                <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3 flex items-center gap-2">
-                  <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Últimas Tocadas
-                </h3>
-                <div id="songHistory" class="space-y-2">
-                  <p class="text-xs text-slate-500 text-center py-2">Aguardando músicas...</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -368,6 +338,7 @@
           <div class="location-status-forr" id="locationStatusF">💡 Detectando seu IP público real...</div>
         </div>
 
+        <!-- 🆕 CARD DE OUINTES ONLINE EM TEMPO REAL (CORRIGIDO) -->
         <div class="unified-stats-card" id="unifiedStatsCard">
           <div class="unified-header">
             <div class="unified-title">
@@ -405,16 +376,17 @@
           </div>
         </div>
 
+        <!-- 🆕 CARD DE IPS DE QUEM DEU PLAY NO SITE -->
         <div class="listeners-card-forr" id="listenersCardF">
           <div class="listeners-header-forr">
             <div class="listeners-title-forr">
               <span>🔐</span>
-              <span>Ouvintes com IP Real (Site)</span>
+              <span>IPs de quem deu Play no Site</span>
             </div>
             <div class="listeners-total-forr">
               <span class="live-dot"></span>
               <span class="num" id="listenersCountF">0</span>
-              <span>ao vivo</span>
+              <span>ativos</span>
             </div>
           </div>
           <div class="listeners-table-forr">
@@ -425,11 +397,11 @@
               <div style="text-align:right">Visto</div>
             </div>
             <div class="listeners-table-body-forr" id="listenersListF">
-              <div class="listeners-empty-forr">🔐 Aguardando alguém clicar em Play...</div>
+              <div class="listeners-empty-forr">🔐 Aguardando alguém dar Play no site...</div>
             </div>
           </div>
           <div class="listeners-status-forr" id="listenersStatusF">
-            🟢 IPs reais capturados • Limpeza automática em 24h
+            🟢 IPs em tempo real • Limpeza após 24h sem atividade
           </div>
         </div>
 
@@ -441,28 +413,6 @@
             <div class="text-right">
               <p class="text-xs text-slate-400">Horário Local</p>
               <p class="text-lg font-bold text-amber-400 font-mono" id="currentTime">--:--</p>
-            </div>
-          </div>
-          <div class="mb-6 p-5 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 border border-purple-500/30 rounded-xl backdrop-blur">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
-                <i class="fa-solid fa-clock-rotate-left text-lg text-white"></i>
-              </div>
-              <div>
-                <p class="text-sm font-bold text-white">Últimas Músicas Tocadas</p>
-                <p class="text-xs text-slate-400">Histórico em tempo real</p>
-              </div>
-            </div>
-            <div id="recentSongs" class="space-y-2">
-              <div class="flex items-center gap-3 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50">
-                <div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <i class="fa-solid fa-music text-xs text-white"></i>
-                </div>
-                <div class="flex-grow min-w-0">
-                  <p class="text-sm font-medium text-white truncate">Carregando histórico...</p>
-                  <p class="text-xs text-slate-400">Aguarde</p>
-                </div>
-              </div>
             </div>
           </div>
           <div class="mb-6 p-5 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 border-2 border-green-500/40 rounded-xl backdrop-blur hover:border-green-400/60 transition-all duration-300 cursor-pointer group" onclick="window.open('https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música!', '_blank')">
@@ -478,17 +428,19 @@
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3 mb-6">
+            <!-- 🆕 CORRIGIDO: "Ouvintes Agora" agora mostra online em tempo real -->
+            <div class="p-4 bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/40 rounded-xl text-center">
+              <i class="fa-solid fa-users text-2xl text-green-400 mb-2 animate-pulse"></i>
+              <p class="text-xs text-slate-400 mb-1">Ouvintes Agora</p>
+              <p class="text-2xl font-black text-green-400" id="listenerCountNow">0</p>
+              <p class="text-[10px] text-green-400/80 mt-1">Em tempo real</p>
+            </div>
+            <!-- 🆕 NOVO: Total de Visitas ACUMULADO (não atualiza) -->
             <div class="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-center">
               <i class="fa-solid fa-database text-2xl text-blue-400 mb-2"></i>
               <p class="text-xs text-slate-400 mb-1">Total de Visitas</p>
-              <p class="text-2xl font-black text-blue-400" id="totalVisitorsStats">0</p>
-            </div>
-            <div class="p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-xl text-center">
-              <i class="fa-solid fa-broadcast-tower text-2xl text-amber-400 mb-2"></i>
-              <p class="text-xs text-slate-400 mb-1">Status</p>
-              <p class="text-lg font-bold text-green-400 flex items-center justify-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> NO AR
-              </p>
+              <p class="text-2xl font-black text-blue-400" id="totalVisitsAccumulated">0</p>
+              <p class="text-[10px] text-blue-400/80 mt-1">Acumulado</p>
             </div>
           </div>
           <div class="p-5 bg-slate-900/60 border border-slate-700 rounded-xl space-y-4">
@@ -577,7 +529,7 @@
           </div>
           <div class="text-center p-5 bg-green-500/20 rounded-xl border border-green-500/40">
             <i class="fa-solid fa-users text-3xl text-green-400 mb-3 animate-pulse"></i>
-            <p class="text-xs text-slate-400">Ouvintes Agora</p>
+            <p class="text-xs text-slate-400">Online Agora</p>
             <p class="text-base font-bold text-green-400 mt-1" id="listenerCount">Carregando...</p>
           </div>
         </div>
@@ -595,9 +547,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <script>
-    const DEBUG_MODE = true;
-    const log = (...a) => DEBUG_MODE && console.log('🎵', ...a);
-
     const firebaseConfig = {
         apiKey: "AIzaSyCn9EYNFB094gysRRuGvnffOAbHTobFsbo",
         authDomain: "forro-stream-moc.firebaseapp.com",
@@ -607,10 +556,10 @@
         messagingSenderId: "156075369710",
         appId: "1:156075369710:web:7314e4407fb55cd4d17fff"
     };
-
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const counterRef = database.ref('forro_stream/total_listeners');
+    const listenersListRef = database.ref('listeners');
 
     // 🆕 URL do Worker Cloudflare
     const ICECAST_PROXY_URL = 'https://flat-rain-59ad.marcostheangels.workers.dev/';
@@ -653,7 +602,7 @@
                     locationStatus.innerHTML = `✅ Detectado`;
                     return info;
                 }
-            } catch (err) { log(`❌ ${api.name} falhou:`, err.message); }
+            } catch (err) { console.log(`❌ ${api.name} falhou:`, err.message); }
         }
 
         locationCity.textContent = 'Não detectado';
@@ -670,90 +619,197 @@
     }
 
     // ============================================
-    // 🆕 SISTEMA DE CONTAGEM SIMPLES
+    // 🆕 SISTEMA DE OUINTES CORRIGIDO
     // ============================================
-    // Cada navegador/aba conta como 1 sessão usando sessionStorage
-    const SESSION_ID = 'fsmoc_session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    
-    let totalVisits = 0;
-    let radioListeners = 0;
+    const myUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    let myUserRef = null;
+    let heartbeatInterval = null;
+    let myLocationData = null;
 
+    // Variáveis dos contadores
+    let siteOnlineCount = 0;     // Pessoas online AGORA no site
+    let radioOnlineCount = 0;    // Pessoas online AGORA no RadiosNet
+    let totalAccumulated = 0;    // Total acumulado de quem já acessou
+
+    function timeAgo(timestamp) {
+        const diff = Date.now() - timestamp;
+        const mins = Math.floor(diff / 60000);
+        if (mins < 1) return 'agora';
+        if (mins < 60) return `${mins}min`;
+        const hours = Math.floor(mins / 60);
+        if (hours < 24) return `${hours}h`;
+        return `${Math.floor(hours / 24)}d`;
+    }
+
+    async function updateLastSeen() {
+        if (myUserRef) {
+            try {
+                await myUserRef.update({ lastSeen: firebase.database.ServerValue.TIMESTAMP });
+            } catch (err) {}
+        }
+    }
+
+    async function registerMyPresence(locationData) {
+        if (!locationData || !locationData.ip) return;
+        
+        myUserRef = listenersListRef.child(myUserId);
+        myLocationData = locationData;
+        const locationText = locationData.state ? `${locationData.city}, ${locationData.state}` : locationData.city;
+        
+        try {
+            await myUserRef.set({
+                ip: locationData.ip,
+                city: locationData.city,
+                state: locationData.state || '',
+                country: locationData.country || 'BR',
+                isp: locationData.isp || '',
+                location: locationText,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
+        } catch (err) { console.log('❌ ERRO:', err); }
+    }
+
+    function startHeartbeat() {
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(updateLastSeen, 15000);
+        updateLastSeen();
+    }
+
+    function removeMyPresence() {
+        if (myUserRef) myUserRef.remove().catch(() => {});
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+    }
+
+    // 🆕 FUNÇÃO: Atualiza contadores em TEMPO REAL
     function updateAllDisplays() {
-        const total = totalVisits + radioListeners;
-        const maxVal = Math.max(total, 1);
+        const totalOnline = siteOnlineCount + radioOnlineCount;
+        const maxVal = Math.max(totalOnline, 1);
         
-        document.getElementById('statSiteCount').textContent = totalVisits;
-        document.getElementById('statRadioCount').textContent = radioListeners;
-        document.getElementById('statTotalCount').textContent = total;
-        document.getElementById('floatingCount').textContent = total;
-        document.getElementById('liveListenerCount').textContent = total;
-        document.getElementById('listenerCount').textContent = total;
+        // Card unificado
+        document.getElementById('statSiteCount').textContent = siteOnlineCount;
+        document.getElementById('statRadioCount').textContent = radioOnlineCount;
+        document.getElementById('statTotalCount').textContent = totalOnline;
         
-        const stats = document.getElementById('totalVisitorsStats');
-        if (stats) stats.textContent = totalVisits.toLocaleString('pt-BR');
-        const totalVisEl = document.getElementById('totalVisitors');
-        if (totalVisEl) totalVisEl.textContent = totalVisits.toLocaleString('pt-BR');
+        // Badge flutuante
+        document.getElementById('floatingCount').textContent = totalOnline;
         
-        const sitePct = (totalVisits / maxVal) * 100;
-        const radioPct = (radioListeners / maxVal) * 100;
+        // Card "Online Agora" (verde) - CORRIGIDO
+        document.getElementById('listenerCountNow').textContent = totalOnline;
+        document.getElementById('listenerCount').textContent = totalOnline;
+        
+        // Total de visitas acumulado (card azul)
+        document.getElementById('totalVisitsAccumulated').textContent = totalAccumulated.toLocaleString('pt-BR');
+        
+        // Barras
+        const sitePct = (siteOnlineCount / maxVal) * 100;
+        const radioPct = (radioOnlineCount / maxVal) * 100;
         document.getElementById('barSite').style.width = sitePct + '%';
         document.getElementById('barRadio').style.width = radioPct + '%';
     }
 
-    // 🆕 CONTADOR DE VISITAS SIMPLES E CONFIÁVEL
-    function incrementVisit() {
-        // Cada acesso à página conta como 1 visita
-        // Mas só conta 1 vez por sessão (sessionStorage)
-        if (!sessionStorage.getItem('fsmoc_visit_counted')) {
-            sessionStorage.setItem('fsmoc_visit_counted', '1');
-            
-            counterRef.transaction((current) => {
-                if (current === null || current.count === undefined) {
-                    return { count: 1, last_updated: Date.now() };
-                }
-                return { count: current.count + 1, last_updated: Date.now() };
-            }).then(r => {
-                totalVisits = r.snapshot.val().count;
-                updateAllDisplays();
-            }).catch(err => log('Erro:', err));
+    // 🆕 CONTADOR DO SITE: conta quem está ONLINE (lastSeen < 5 min)
+    listenersListRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        const now = Date.now();
+        const ACTIVE_LIMIT = 5 * 60 * 1000; // 5 minutos = "online agora"
+        let count = 0;
+        Object.values(data).forEach(listener => {
+            if (now - (listener.lastSeen || 0) < ACTIVE_LIMIT && listener.ip) count++;
+        });
+        siteOnlineCount = count;
+        updateAllDisplays();
+        displayIPsList(snapshot); // Atualiza a lista de IPs
+    });
+
+    // 🆕 FUNÇÃO: Mostra a lista de IPs
+    function displayIPsList(snapshot) {
+        const list = document.getElementById('listenersListF');
+        const countEl = document.getElementById('listenersCountF');
+        if (!list || !countEl) return;
+        
+        const data = snapshot.val() || {};
+        const now = Date.now();
+        const ACTIVE_LIMIT = 5 * 60 * 1000;
+        const activeListeners = [];
+        const cleanupPromises = [];
+
+        Object.entries(data).forEach(([id, listener]) => {
+            const lastSeen = listener.lastSeen || 0;
+            if (now - lastSeen < ACTIVE_LIMIT && listener.ip) {
+                activeListeners.push({ id, ...listener });
+            } else if (now - lastSeen > 24 * 60 * 60 * 1000) {
+                cleanupPromises.push(listenersListRef.child(id).remove().catch(() => {}));
+            }
+        });
+
+        activeListeners.sort((a, b) => {
+            if (a.id === myUserId) return -1;
+            if (b.id === myUserId) return 1;
+            return (b.lastSeen || 0) - (a.lastSeen || 0);
+        });
+
+        countEl.textContent = activeListeners.length;
+        list.innerHTML = '';
+
+        if (activeListeners.length === 0) {
+            list.innerHTML = '<div class="listeners-empty-forr">🔐 Ninguém deu Play ainda...</div>';
+        } else {
+            activeListeners.forEach(listener => {
+                const row = document.createElement('div');
+                row.className = 'listener-row-forr';
+                if (listener.id === myUserId) row.classList.add('me');
+                const locationText = listener.state ? `${listener.city}, ${listener.state}` : (listener.city || '—');
+                row.innerHTML = `
+                    <div class="ip-cell">${listener.ip || '—'}${listener.id === myUserId ? ' (VOCÊ)' : ''}</div>
+                    <div class="state-cell">${locationText}</div>
+                    <div class="city-cell">${listener.country || 'BR'}</div>
+                    <div class="time-cell">${timeAgo(listener.lastSeen)}</div>
+                `;
+                list.appendChild(row);
+            });
         }
     }
 
-    // Escuta mudanças no Firebase
-    counterRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data && data.count !== undefined) {
-            totalVisits = data.count;
-            updateAllDisplays();
-        }
-    });
-
-    // 🆕 BUSCA OUVINTES DO RADIOSNET (Icecast via Worker) - A cada 2s
-    async function fetchRadioListeners() {
+    // 🆕 BUSCA OUVINTES DO ICECAST (RadiosNet) - A cada 2s
+    async function fetchRadioOnline() {
         try {
             const response = await fetch(ICECAST_PROXY_URL, { cache: 'no-cache' });
             if (response.ok) {
                 const data = await response.json();
-                // 🆕 CORREÇÃO: Se você está no site E no radio, é a mesma pessoa
-                // Então: radioListeners = max(icecast_count, totalVisits ativos)
-                // Mas como não temos como saber, vamos pegar o icecast direto
-                // O número do Icecast pode incluir você mesmo se estiver ouvindo
-                // Por isso subtraímos 1 se você está no site também
-                let icecastCount = data.listeners || 0;
-                
-                // Se estamos no site, desconta nós mesmos
-                if (totalVisits > 0) {
-                    radioListeners = Math.max(0, icecastCount - 0); // mantém o número real
-                } else {
-                    radioListeners = icecastCount;
-                }
-                
+                radioOnlineCount = data.listeners || 0;
                 updateAllDisplays();
             }
         } catch (err) {}
     }
-    setInterval(fetchRadioListeners, 2000);
-    fetchRadioListeners();
+    setInterval(fetchRadioOnline, 2000);
+    fetchRadioOnline();
+
+    // 🆕 CONTADOR ACUMULADO DE VISITAS
+    let countedThisSession = sessionStorage.getItem('fsmoc_visit_counted');
+
+    function incrementTotalVisits() {
+        if (countedThisSession) return; // Já contou nesta sessão
+        countedThisSession = '1';
+        sessionStorage.setItem('fsmoc_visit_counted', '1');
+        
+        counterRef.transaction((current) => {
+            if (current === null || current.count === undefined) {
+                return { count: 1, last_updated: Date.now() };
+            }
+            return { count: current.count + 1, last_updated: Date.now() };
+        }).then(r => {
+            totalAccumulated = r.snapshot.val().count;
+            updateAllDisplays();
+        }).catch(err => console.log('Erro:', err));
+    }
+
+    counterRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.count !== undefined) {
+            totalAccumulated = data.count;
+            updateAllDisplays();
+        }
+    });
 
     // ============================================
     // 🎵 RÁDIO PLAYER
@@ -782,6 +838,7 @@
                     statusText.className = "text-xl font-semibold text-green-400";
                     waveform.classList.remove('hidden');
                     showToast('🎊 Bem-vindo! 🔥');
+                    updateLastSeen();
                 })
                 .catch(err => {
                     statusText.innerText = "Sinal indisponível MOC";
@@ -898,43 +955,26 @@
                         document.getElementById('nowPlayingArtist').textContent = artist;
                         document.getElementById('floatingSongTitle').textContent = song;
                         if (artist) document.getElementById('floatingSongArtist').textContent = artist;
-                        addToHistory(song, artist);
                     }
                 }
             }
         } catch (e) {}
     }
 
-    const songHistory = [];
-    function addToHistory(title, artist) {
-        if (songHistory.length > 0 && songHistory[0].title === title) return;
-        songHistory.unshift({ title, artist, time: new Date() });
-        if (songHistory.length > 3) songHistory.pop();
-        updateHistory();
-    }
-    function updateHistory() {
-        if (songHistory.length === 0) return;
-        const historyContainer = document.getElementById('songHistory');
-        const recentContainer = document.getElementById('recentSongs');
-        const html = songHistory.map((song, idx) => {
-            const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            return `<div class="flex items-start gap-2 p-2 rounded-lg bg-slate-800/50"><span class="text-xs text-slate-500 font-mono flex-shrink-0 mt-0.5">${time}</span><div class="flex-grow min-w-0"><p class="text-xs font-medium text-white truncate">${song.title}</p>${song.artist ? `<p class="text-[10px] text-slate-400 truncate">${song.artist}</p>` : ''}</div></div>`;
-        }).join('');
-        if (historyContainer) historyContainer.innerHTML = html;
-        if (recentContainer) {
-            recentContainer.innerHTML = songHistory.map((song, index) => {
-                const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                const isFirst = index === 0;
-                return `<div class="flex items-center gap-3 p-3 ${isFirst ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/40' : 'bg-slate-900/60 border-slate-700/50'} rounded-lg border"><div class="w-8 h-8 ${isFirst ? 'bg-gradient-to-br from-purple-400 to-pink-500 animate-pulse' : 'bg-gradient-to-br from-amber-400 to-orange-500'} rounded-full flex items-center justify-center flex-shrink-0">${isFirst ? '<i class="fa-solid fa-volume-high text-xs text-white"></i>' : '<i class="fa-solid fa-music text-xs text-white"></i>'}</div><div class="flex-grow min-w-0"><p class="text-sm font-medium text-white truncate">${song.title}</p><p class="text-xs ${isFirst ? 'text-purple-300' : 'text-slate-400'}">${isFirst ? 'Tocando agora • ' : ''}${time}</p></div>${isFirst ? '<span class="text-xs bg-purple-500/30 text-purple-300 px-2 py-1 rounded-full font-bold">AO VIVO</span>' : ''}</div>`;
-            }).join('');
-        }
-    }
-
     // ============================================
     // 🚀 INICIALIZAÇÃO
     // ============================================
-    detectarLocalizacao();
-    incrementVisit(); // 🆕 Conta visita IMEDIATAMENTE ao carregar
+    detectarLocalizacao().then(locationData => {
+        if (locationData && locationData.ip) {
+            registerMyPresence(locationData);
+            startHeartbeat();
+        }
+    });
+
+    incrementTotalVisits(); // Conta visita IMEDIATAMENTE
+
+    window.addEventListener('beforeunload', removeMyPresence);
+    window.addEventListener('pagehide', removeMyPresence);
 
     window.addEventListener('DOMContentLoaded', () => {
         updateClock();
@@ -942,7 +982,6 @@
         fetchNowPlaying();
         setInterval(fetchNowPlaying, 2000);
         
-        // Autoplay
         setTimeout(() => {
             audio.play()
                 .then(() => {
