@@ -128,7 +128,7 @@
     .listeners-empty-forr{ padding:26px 18px;text-align:center;color:rgba(203,213,225,.5); font-style:italic;font-size:.88rem; }
     .listeners-status-forr{margin-top:9px;font-size:.7rem;text-align:center;color:rgba(203,213,225,.4);font-style:italic}
 
-    /* ============== 🆕 CARD DE OUINTES UNIFICADO (Site + RadiosNet) ============== */
+    /* ============== CARD UNIFICADO: SITE + RADIOSNET ============== */
     .unified-stats-card{ max-width:600px;margin:18px auto 0;padding:20px;border-radius:18px; background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(168,85,247,.08),rgba(245,158,11,.05)); border:1px solid rgba(34,197,94,.35);backdrop-filter:blur(8px); }
     .unified-header{ display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px; }
     .unified-title{ display:flex;align-items:center;gap:9px;font-size:.95rem;color:#a7f3d0; text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
@@ -805,6 +805,7 @@
     // ============================================
     let siteListenersCount = 0;
     let radioListenersCount = 0;
+    let totalVisitors = 0;
 
     function updateUnifiedDisplay() {
         const total = siteListenersCount + radioListenersCount;
@@ -817,13 +818,19 @@
         document.getElementById('liveListenerCount').textContent = total;
         document.getElementById('listenerCount').textContent = total;
         
+        // Atualiza Total de Visitas
+        const stats = document.getElementById('totalVisitorsStats');
+        if (stats) stats.textContent = totalVisitors.toLocaleString('pt-BR');
+        const totalVisEl = document.getElementById('totalVisitors');
+        if (totalVisEl) totalVisEl.textContent = totalVisitors.toLocaleString('pt-BR');
+        
         const sitePct = (siteListenersCount / maxVal) * 100;
         const radioPct = (radioListenersCount / maxVal) * 100;
         document.getElementById('barSite').style.width = sitePct + '%';
         document.getElementById('barRadio').style.width = radioPct + '%';
     }
 
-    // Atualiza contador do SITE (Firebase)
+    // 🆕 Atualiza contador do SITE (Firebase) → SEMPRE retorna o valor real do banco
     listenersListRef.on('value', (snapshot) => {
         const data = snapshot.val() || {};
         const now = Date.now();
@@ -835,7 +842,7 @@
         updateUnifiedDisplay();
     });
 
-    // Atualiza contador do RADIOSNET (Icecast) - A CADA 2 SEGUNDOS
+    // 🆕 Atualiza contador do RADIOSNET (Icecast) - A cada 2s
     async function fetchRadiosNetListeners() {
         try {
             const response = await fetch('https://stream.forrostreammoc.shop/status.xsl', { 
@@ -850,14 +857,10 @@
                     updateUnifiedDisplay();
                 }
             }
-        } catch (err) {
-            // Silencioso - se falhar, mantém último valor
-        }
+        } catch (err) {}
     }
-
-    // Chama a cada 2 segundos conforme você pediu
     setInterval(fetchRadiosNetListeners, 2000);
-    fetchRadiosNetListeners(); // Primeira chamada imediata
+    fetchRadiosNetListeners();
 
     // ============================================
     // 🎵 RÁDIO PLAYER
@@ -984,17 +987,30 @@
         }, 1000);
     }
 
+    // 🆕 CORREÇÃO: Função corrigida para não sobrescrever valor
     function incrementListenerCounter() {
         counterRef.transaction((current) => {
-            if (current === null) return { count: 1, last_updated: Date.now() };
-            return { count: (current.count || 0) + 1, last_updated: Date.now() };
+            if (current === null || current.count === undefined) {
+                return { count: 1, last_updated: Date.now() };
+            }
+            return { count: current.count + 1, last_updated: Date.now() };
         }).then(r => {
-            const count = r.snapshot.val().count;
-            document.getElementById('totalVisitors').textContent = count.toLocaleString('pt-BR');
-            const stats = document.getElementById('totalVisitorsStats');
-            if (stats) stats.textContent = count.toLocaleString('pt-BR');
+            totalVisitors = r.snapshot.val().count;
+            updateUnifiedDisplay();
         }).catch(err => log('Erro:', err));
     }
+
+    // 🆕 CORREÇÃO: Listener do totalVisitors que NÃO sobrescreve com valor aleatório
+    counterRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.count !== undefined) {
+            // Só atualiza, nunca sobrescreve
+            totalVisitors = data.count;
+            updateUnifiedDisplay();
+        }
+        // Se data for null (banco vazio), NÃO cria valor aleatório aqui
+        // Será criado apenas quando alguém der play
+    });
 
     async function fetchNowPlaying() {
         try {
@@ -1047,21 +1063,7 @@
         }
     }
 
-    function initialCounter() {
-        counterRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.count !== undefined) {
-                document.getElementById('totalVisitors').textContent = data.count.toLocaleString('pt-BR');
-                const stats = document.getElementById('totalVisitorsStats');
-                if (stats) stats.textContent = data.count.toLocaleString('pt-BR');
-            } else {
-                counterRef.set({ count: Math.floor(Math.random() * 10) + 5, last_updated: Date.now() });
-            }
-        });
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
-        initialCounter();
         updateClock();
         setInterval(updateClock, 1000);
         fetchNowPlaying();
