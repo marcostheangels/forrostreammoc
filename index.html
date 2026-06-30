@@ -23,13 +23,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, onValue, runTransaction, set } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, onValue, runTransaction, set, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
         
         // ============================================
         // 🔥 CONFIGURAÇÃO FIREBASE - FORRÓ STREAM MOC
@@ -55,7 +55,7 @@
         
         window.firebaseDB = {
             database, counterRef, lastUpdateRef, ouvintesRef, visitasRef, listenersListRef,
-            onValue, runTransaction, set, ref,
+            onValue, runTransaction, set, remove, ref,
             ServerValue: { TIMESTAMP: Date.now() }
         };
         
@@ -63,6 +63,7 @@
     </script>
     
     <style>
+        /* ===== TODO O CSS JUNINA MANTIDO ===== */
         .toast {
             position: fixed;
             bottom: 100px;
@@ -84,24 +85,10 @@
         .toast.show { transform: translateX(0); }
         .toast i { font-size: 24px; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        @keyframes sway {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-        @keyframes twinkle {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-        @keyframes firefly {
-            0%, 100% { opacity: 0; transform: translate(0, 0); }
-            25% { opacity: 1; transform: translate(100px, -50px); }
-            50% { opacity: 0.8; transform: translate(200px, 0); }
-            75% { opacity: 1; transform: translate(100px, 50px); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+        @keyframes sway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        @keyframes twinkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+        @keyframes firefly { 0%, 100% { opacity: 0; transform: translate(0, 0); } 25% { opacity: 1; transform: translate(100px, -50px); } 50% { opacity: 0.8; transform: translate(200px, 0); } 75% { opacity: 1; transform: translate(100px, 50px); } }
 
         .junina-banner {
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 25%, #ffd700 50%, #ff6b35 75%, #f7931e 100%);
@@ -113,138 +100,41 @@
             overflow: hidden;
         }
         .junina-banner::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px);
             pointer-events: none;
         }
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .junina-flag {
-            position: absolute; width: 40px; height: 50px;
-            animation: sway 3s ease-in-out infinite;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-            z-index: 10;
-        }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .junina-flag { position: absolute; width: 40px; height: 50px; animation: sway 3s ease-in-out infinite; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); z-index: 10; }
         .junina-flag.red { background: linear-gradient(135deg, #ff0000, #cc0000); }
         .junina-flag.blue { background: linear-gradient(135deg, #0066ff, #0044cc); }
         .junina-flag.yellow { background: linear-gradient(135deg, #ffd700, #ffaa00); }
         .junina-flag.green { background: linear-gradient(135deg, #00cc00, #009900); }
-        .junina-lantern {
-            position: fixed; width: 60px; height: 80px;
-            background: radial-gradient(circle, #ffeb3b 0%, #ff9800 50%, #ff5722 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            box-shadow: 0 0 40px #ffeb3b, 0 0 80px #ff9800;
-            animation: float 4s ease-in-out infinite; z-index: 5; opacity: 0.9;
-        }
-        .junina-lantern::before {
-            content: ''; position: absolute; top: -10px; left: 50%;
-            transform: translateX(-50%); width: 2px; height: 20px; background: #8d6e63;
-        }
-        .junina-firefly {
-            position: fixed; width: 8px; height: 8px;
-            background: radial-gradient(circle, #ffff00, #ffeb3b);
-            border-radius: 50%;
-            box-shadow: 0 0 10px #ffff00, 0 0 20px #ffeb3b;
-            animation: firefly 8s ease-in-out infinite;
-            z-index: 4; pointer-events: none;
-        }
-        .junina-corner-decoration {
-            position: fixed; width: 150px; height: 150px;
-            pointer-events: none; z-index: 3;
-        }
-        .junina-corner-decoration.top-left {
-            top: 0; left: 0;
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), transparent);
-            clip-path: polygon(0 0, 100% 0, 0 100%);
-        }
-        .junina-corner-decoration.top-right {
-            top: 0; right: 0;
-            background: linear-gradient(225deg, rgba(255, 215, 0, 0.3), transparent);
-            clip-path: polygon(0 0, 100% 0, 100% 100%);
-        }
-        .junina-corner-decoration.bottom-left {
-            bottom: 0; left: 0;
-            background: linear-gradient(45deg, rgba(247, 147, 30, 0.3), transparent);
-            clip-path: polygon(0 0, 0 100%, 100% 100%);
-        }
-        .junina-corner-decoration.bottom-right {
-            bottom: 0; right: 0;
-            background: linear-gradient(315deg, rgba(255, 107, 53, 0.3), transparent);
-            clip-path: polygon(100% 0, 0 100%, 100% 100%);
-        }
-        .junina-title {
-            text-shadow: 3px 3px 0 #ff6b35, 6px 6px 0 rgba(255, 107, 53, 0.5);
-            letter-spacing: 2px;
-        }
-        .junina-card {
-            border: 3px solid transparent; background-clip: padding-box;
-            position: relative; transition: all 0.3s ease;
-        }
-        .junina-card:hover {
-            border-color: #ffd700;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
-            transform: translateY(-5px);
-        }
-        .junina-badge {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white; padding: 4px 12px; border-radius: 20px;
-            font-weight: bold; font-size: 0.75rem;
-            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
-            animation: twinkle 2s ease-in-out infinite;
-        }
+        .junina-lantern { position: fixed; width: 60px; height: 80px; background: radial-gradient(circle, #ffeb3b 0%, #ff9800 50%, #ff5722 100%); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; box-shadow: 0 0 40px #ffeb3b, 0 0 80px #ff9800; animation: float 4s ease-in-out infinite; z-index: 5; opacity: 0.9; }
+        .junina-lantern::before { content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 2px; height: 20px; background: #8d6e63; }
+        .junina-firefly { position: fixed; width: 8px; height: 8px; background: radial-gradient(circle, #ffff00, #ffeb3b); border-radius: 50%; box-shadow: 0 0 10px #ffff00, 0 0 20px #ffeb3b; animation: firefly 8s ease-in-out infinite; z-index: 4; pointer-events: none; }
+        .junina-corner-decoration { position: fixed; width: 150px; height: 150px; pointer-events: none; z-index: 3; }
+        .junina-corner-decoration.top-left { top: 0; left: 0; background: linear-gradient(135deg, rgba(255, 107, 53, 0.3), transparent); clip-path: polygon(0 0, 100% 0, 0 100%); }
+        .junina-corner-decoration.top-right { top: 0; right: 0; background: linear-gradient(225deg, rgba(255, 215, 0, 0.3), transparent); clip-path: polygon(0 0, 100% 0, 100% 100%); }
+        .junina-corner-decoration.bottom-left { bottom: 0; left: 0; background: linear-gradient(45deg, rgba(247, 147, 30, 0.3), transparent); clip-path: polygon(0 0, 0 100%, 100% 100%); }
+        .junina-corner-decoration.bottom-right { bottom: 0; right: 0; background: linear-gradient(315deg, rgba(255, 107, 53, 0.3), transparent); clip-path: polygon(100% 0, 0 100%, 100% 100%); }
+        .junina-title { text-shadow: 3px 3px 0 #ff6b35, 6px 6px 0 rgba(255, 107, 53, 0.5); letter-spacing: 2px; }
+        .junina-card { border: 3px solid transparent; background-clip: padding-box; position: relative; transition: all 0.3s ease; }
+        .junina-card:hover { border-color: #ffd700; box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); transform: translateY(-5px); }
+        .junina-badge { background: linear-gradient(135deg, #ff6b35, #f7931e); color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.75rem; box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4); animation: twinkle 2s ease-in-out infinite; }
 
-        body { 
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-        }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
         .font-header { font-family: 'Montserrat', sans-serif; }
-        
         .overflow-wrap-anywhere { overflow-wrap: anywhere; word-wrap: anywhere; word-break: break-word; }
-        .line-clamp-2 {
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            overflow: hidden; text-overflow: ellipsis; max-width: 100%;
-        }
-        .line-clamp-1 {
-            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
-            overflow: hidden; text-overflow: ellipsis; max-width: 100%;
-        }
-        #nowPlayingText, #nowPlayingArtist {
-            hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto;
-            word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;
-        }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px);
-            border: 1px solid rgba(245, 158, 11, 0.15);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        .glow-poster {
-            box-shadow: 0 20px 80px -10px rgba(234, 88, 12, 0.6), 0 0 40px rgba(245, 158, 11, 0.3);
-            transition: all 0.4s ease;
-        }
-        .glow-poster:hover {
-            box-shadow: 0 25px 100px -5px rgba(234, 88, 12, 0.8), 0 0 60px rgba(245, 158, 11, 0.5);
-            transform: translateY(-2px);
-        }
-        .text-gradient {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #ea580c 75%, #dc2626 100%);
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
-        }
-        .pulse-live-ring {
-            border-color: rgba(251, 191, 36, 0.6);
-            animation: pulseRing 1.5s cubic-bezier(0.24, 0, 0.38, 1) infinite;
-        }
-        @keyframes pulseRing {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.8); }
-            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
-        }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        #nowPlayingText, #nowPlayingArtist { hyphens: auto; -webkit-hyphens: auto; -ms-hyphens: auto; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(245, 158, 11, 0.15); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+        .glow-poster { box-shadow: 0 20px 80px -10px rgba(234, 88, 12, 0.6), 0 0 40px rgba(245, 158, 11, 0.3); transition: all 0.4s ease; }
+        .glow-poster:hover { box-shadow: 0 25px 100px -5px rgba(234, 88, 12, 0.8), 0 0 60px rgba(245, 158, 11, 0.5); transform: translateY(-2px); }
+        .text-gradient { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #ea580c 75%, #dc2626 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3)); }
+        .pulse-live-ring { border-color: rgba(251, 191, 36, 0.6); animation: pulseRing 1.5s cubic-bezier(0.24, 0, 0.38, 1) infinite; }
+        @keyframes pulseRing { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.8); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); } }
         .waveform { display: flex; align-items: flex-end; gap: 2px; height: 16px; width: 24px; }
         .waveform-bar { width: 4px; border-radius: 2px; }
         .waveform-bar-1 { height: 100%; animation: wf 0.8s ease-in-out infinite; }
@@ -252,141 +142,65 @@
         .waveform-bar-3 { height: 90%; animation: wf 0.7s ease-in-out 0.2s infinite; }
         .waveform-bar-4 { height: 60%; animation: wf 1s ease-in-out 0.3s infinite; }
         @keyframes wf { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.4); } }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .hover-lift {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .hover-lift:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(245, 158, 11, 0.2);
-        }
+        .delay-100 { animation-delay: 0.1s; } .delay-200 { animation-delay: 0.2s; } .delay-300 { animation-delay: 0.3s; }
+        .hover-lift { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hover-lift:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(245, 158, 11, 0.2); }
         .btn-shine { position: relative; overflow: hidden; }
-        .btn-shine::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
-        }
+        .btn-shine::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent); transition: left 0.5s; }
         .btn-shine:hover::before { left: 100%; }
         html { scroll-behavior: smooth; }
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(234, 88, 12, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(251, 191, 36, 0.02) 0%, transparent 50%);
-            pointer-events: none; z-index: -1;
-        }
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #f59e0b, #ea580c); border-radius: 5px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #fbbf24, #f59e0b);
-        }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(234, 88, 12, 0.03) 0%, transparent 50%), radial-gradient(circle at 40% 20%, rgba(251, 191, 36, 0.02) 0%, transparent 50%); pointer-events: none; z-index: -1; }
+        ::-webkit-scrollbar { width: 10px; } ::-webkit-scrollbar-track { background: #0f172a; } ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #f59e0b, #ea580c); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
 
         /* ============== CARD DE LOCALIZAÇÃO ============== */
-        .location-card-forr{
-            max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px;
-            background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(245,158,11,.05));
-            border:1px solid rgba(245,158,11,.3);backdrop-filter:blur(8px);
-        }
+        .location-card-forr{ max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px; background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(245,158,11,.05)); border:1px solid rgba(245,158,11,.3);backdrop-filter:blur(8px); }
         .location-card-forr.loading{opacity:.7;text-align:center}
-        .location-header-forr{
-            display:flex;align-items:center;gap:9px;margin-bottom:11px;
-            font-size:.78rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.3px;font-weight:800;
-        }
-        .location-header-forr .pulse-dot{
-            width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulseRing 1.4s infinite;
-        }
+        .location-header-forr{ display:flex;align-items:center;gap:9px;margin-bottom:11px; font-size:.78rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
+        .location-header-forr .pulse-dot{ width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulseRing 1.4s infinite; }
         .location-main-forr{display:flex;align-items:center;gap:14px;margin-bottom:11px}
         .location-flag-forr{font-size:2.4rem;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
         .location-info-forr{flex-grow:1;min-width:0}
         .location-city-forr{font-size:1.2rem;font-weight:800;color:#fbbf24;margin:0;line-height:1.2}
         .location-state-forr{font-size:.85rem;color:#cbd5e1;margin:2px 0 0 0}
-        .location-details-forr{
-            display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px;font-size:.78rem;
-        }
-        .location-detail-forr{
-            background:rgba(0,0,0,.4);padding:8px 11px;border-radius:9px;
-            border:1px solid rgba(245,158,11,.15);
-        }
-        .location-detail-label-forr{
-            color:rgba(203,213,225,.5);font-size:.65rem;text-transform:uppercase;
-            letter-spacing:1px;margin-bottom:3px;font-weight:600;
-        }
+        .location-details-forr{ display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px;font-size:.78rem; }
+        .location-detail-forr{ background:rgba(0,0,0,.4);padding:8px 11px;border-radius:9px; border:1px solid rgba(245,158,11,.15); }
+        .location-detail-label-forr{ color:rgba(203,213,225,.5);font-size:.65rem;text-transform:uppercase; letter-spacing:1px;margin-bottom:3px;font-weight:600; }
         .location-detail-value-forr{color:#fff;font-weight:700;font-size:.85rem;word-break:break-word}
         .location-detail-value-forr.ip{font-family:'Orbitron',monospace;color:#fbbf24}
         .location-status-forr{margin-top:10px;font-size:.75rem;text-align:center;color:rgba(203,213,225,.6);font-style:italic}
         .location-status-forr.listening{color:#22c55e;font-weight:800;font-style:normal}
 
         /* ============== CARD DE OUINTES COM IPs ============== */
-        .listeners-card-forr{
-            max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px;
-            background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(234,88,12,.04));
-            border:1px solid rgba(245,158,11,.35);backdrop-filter:blur(8px);
-        }
-        .listeners-header-forr{
-            display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px;
-        }
-        .listeners-title-forr{
-            display:flex;align-items:center;gap:8px;font-size:.88rem;color:#fbbf24;
-            text-transform:uppercase;letter-spacing:1.3px;font-weight:800;
-        }
-        .listeners-total-forr{
-            background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(234,88,12,.15));
-            color:#fff;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:800;
-            border:1px solid rgba(245,158,11,.5);display:flex;align-items:center;gap:6px;
-        }
-        .listeners-total-forr .live-dot{
-            width:7px;height:7px;background:#ef4444;border-radius:50%;
-            animation:pulseRing 1.2s infinite;box-shadow:0 0 6px #ef4444;
-        }
-        .listeners-total-forr .num{
-            color:#fde68a;font-size:1.05rem;font-family:'Orbitron',sans-serif;
-            text-shadow:0 0 6px rgba(245,158,11,.5);
-        }
+        .listeners-card-forr{ max-width:600px;margin:18px auto 0;padding:18px;border-radius:18px; background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(234,88,12,.04)); border:1px solid rgba(245,158,11,.35);backdrop-filter:blur(8px); }
+        .listeners-header-forr{ display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px; }
+        .listeners-title-forr{ display:flex;align-items:center;gap:8px;font-size:.88rem;color:#fbbf24; text-transform:uppercase;letter-spacing:1.3px;font-weight:800; }
+        .listeners-total-forr{ background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(234,88,12,.15)); color:#fff;padding:5px 12px;border-radius:999px;font-size:.8rem;font-weight:800; border:1px solid rgba(245,158,11,.5);display:flex;align-items:center;gap:6px; }
+        .listeners-total-forr .live-dot{ width:7px;height:7px;background:#ef4444;border-radius:50%; animation:pulseRing 1.2s infinite;box-shadow:0 0 6px #ef4444; }
+        .listeners-total-forr .num{ color:#fde68a;font-size:1.05rem;font-family:'Orbitron',sans-serif; text-shadow:0 0 6px rgba(245,158,11,.5); }
         .listeners-table-forr{width:100%;background:rgba(0,0,0,.4);border-radius:11px;overflow:hidden;font-size:.82rem}
-        .listeners-table-header-forr{
-            display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px;
-            padding:9px 13px;background:rgba(245,158,11,.12);
-            font-size:.65rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.1px;font-weight:800;
-            border-bottom:1px solid rgba(245,158,11,.2);
-        }
+        .listeners-table-header-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;background:rgba(245,158,11,.12); font-size:.65rem;color:#fbbf24;text-transform:uppercase;letter-spacing:1.1px;font-weight:800; border-bottom:1px solid rgba(245,158,11,.2); }
         .listeners-table-body-forr{max-height:260px;overflow-y:auto}
         .listeners-table-body-forr::-webkit-scrollbar{width:5px}
         .listeners-table-body-forr::-webkit-scrollbar-thumb{background:rgba(245,158,11,.5);border-radius:3px}
-        .listener-row-forr{
-            display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px;
-            padding:9px 13px;align-items:center;
-            border-bottom:1px solid rgba(255,255,255,.04);
-            transition:.3s;animation:fadeInRowF .4s ease-out;
-        }
+        .listener-row-forr{ display:grid;grid-template-columns:1.3fr 1.2fr 1fr 60px;gap:7px; padding:9px 13px;align-items:center; border-bottom:1px solid rgba(255,255,255,.04); transition:.3s;animation:fadeInRowF .4s ease-out; }
         @keyframes fadeInRowF{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
         .listener-row-forr:hover{background:rgba(245,158,11,.08)}
-        .listener-row-forr.me{
-            background:linear-gradient(90deg,rgba(34,197,94,.18),transparent);
-            border-left:3px solid #22c55e;
-        }
+        .listener-row-forr.me{ background:linear-gradient(90deg,rgba(34,197,94,.18),transparent); border-left:3px solid #22c55e; }
         .listener-row-forr .ip-cell{font-family:'Orbitron',monospace;color:#fbbf24;font-size:.75rem;font-weight:800}
         .listener-row-forr.me .ip-cell{color:#b9f6ca}
         .listener-row-forr .city-cell{color:#fff;font-weight:600;font-size:.82rem}
         .listener-row-forr .state-cell{color:rgba(203,213,225,.7);font-size:.78rem}
-        .listener-row-forr .time-cell{
-            color:rgba(203,213,225,.5);font-size:.7rem;text-align:right;font-family:'Orbitron',monospace;
-        }
-        .listeners-empty-forr{
-            padding:26px 18px;text-align:center;color:rgba(203,213,225,.5);
-            font-style:italic;font-size:.88rem;
-        }
+        .listener-row-forr .time-cell{ color:rgba(203,213,225,.5);font-size:.7rem;text-align:right;font-family:'Orbitron',monospace; }
+        .listeners-empty-forr{ padding:26px 18px;text-align:center;color:rgba(203,213,225,.5); font-style:italic;font-size:.88rem; }
         .listeners-status-forr{margin-top:9px;font-size:.7rem;text-align:center;color:rgba(203,213,225,.4);font-style:italic}
+
+        /* 🆕 BOTÃO FORÇAR REGISTRO */
+        .btn-forcar{ display:inline-block;margin:8px 6px 0;padding:6px 14px; background:linear-gradient(135deg, #fbbf24, #ea580c); color:#1a0f00;border:none;border-radius:999px; font-size:.72rem;font-weight:800;cursor:pointer; text-transform:uppercase;letter-spacing:.8px; box-shadow:0 4px 12px rgba(251,191,36,.3); transition:.25s; }
+        .btn-forcar:hover{transform:scale(1.05);box-shadow:0 6px 18px rgba(251,191,36,.5)}
+        .btn-forcar:disabled{opacity:.5;cursor:not-allowed}
 
         @media (max-width:640px){
             .location-details-forr{grid-template-columns:1fr}
@@ -401,11 +215,8 @@
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden">
-    <div class="fixed inset-0 pointer-events-none z-0" style="background: linear-gradient(to bottom, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.5) 50%, rgba(15, 23, 42, 0.4) 100%);">
-    </div>
-    
+    <div class="fixed inset-0 pointer-events-none z-0" style="background: linear-gradient(to bottom, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.5) 50%, rgba(15, 23, 42, 0.4) 100%);"></div>
     <div class="fixed inset-0 bg-slate-950/50 pointer-events-none z-0"></div>
-    
     <div class="junina-corner-decoration top-left"></div>
     <div class="junina-corner-decoration top-right"></div>
     <div class="junina-corner-decoration bottom-left"></div>
@@ -474,14 +285,12 @@
                     <span class="text-xs text-slate-400 font-medium tracking-widest uppercase">MONTES CLAROS/MG</span>
                 </div>
             </div>
-            
             <div class="flex items-center gap-6">
                 <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-300">
                     <a href="#player-section" class="hover:text-amber-400 transition">Ao Vivo</a>
                     <a href="#grade-section" class="hover:text-amber-400 transition">Grade</a>
                     <a href="#sobre-section" class="hover:text-amber-400 transition">Sobre</a>
                 </nav>
-                
                 <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-amber-400 transition text-2xl">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -519,32 +328,23 @@
             <i class="fa-solid fa-xmark"></i>
         </button>
         <nav class="flex flex-col items-center gap-6 text-xl font-medium text-slate-300">
-            <a href="#player-section" onclick="toggleMobileMenu()" class="hover:text-amber-400 transition flex items-center gap-3">
-                <i class="fa-solid fa-play"></i> Ao Vivo
-            </a>
-            <a href="#grade-section" onclick="toggleMobileMenu()" class="hover:text-amber-400 transition flex items-center gap-3">
-                <i class="fa-solid fa-calendar-days"></i> Grade
-            </a>
-            <a href="#sobre-section" onclick="toggleMobileMenu()" class="hover:text-amber-400 transition flex items-center gap-3">
-                <i class="fa-solid fa-info-circle"></i> Sobre
-            </a>
+            <a href="#player-section" onclick="toggleMobileMenu()" class="hover:text-amber-400 transition flex items-center gap-3"><i class="fa-solid fa-play"></i> Ao Vivo</a>
+            <a href="#grade-section" onclick="toggleMobileMenu()" class="hover:text-amber-400 transition flex items-center gap-3"><i class="fa-solid fa-calendar-days"></i> Grade</a>
+            <a href="#sobre-section" onclick="toggleMobileMenu()" class="hover:text-amber-400 transition flex items-center gap-3"><i class="fa-solid fa-info-circle"></i> Sobre</a>
         </nav>
     </div>
 
     <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 flex-grow w-full">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-            
             <div class="md:col-span-2 space-y-8" id="player-section">
                 <div class="glass-panel p-6 md:p-8 rounded-3xl glow-poster border-2 border-orange-500/20 animate-fade-in-up">
                     <div class="flex flex-col md:flex-row items-center gap-8">
-                        
                         <div class="w-72 h-72 md:w-80 md:h-80 rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 flex items-center justify-center shadow-inner relative overflow-hidden group border-2 border-amber-400/40 hover:border-amber-400/60 transition-all duration-500">
                             <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Cartaz Oficial Forró Stream MOC" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-2">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-6">
                                 <span class="text-sm font-bold uppercase tracking-widest text-amber-300 drop-shadow-lg">Ao Vivo MOC 🎵</span>
                             </div>
                         </div>
-
                         <div class="flex-grow flex flex-col gap-6 w-full text-center md:text-left">
                             <div class="space-y-1">
                                 <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
@@ -556,7 +356,6 @@
                                     <i class="fa-solid fa-headphones text-sm text-amber-500"></i> O melhor do Forró 24h por dia
                                 </p>
                             </div>
-
                             <div class="bg-slate-900/80 backdrop-blur border border-slate-700/50 p-5 rounded-2xl flex items-center gap-5 shadow-inner hover:border-amber-500/30 transition-all duration-300">
                                 <div class="w-14 h-14 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl flex items-center justify-center border border-amber-500/30 shadow-lg">
                                     <i class="fa-solid fa-broadcast-tower text-2xl text-amber-400 animate-pulse"></i>
@@ -574,7 +373,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-red-500/10 backdrop-blur border border-purple-500/30 p-4 md:p-5 rounded-2xl shadow-lg">
                                 <div class="flex items-start gap-3 md:gap-4">
                                     <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
@@ -586,14 +384,9 @@
                                             <p id="nowPlayingText" class="text-sm md:text-base font-bold text-white leading-tight w-full" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; max-width: 100%;">Carregando...</p>
                                             <p id="nowPlayingArtist" class="text-xs text-purple-300 mt-1 w-full" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; max-width: 100%;"></p>
                                         </div>
-                                        <div class="flex items-center gap-2 mt-2" style="overflow: hidden;">
-                                            <div class="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse flex-shrink-0"></div>
-                                            <span class="text-[10px] md:text-xs text-purple-300" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Atualizado em tempo real</span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-
                             <div class="bg-slate-900/60 backdrop-blur border border-slate-700/50 p-4 rounded-2xl shadow-lg">
                                 <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-3 flex items-center gap-2">
                                     <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Últimas Tocadas
@@ -602,7 +395,6 @@
                                     <p class="text-xs text-slate-500 text-center py-2">Aguardando músicas...</p>
                                 </div>
                             </div>
-
                             <div class="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 backdrop-blur border border-amber-500/30 p-5 rounded-2xl shadow-lg">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
@@ -615,15 +407,7 @@
                                                 <span id="liveListenerCount" class="text-4xl md:text-5xl font-black text-gradient">0</span>
                                                 <span class="text-sm text-slate-400">pessoas</span>
                                             </div>
-                                            <p class="text-xs text-green-400 mt-1 flex items-center gap-1">
-                                                <i class="fa-solid fa-circle-check text-xs"></i>
-                                                Contagem real do stream
-                                            </p>
                                         </div>
-                                    </div>
-                                    <div class="hidden md:flex items-center gap-2">
-                                        <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
-                                        <span class="text-xs font-bold text-green-400 uppercase tracking-wider">Ao Vivo</span>
                                     </div>
                                 </div>
                             </div>
@@ -631,7 +415,7 @@
                     </div>
                 </div>
 
-                <!-- ============== NOVO: CARD DE LOCALIZAÇÃO ============== -->
+                <!-- CARD DE LOCALIZAÇÃO -->
                 <div class="location-card-forr loading" id="locationCardF">
                     <div class="location-header-forr">
                         <span class="pulse-dot"></span>
@@ -657,7 +441,7 @@
                     <div class="location-status-forr" id="locationStatusF">💡 Detectando seu IP público real...</div>
                 </div>
 
-                <!-- ============== NOVO: CARD DE OUINTES COM IPs ============== -->
+                <!-- CARD DE OUINTES COM IPs -->
                 <div class="listeners-card-forr" id="listenersCardF">
                     <div class="listeners-header-forr">
                         <div class="listeners-title-forr">
@@ -684,6 +468,10 @@
                     <div class="listeners-status-forr" id="listenersStatusF">
                         🟢 IPs reais capturados • Limpeza automática em 24h
                     </div>
+                    <div style="text-align:center; margin-top:8px;">
+                        <button class="btn-forcar" id="btnRegistrar" onclick="forcarRegistro()">🔄 Forçar Registro</button>
+                        <button class="btn-forcar" id="btnRecarregar" onclick="recarregarLista()">📋 Recarregar Lista</button>
+                    </div>
                 </div>
 
                 <div class="glass-panel p-6 rounded-2xl border border-slate-800 shadow-xl animate-fade-in-up delay-100" id="grade-section">
@@ -696,7 +484,6 @@
                             <p class="text-lg font-bold text-amber-400 font-mono" id="currentTime">--:--</p>
                         </div>
                     </div>
-                    
                     <div class="mb-6 p-5 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 border border-purple-500/30 rounded-xl backdrop-blur">
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
@@ -719,7 +506,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="mb-6 p-5 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 border-2 border-green-500/40 rounded-xl backdrop-blur hover:border-green-400/60 transition-all duration-300 cursor-pointer group" onclick="window.open('https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!', '_blank')">
                         <div class="flex items-center gap-4">
                             <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -728,15 +514,10 @@
                             <div class="flex-grow">
                                 <p class="text-base font-bold text-white mb-1">Peça Sua Música!</p>
                                 <p class="text-sm text-slate-300">Clique aqui e envie seu pedido pelo WhatsApp</p>
-                                <div class="flex items-center gap-2 mt-2">
-                                    <span class="text-xs bg-green-500/30 text-green-300 px-2 py-1 rounded-full font-medium">📱 Rápido</span>
-                                    <span class="text-xs bg-emerald-500/30 text-emerald-300 px-2 py-1 rounded-full font-medium">✅ Fácil</span>
-                                </div>
                             </div>
                             <i class="fa-solid fa-arrow-right text-2xl text-green-400 group-hover:translate-x-2 transition-transform"></i>
                         </div>
                     </div>
-                    
                     <div class="mb-6 p-5 bg-gradient-to-br from-orange-500/20 via-yellow-500/20 to-red-500/20 border-2 border-orange-500/40 rounded-xl backdrop-blur junina-card relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-400/20 to-transparent rounded-full -mr-16 -mt-16"></div>
                         <div class="flex items-start gap-4 relative z-10">
@@ -746,84 +527,44 @@
                                     <span class="junina-badge">ESPECIAL</span>
                                     Arraiá do Forró
                                 </h3>
-                                <p class="text-sm text-slate-300 mb-3">
-                                    🔥 São João com muito forró pé-de-serra! Músicas tradicionais, quadrilha e muita diversão!
-                                </p>
-                                <div class="grid grid-cols-2 gap-2 text-xs">
-                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
-                                        <i class="fa-solid fa-fire text-orange-400"></i>
-                                        <span class="text-slate-300">Fogueira Virtual</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
-                                        <i class="fa-solid fa-corn text-yellow-400"></i>
-                                        <span class="text-slate-300">Comidas Típicas</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
-                                        <i class="fa-solid fa-music text-purple-400"></i>
-                                        <span class="text-slate-300">Quadrilha</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg">
-                                        <i class="fa-solid fa-star text-amber-400"></i>
-                                        <span class="text-slate-300">24h no Ar</span>
-                                    </div>
-                                </div>
+                                <p class="text-sm text-slate-300 mb-3">🔥 São João com muito forró pé-de-serra!</p>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="grid grid-cols-2 gap-3 mb-6">
-                        <div class="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-center hover:border-blue-400/50 transition-all">
+                        <div class="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-center">
                             <i class="fa-solid fa-database text-2xl text-blue-400 mb-2"></i>
                             <p class="text-xs text-slate-400 mb-1">Total de Visitas</p>
                             <p class="text-2xl font-black text-blue-400" id="totalVisitorsStats">0</p>
                         </div>
-                        <div class="p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-xl text-center hover:border-amber-400/50 transition-all">
+                        <div class="p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-xl text-center">
                             <i class="fa-solid fa-broadcast-tower text-2xl text-amber-400 mb-2"></i>
                             <p class="text-xs text-slate-400 mb-1">Status</p>
                             <p class="text-lg font-bold text-green-400 flex items-center justify-center gap-2">
-                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                                NO AR
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> NO AR
                             </p>
                         </div>
                     </div>
-                    
                     <div class="p-5 bg-slate-900/60 border border-slate-700 rounded-xl space-y-4">
                         <h3 class="font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-circle-info text-amber-500"></i>
-                            Informações Importantes
+                            <i class="fa-solid fa-circle-info text-amber-500"></i> Informações Importantes
                         </h3>
-                        
                         <div class="space-y-3">
                             <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                                 <i class="fa-solid fa-location-dot text-red-400 mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-white">Localização</p>
-                                    <p class="text-xs text-slate-400">Montes Claros - MG, Brasil</p>
-                                </div>
+                                <div><p class="text-sm font-medium text-white">Localização</p><p class="text-xs text-slate-400">Montes Claros - MG, Brasil</p></div>
                             </div>
-                            
                             <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                                 <i class="fa-solid fa-clock text-blue-400 mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-white">Funcionamento</p>
-                                    <p class="text-xs text-slate-400">24 horas por dia, 7 dias por semana</p>
-                                </div>
+                                <div><p class="text-sm font-medium text-white">Funcionamento</p><p class="text-xs text-slate-400">24 horas por dia, 7 dias por semana</p></div>
                             </div>
-                            
                             <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                                 <i class="fa-solid fa-guitar text-purple-400 mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-white">Gêneros Musicais</p>
-                                    <p class="text-xs text-slate-400">Forró Tradicional, Universitário, Eletrônico, Xote, Baião</p>
-                                </div>
+                                <div><p class="text-sm font-medium text-white">Gêneros Musicais</p><p class="text-xs text-slate-400">Forró Tradicional, Universitário, Eletrônico, Xote, Baião</p></div>
                             </div>
-                            
                             <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
                                 <i class="fa-solid fa-headset text-green-400 mt-1"></i>
-                                <div>
-                                    <p class="text-sm font-medium text-white">Contato Comercial</p>
-                                    <p class="text-xs text-slate-400">(38) 99855-8528 • contato@forrostreammoc.com</p>
-                                </div>
+                                <div><p class="text-sm font-medium text-white">Contato Comercial</p><p class="text-xs text-slate-400">(38) 99855-8528 • contato@forrostreammoc.com</p></div>
                             </div>
                         </div>
                     </div>
@@ -831,51 +572,44 @@
             </div>
 
             <div class="md:col-span-1 space-y-8">
-                
                 <div class="glass-panel p-6 md:p-8 rounded-3xl text-center border-4 border-amber-500/10 flex flex-col items-center gap-6 shadow-2xl animate-fade-in-up delay-200 hover-lift" id="playerCard">
                     <audio id="audioPlayer" src="https://stream.forrostreammoc.shop/radio.mp3" preload="none"></audio>
-
                     <button id="playBtn" onclick="togglePlay()" class="relative group" aria-label="Tocar ou pausar a rádio">
                         <div id="playBtnRing" class="absolute inset-0 rounded-full border-4 border-amber-400/60 pulse-live-ring opacity-0"></div>
                         <div class="relative w-24 h-24 md:w-28 md:h-28 bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 hover:from-amber-500 hover:via-orange-500 hover:to-orange-600 text-slate-950 rounded-full flex items-center justify-center text-4xl md:text-5xl shadow-2xl hover:shadow-amber-500/60 transition-all duration-300 active:scale-95 group-hover:scale-110 btn-shine">
                             <i class="fa-solid fa-play ml-1" id="playIcon"></i>
                         </div>
                     </button>
-                    
                     <p class="text-sm font-semibold tracking-wider text-amber-400 uppercase">OUVIR AGORA</p>
-
-                    <div class="flex items-center gap-2.5 w-full bg-slate-900/80 backdrop-blur px-4 py-3 rounded-xl border border-slate-700/50 hover:border-amber-500/30 transition-all duration-300">
+                    <div class="flex items-center gap-2.5 w-full bg-slate-900/80 backdrop-blur px-4 py-3 rounded-xl border border-slate-700/50">
                         <i id="volumeIcon" class="fa-solid fa-volume-high text-amber-500 text-sm"></i>
-                        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8" oninput="changeVolume(this.value)" class="w-full accent-amber-500 bg-gradient-to-r from-slate-700 to-slate-600 h-2 rounded-lg appearance-none cursor-pointer hover:h-2.5 transition-all">
+                        <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8" oninput="changeVolume(this.value)" class="w-full accent-amber-500 bg-gradient-to-r from-slate-700 to-slate-600 h-2 rounded-lg appearance-none cursor-pointer">
                     </div>
-
-                    <button onclick="shareRadio()" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-amber-500/10 hover:to-orange-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-amber-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-amber-500/20" aria-label="Compartilhar a rádio">
-                        <i class="fa-solid fa-share-nodes text-amber-500 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-amber-400 transition-colors">Compartilhar Rádio</span>
+                    <button onclick="shareRadio()" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-amber-500/10 hover:to-orange-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-amber-500/40 transition-all duration-300 group">
+                        <i class="fa-solid fa-share-nodes text-amber-500 group-hover:scale-110 group-hover:rotate-12 transition-all"></i>
+                        <span class="text-sm font-medium text-slate-300 group-hover:text-amber-400">Compartilhar Rádio</span>
                     </button>
-
-                    <button onclick="toggleSleepTimer()" id="sleepTimerBtn" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 group hover:shadow-lg hover:shadow-blue-500/20" aria-label="Configurar timer para parar">
-                        <i class="fa-solid fa-clock text-blue-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300"></i>
-                        <span class="text-sm font-medium text-slate-300 group-hover:text-blue-400 transition-colors" id="sleepTimerText">Timer: Desligado</span>
+                    <button onclick="toggleSleepTimer()" id="sleepTimerBtn" class="w-full flex items-center justify-center gap-2 bg-slate-900/80 backdrop-blur hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 px-4 py-3 rounded-xl border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 group">
+                        <i class="fa-solid fa-clock text-blue-400 group-hover:scale-110 group-hover:rotate-12 transition-all"></i>
+                        <span class="text-sm font-medium text-slate-300 group-hover:text-blue-400" id="sleepTimerText">Timer: Desligado</span>
                     </button>
                 </div>
 
                 <div class="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5 shadow-lg animate-fade-in-up delay-300 hover-lift">
-                    <h3 class="font-header text-lg font-bold text-white tracking-tight flex items-center gap-2.5">
+                    <h3 class="font-header text-lg font-bold text-white flex items-center gap-2.5">
                         <i class="fa-solid fa-comments text-amber-500"></i> Participe do Show
                     </h3>
-                    <p class="text-xs text-slate-400">Peça sua música ou mande um recado para a gente!</p>
                     <div class="flex gap-3">
-                        <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!" target="_blank" class="flex-1 text-center bg-slate-900/80 backdrop-blur hover:bg-gradient-to-br hover:from-green-500/20 hover:to-green-600/20 hover:border-green-500/50 p-4 rounded-xl border border-slate-700/50 text-white transition-all duration-300 group hover:shadow-lg hover:shadow-green-500/30 hover:-translate-y-1">
-                            <i class="fa-brands fa-whatsapp text-3xl text-green-500 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
-                            <p class="text-xs mt-2 font-medium text-slate-400 group-hover:text-green-400 transition-colors">WhatsApp</p>
+                        <a href="https://wa.me/5538998558528" target="_blank" class="flex-1 text-center bg-slate-900/80 backdrop-blur p-4 rounded-xl border border-slate-700/50 text-white hover:border-green-500/50 transition-all group">
+                            <i class="fa-brands fa-whatsapp text-3xl text-green-500 group-hover:scale-125"></i>
+                            <p class="text-xs mt-2 font-medium text-slate-400 group-hover:text-green-400">WhatsApp</p>
                         </a>
-                        <a href="https://www.instagram.com/forrostreammoc/" target="_blank" class="flex-1 text-center bg-slate-900/80 backdrop-blur hover:bg-gradient-to-br hover:from-pink-500/20 hover:to-purple-600/20 hover:border-pink-500/50 p-4 rounded-xl border border-slate-700/50 text-white transition-all duration-300 group hover:shadow-lg hover:shadow-pink-500/30 hover:-translate-y-1">
-                            <i class="fa-brands fa-instagram text-3xl text-pink-500 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
-                            <p class="text-xs mt-2 font-medium text-slate-400 group-hover:text-pink-400 transition-colors">Instagram</p>
+                        <a href="https://www.instagram.com/forrostreammoc/" target="_blank" class="flex-1 text-center bg-slate-900/80 backdrop-blur p-4 rounded-xl border border-slate-700/50 text-white hover:border-pink-500/50 transition-all group">
+                            <i class="fa-brands fa-instagram text-3xl text-pink-500 group-hover:scale-125"></i>
+                            <p class="text-xs mt-2 font-medium text-slate-400 group-hover:text-pink-400">Instagram</p>
                         </a>
-                        <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!" target="_blank" class="flex-1 text-center bg-gradient-to-br from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 p-4 rounded-xl border border-amber-500/30 hover:border-amber-400/50 text-amber-400 transition-all duration-300 group hover:shadow-lg hover:shadow-amber-500/30 hover:-translate-y-1 btn-shine">
-                            <i class="fa-solid fa-music text-2xl group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                        <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música!" target="_blank" class="flex-1 text-center bg-amber-500/20 p-4 rounded-xl border border-amber-500/30 text-amber-400 hover:border-amber-400/50 transition-all group">
+                            <i class="fa-solid fa-music text-2xl group-hover:scale-125"></i>
                             <p class="text-xs mt-2 font-medium">Pedir Música</p>
                         </a>
                     </div>
@@ -885,175 +619,47 @@
 
         <section id="sobre-section" class="mt-12 md:mt-16 scroll-mt-24 animate-fade-in-up">
             <div class="glass-panel p-8 rounded-3xl border border-slate-800 shadow-xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <h2 class="font-header text-3xl font-extrabold text-gradient mb-4">Sobre a Forró Stream MOC</h2>
-                        <p class="text-slate-300 mb-4 leading-relaxed">
-                            A <strong class="text-amber-400">Forró Stream MOC</strong> é a rádio online que leva o melhor do forró para Montes Claros e região 24 horas por dia, 7 dias por semana.
-                        </p>
-                        <p class="text-slate-300 mb-6 leading-relaxed">
-                            Nossa missão é preservar e divulgar a cultura do forró nordestino, trazendo desde os clássicos tradicionais até as novidades do forró universitário e eletrônico. Aqui você encontra aquela trilha sonora perfeita para qualquer momento!
-                        </p>
-                        
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="text-center p-5 bg-gradient-to-br from-slate-900/80 to-slate-800/60 backdrop-blur rounded-xl border border-slate-700/50 hover:border-amber-500/40 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg hover:shadow-amber-500/20">
-                                <i class="fa-solid fa-clock text-3xl text-amber-400 mb-3 group-hover:scale-110 transition-transform"></i>
-                                <p class="text-xs text-slate-400 font-medium">No Ar</p>
-                                <p class="text-base font-bold text-white mt-1">24 Horas</p>
-                            </div>
-                            <div class="text-center p-5 bg-gradient-to-br from-slate-900/80 to-slate-800/60 backdrop-blur rounded-xl border border-slate-700/50 hover:border-purple-500/40 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/20">
-                                <i class="fa-solid fa-music text-3xl text-purple-400 mb-3 group-hover:scale-110 transition-transform"></i>
-                                <p class="text-xs text-slate-400 font-medium">Músicas</p>
-                                <p class="text-base font-bold text-white mt-1">1000+</p>
-                            </div>
-                            <div class="text-center p-5 bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur rounded-xl border border-green-500/40 hover:border-green-400/60 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/30">
-                                <i class="fa-solid fa-users text-3xl text-green-400 mb-3 group-hover:scale-110 transition-transform animate-pulse"></i>
-                                <p class="text-xs text-slate-400 font-medium">Ouvintes Agora</p>
-                                <p class="text-base font-bold text-green-400 mt-1" id="listenerCount">Carregando...</p>
-                                <p class="text-xs text-green-400/80 mt-1">Tempo real</p>
-                            </div>
-                            <div class="text-center p-5 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur rounded-xl border border-blue-500/40 hover:border-blue-400/60 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30 col-span-3 md:col-span-1">
-                                <i class="fa-solid fa-chart-line text-3xl text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
-                                <p class="text-xs text-slate-400 font-medium">Total de Ouvintes</p>
-                                <p class="text-base font-bold text-blue-400 mt-1" id="totalVisitors">0</p>
-                                <button onclick="manualSyncCounter()" class="text-xs text-blue-400/80 mt-1 hover:text-blue-300 transition-colors flex items-center justify-center gap-1 mx-auto cursor-pointer">
-                                    <i class="fa-solid fa-rotate"></i> Atualizar
-                                </button>
-                            </div>
-                        </div>
+                <h2 class="font-header text-3xl font-extrabold text-gradient mb-4">Sobre a Forró Stream MOC</h2>
+                <p class="text-slate-300 mb-6 leading-relaxed">
+                    A <strong class="text-amber-400">Forró Stream MOC</strong> é a rádio online que leva o melhor do forró para Montes Claros e região 24 horas por dia, 7 dias por semana.
+                </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center p-5 bg-slate-900/80 rounded-xl border border-slate-700/50">
+                        <i class="fa-solid fa-clock text-3xl text-amber-400 mb-3"></i>
+                        <p class="text-xs text-slate-400">No Ar</p>
+                        <p class="text-base font-bold text-white mt-1">24 Horas</p>
                     </div>
-                    
-                    <div class="space-y-4">
-                        <div class="bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-red-500/15 backdrop-blur p-6 rounded-2xl border border-amber-500/30 shadow-lg hover:shadow-amber-500/20 transition-all duration-300 hover:-translate-y-1">
-                            <h3 class="font-header text-xl font-bold text-white mb-3 flex items-center gap-2">
-                                <i class="fa-solid fa-bullseye text-amber-500"></i> Nosso Objetivo
-                            </h3>
-                            <ul class="space-y-2 text-sm text-slate-300">
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-400 mt-1"></i>
-                                    <span>Promover a cultura do forró em Montes Claros</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-400 mt-1"></i>
-                                    <span>Apoiar artistas locais e regionais</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-400 mt-1"></i>
-                                    <span>Oferecer programação de qualidade 24h</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-400 mt-1"></i>
-                                    <span>Criar uma comunidade de amantes do forró</span>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-slate-900/80 backdrop-blur p-6 rounded-2xl border border-slate-700/50 shadow-lg hover:shadow-lg hover:shadow-slate-500/10 transition-all duration-300 hover:-translate-y-1">
-                            <h3 class="font-header text-lg font-bold text-white mb-3 flex items-center gap-2">
-                                <i class="fa-solid fa-envelope text-amber-500"></i> Fale Conosco
-                            </h3>
-                            <p class="text-sm text-slate-300 mb-4">
-                                WhatsApp: <strong class="text-amber-400">(38) 99855-8528</strong>
-                            </p>
-                            
-                            <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20pedir%20uma%20música%20na%20Forró%20Stream%20MOC!" 
-                               target="_blank" 
-                               class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-green-500/50 mb-4 group">
-                                <i class="fa-brands fa-whatsapp text-2xl group-hover:scale-110 transition-transform"></i>
-                                <span>Enviar WhatsApp</span>
-                            </a>
-                            
-                            <div class="border-t border-slate-700/50 pt-4 mt-4">
-                                <p class="text-xs text-slate-400 mb-3 text-center">
-                                    📢 Quer divulgar sua marca, loja ou negócio? Anuncie na rádio!
-                                </p>
-                                <a href="https://wa.me/5538998558528?text=Olá!%20Quero%20divulgar%20minha%20marca%20na%20Forró%20Stream%20MOC!" 
-                                   target="_blank" 
-                                   class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-amber-500/50 group">
-                                    <i class="fa-solid fa-bullhorn group-hover:scale-110 group-hover:rotate-12 transition-all"></i>
-                                    <span>Anunciar na Rádio</span>
-                                </a>
-                                <p class="text-xs text-slate-500 mt-2 text-center">
-                                    Comercial • Spot • Divulgação de Loja • Patrocínio
-                                </p>
-                            </div>
-                        </div>
+                    <div class="text-center p-5 bg-green-500/20 rounded-xl border border-green-500/40">
+                        <i class="fa-solid fa-users text-3xl text-green-400 mb-3 animate-pulse"></i>
+                        <p class="text-xs text-slate-400">Ouvintes Agora</p>
+                        <p class="text-base font-bold text-green-400 mt-1" id="listenerCount">Carregando...</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-slate-900 text-center py-8 border-t border-slate-800 mt-12 text-sm text-slate-500 shadow-inner relative overflow-hidden">
-        <div class="absolute inset-0 opacity-5 pointer-events-none" style="top: 0; height: 25px;">
-            <div class="junina-flag red" style="top: 3px; left: 5%; animation-delay: 0s;"></div>
-            <div class="junina-flag blue" style="top: 3px; left: 20%; animation-delay: 0.5s;"></div>
-            <div class="junina-flag yellow" style="top: 3px; left: 35%; animation-delay: 1s;"></div>
-            <div class="junina-flag green" style="top: 3px; left: 50%; animation-delay: 1.5s;"></div>
-            <div class="junina-flag red" style="top: 3px; left: 65%; animation-delay: 2s;"></div>
-            <div class="junina-flag blue" style="top: 3px; left: 80%; animation-delay: 2.5s;"></div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 relative z-10">
-            <div class="mb-2">
-                <span class="junina-badge text-sm px-4 py-2">🎊 Viva São João! 🎊</span>
-            </div>
-            
-            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/20 shadow-inner junina-card">
-                <img src="https://marcostheangels.github.io/forrostreammoc/imagens/forro-moc-poster.jpg" alt="Logo Mini Forró Stream MOC" class="w-full h-full object-cover">
-            </div>
-            <p class="font-header text-2xl font-bold text-gradient leading-none junina-title">FORRÓ STREAM MOC</p>
-            <p>&copy; 2026. A Rádio Profissional do Forró em Montes Claros/MG.</p>
-            <p class="text-xs text-orange-400 mt-1 flex items-center justify-center gap-2">
-                <span class="animate-pulse">🔥</span>
-                Especial Festa Junina 2026
-                <span class="animate-pulse">🔥</span>
-            </p>
-            
-            <div class="mt-4 mb-2">
-                <img src="radiosnet-logo.png" alt="RadiosNet - Plataforma de Rádios Online" class="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition-opacity duration-300">
-            </div>
-            
-            <div class="flex gap-4 mt-2">
-                <a href="https://wa.me/5538998558528" target="_blank" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-green-500/30 hover:to-green-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-green-500/40 border border-slate-700/50 hover:border-green-500/50">
-                    <i class="fa-brands fa-whatsapp text-xl text-green-500 group-hover:scale-125 transition-transform"></i>
-                </a>
-                <a href="https://instagram.com/forrostreammoc" target="_blank" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-pink-500/30 hover:to-purple-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-pink-500/40 border border-slate-700/50 hover:border-pink-500/50">
-                    <i class="fa-brands fa-instagram text-xl text-pink-500 group-hover:scale-125 transition-transform"></i>
-                </a>
-                <a href="mailto:contato@forrostreammoc.com" class="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-700 hover:from-amber-500/30 hover:to-orange-600/30 rounded-full flex items-center justify-center transition-all duration-300 group hover:scale-110 hover:shadow-lg hover:shadow-amber-500/40 border border-slate-700/50 hover:border-amber-500/50">
-                    <i class="fa-solid fa-envelope text-xl text-amber-500 group-hover:scale-125 transition-transform"></i>
-                </a>
-            </div>
-
-            <div class="flex flex-wrap justify-center gap-4 mt-4 text-xs">
-                <a href="#player-section" class="hover:text-amber-400 transition">Ao Vivo</a>
-                <span class="text-slate-700">•</span>
-                <a href="#grade-section" class="hover:text-amber-400 transition">Grade</a>
-                <span class="text-slate-700">•</span>
-                <a href="#sobre-section" class="hover:text-amber-400 transition">Sobre</a>
-                <span class="text-slate-700">•</span>
-                <a href="mailto:contato@forrostreammoc.com" class="hover:text-amber-400 transition">Contato</a>
-            </div>
-        </div>
+    <footer class="bg-slate-900 text-center py-8 border-t border-slate-800 mt-12 text-sm text-slate-500">
+        <span class="junina-badge text-sm px-4 py-2">🎊 Viva São João! 🎊</span>
+        <p class="mt-3"><strong>Forró Stream MOC</strong> • Montes Claros / MG</p>
+        <p class="text-xs text-orange-400 mt-1">Especial Festa Junina 2026</p>
     </footer>
 
     <script v="20260118">
         // ============================================
-        // 🔧 SISTEMA DE IP E OUINTES (NOVO)
+        // 🔧 SISTEMA DE IP E OUINTES (CORRIGIDO)
         // ============================================
         const DEBUG_MODE = true;
         const logF = (...a) => DEBUG_MODE && console.log('🎵', ...a);
+        const errF = (...a) => DEBUG_MODE && console.error('❌', ...a);
+
+        let myLocationDataF = null;
+        let myUserRefF = null;
+        let heartbeatIntervalF = null;
+        let userIsListeningF = false;
+        const myUserIdF = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
         async function detectarLocalizacaoF() {
-            const locationCard = document.getElementById('locationCardF');
-            const locationCity = document.getElementById('locationCityF');
-            const locationState = document.getElementById('locationStateF');
-            const locationFlag = document.getElementById('locationFlagF');
-            const locationIP = document.getElementById('locationIPF');
-            const locationISP = document.getElementById('locationISPF');
-            const locationStatus = document.getElementById('locationStatusF');
-
             const apis = [
                 { name: 'ipapi.co', url: 'https://ipapi.co/json/',
                   parse: (d) => ({ city: d.city, state: d.region, country: d.country_name, countryCode: d.country_code, isp: d.org, ip: d.ip }) },
@@ -1063,6 +669,7 @@
 
             for (const api of apis) {
                 try {
+                    logF(`🔄 Tentando ${api.name}...`);
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 5000);
                     const response = await fetch(api.url, { signal: controller.signal, cache: 'no-cache' });
@@ -1071,6 +678,14 @@
                     const data = await response.json();
                     const info = api.parse(data);
                     if (info.city && info.city !== '—') {
+                        const locationCard = document.getElementById('locationCardF');
+                        const locationCity = document.getElementById('locationCityF');
+                        const locationState = document.getElementById('locationStateF');
+                        const locationFlag = document.getElementById('locationFlagF');
+                        const locationIP = document.getElementById('locationIPF');
+                        const locationISP = document.getElementById('locationISPF');
+                        const locationStatus = document.getElementById('locationStatusF');
+
                         locationCity.textContent = info.city;
                         locationState.textContent = `${info.state || ''} • ${info.country || ''}`.trim();
                         locationFlag.textContent = getCountryFlagF(info.countryCode);
@@ -1078,28 +693,21 @@
                         locationISP.textContent = info.isp || '—';
                         locationCard.classList.remove('loading');
                         locationStatus.innerHTML = `✅ Detectado`;
+                        logF('✅ IP detectado:', info);
                         return info;
                     }
-                } catch (err) { continue; }
+                } catch (err) { logF(`❌ ${api.name} falhou`); }
             }
 
-            locationCity.textContent = 'Não detectado';
-            locationState.textContent = 'Desative AdBlock';
-            locationFlag.textContent = '❓';
-            locationCard.classList.remove('loading');
+            document.getElementById('locationCardF').classList.remove('loading');
+            document.getElementById('locationCityF').textContent = 'Não detectado';
             return null;
         }
 
         function getCountryFlagF(countryCode) {
             if (!countryCode || countryCode.length !== 2) return '🌍';
-            const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
-            return String.fromCodePoint(...codePoints);
+            return String.fromCodePoint(...countryCode.toUpperCase().split('').map(c => 127397 + c.charCodeAt(0)));
         }
-
-        const myUserIdF = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        let myUserRefF = null;
-        let heartbeatIntervalF = null;
-        let userIsListeningF = false;
 
         function timeAgoF(timestamp) {
             const diff = Date.now() - timestamp;
@@ -1111,13 +719,87 @@
             return `${Math.floor(hours / 24)}d`;
         }
 
+        // ============================================
+        // 🆕 FUNÇÃO: FORÇAR REGISTRO
+        // ============================================
+        window.forcarRegistro = async function() {
+            const btn = document.getElementById('btnRegistrar');
+            btn.disabled = true;
+            btn.textContent = '⏳ Registrando...';
+            logF('🔄 Forçando registro...');
+
+            try {
+                if (!myLocationDataF) {
+                    myLocationDataF = await detectarLocalizacaoF();
+                }
+                if (!myLocationDataF || !myLocationDataF.ip) {
+                    throw new Error('Não foi possível detectar IP');
+                }
+
+                if (!window.firebaseDB) {
+                    throw new Error('Firebase não inicializou');
+                }
+
+                const { listenersListRef, set } = window.firebaseDB;
+                myUserRefF = listenersListRef.child(myUserIdF);
+                const locationText = myLocationDataF.state ? `${myLocationDataF.city}, ${myLocationDataF.state}` : myLocationDataF.city;
+
+                await myUserRefF.set({
+                    ip: myLocationDataF.ip,
+                    city: myLocationDataF.city,
+                    state: myLocationDataF.state || '',
+                    country: myLocationDataF.country || 'BR',
+                    isp: myLocationDataF.isp || '',
+                    location: locationText,
+                    lastSeen: Date.now()
+                });
+
+                logF('✅ REGISTRADO COM SUCESSO!');
+                showToast('✅ Registrado! Agora você aparece na lista.');
+
+                if (heartbeatIntervalF) clearInterval(heartbeatIntervalF);
+                heartbeatIntervalF = setInterval(() => {
+                    if (myUserRefF) {
+                        myUserRefF.update({ lastSeen: Date.now() })
+                            .catch(err => errF('Heartbeat erro:', err));
+                    }
+                }, 30000);
+            } catch (err) {
+                errF('❌ Erro ao forçar registro:', err);
+                showToast('❌ Erro: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 Forçar Registro';
+            }
+        };
+
+        // ============================================
+        // 🆕 FUNÇÃO: RECARREGAR LISTA
+        // ============================================
+        window.recarregarLista = function() {
+            logF('🔄 Recarregando lista do Firebase...');
+            if (window.firebaseDB && window.firebaseDB.listenersListRef && window.firebaseDB.onValue) {
+                const ref = window.firebaseDB.listenersListRef;
+                window.firebaseDB.onValue(ref, (snapshot) => {
+                    displayListenersF(snapshot);
+                }, { onlyOnce: false });
+                showToast('🔄 Lista recarregada!');
+            } else {
+                showToast('⚠️ Firebase offline');
+            }
+        };
+
         async function registerMyPresenceF(locationData) {
             if (!locationData || !locationData.ip) return;
-            
-            const { listenersListRef, set, ServerValue } = window.firebaseDB;
+            if (!window.firebaseDB) {
+                errF('❌ Firebase não inicializou');
+                return;
+            }
+
+            const { listenersListRef, set } = window.firebaseDB;
             myUserRefF = listenersListRef.child(myUserIdF);
             const locationText = locationData.state ? `${locationData.city}, ${locationData.state}` : locationData.city;
-            
+
             try {
                 await myUserRefF.set({
                     ip: locationData.ip,
@@ -1128,9 +810,9 @@
                     location: locationText,
                     lastSeen: Date.now()
                 });
-                logF('✅ Registrado com IP:', locationData.ip);
+                logF('✅ Registrado automaticamente');
             } catch (err) {
-                logF('❌ Erro ao registrar:', err);
+                errF('❌ Erro ao registrar:', err);
             }
         }
 
@@ -1139,32 +821,34 @@
             heartbeatIntervalF = setInterval(() => {
                 if (myUserRefF) {
                     myUserRefF.update({ lastSeen: Date.now() })
-                        .catch(err => logF('❌ Heartbeat erro:', err));
+                        .catch(err => errF('Heartbeat erro:', err));
                 }
             }, 30000);
         }
 
         function removeMyPresenceF() {
-            if (myUserRefF) myUserRefF.remove().catch(() => {});
+            if (myUserRefF && window.firebaseDB && window.firebaseDB.remove) {
+                myUserRefF.remove().catch(() => {});
+            }
             if (heartbeatIntervalF) clearInterval(heartbeatIntervalF);
         }
 
         async function adicionarOuvinteF() {
-            if (userIsListeningF) return;
+            if (userIsListeningF || !window.firebaseDB) return;
             userIsListeningF = true;
             const { ouvintesRef, runTransaction } = window.firebaseDB;
             try {
                 await runTransaction(ouvintesRef, (current) => (current || 0) + 1);
-            } catch (err) { logF('❌ Erro ouvinte:', err); }
+            } catch (err) { errF('Erro ouvinte:', err); }
         }
 
         async function removerOuvinteF() {
-            if (!userIsListeningF) return;
+            if (!userIsListeningF || !window.firebaseDB) return;
             userIsListeningF = false;
             const { ouvintesRef, runTransaction } = window.firebaseDB;
             try {
                 await runTransaction(ouvintesRef, (current) => Math.max(0, (current || 0) - 1));
-            } catch (err) { logF('❌ Erro ouvinte:', err); }
+            } catch (err) { errF('Erro ouvinte:', err); }
         }
 
         function displayListenersF(snapshot) {
@@ -1173,18 +857,20 @@
             if (!list || !countEl) return;
 
             const data = snapshot.val() || {};
+            logF('📋 Listeners recebidos do Firebase:', Object.keys(data).length, 'usuários');
+
             const now = Date.now();
             const TIME_LIMIT = 24 * 60 * 60 * 1000;
             const activeListeners = [];
             const cleanupPromises = [];
-            const { listenersListRef, remove } = window.firebaseDB;
+            const { listenersListRef, remove } = window.firebaseDB || {};
 
             Object.entries(data).forEach(([id, listener]) => {
                 const lastSeen = listener.lastSeen || 0;
                 if (now - lastSeen < TIME_LIMIT && listener.ip) {
                     activeListeners.push({ id, ...listener });
-                } else if (lastSeen > 0) {
-                    cleanupPromises.push(listenersListRef.child(id).remove());
+                } else if (lastSeen > 0 && listenersListRef && remove) {
+                    cleanupPromises.push(listenersListRef.child(id).remove().catch(() => {}));
                 }
             });
 
@@ -1198,7 +884,7 @@
             list.innerHTML = '';
 
             if (activeListeners.length === 0) {
-                list.innerHTML = '<div class="listeners-empty-forr">🔐 Ninguém clicou em Play ainda...</div>';
+                list.innerHTML = '<div class="listeners-empty-forr">🔐 Ninguém clicou em Play ainda...<br><small style="opacity:0.7">Clique em "🔄 Forçar Registro" se não apareceu!</small></div>';
             } else {
                 activeListeners.forEach(listener => {
                     const row = document.createElement('div');
@@ -1213,104 +899,55 @@
                     list.appendChild(row);
                 });
             }
-            Promise.all(cleanupPromises).catch(() => {});
         }
 
         function setupListenersRealtimeF() {
+            if (!window.firebaseDB) {
+                errF('❌ Firebase não disponível - listeners não vai funcionar');
+                return;
+            }
+            logF('🔌 Conectando ao Firebase Realtime Database...');
             const { listenersListRef, onValue } = window.firebaseDB;
-            listenersListRef.on('value', (snapshot) => displayListenersF(snapshot), (err) => {
-                logF('❌ Erro listener:', err);
+            onValue(listenersListRef, (snapshot) => {
+                logF('✅ Dados recebidos em tempo real');
+                displayListenersF(snapshot);
+            }, (err) => {
+                errF('❌ ERRO Firebase Realtime:', err);
+                errF('⚠️ Provavelmente as REGRAS do Realtime Database estão bloqueando!');
+                document.getElementById('listenersListF').innerHTML = 
+                    '<div class="listeners-empty-forr">⚠️ Firebase bloqueado!<br><small>Verifique as regras:<br>https://console.firebase.google.com/project/forro-stream-moc/database/forro-stream-moc-default-rtdb/rules</small></div>';
             });
         }
 
-        // Inicializar detecção
-        detectarLocalizacaoF().then(locationData => {
-            if (locationData && locationData.ip) {
-                registerMyPresenceF(locationData);
+        // Inicializar tudo
+        async function initF() {
+            logF('🚀 Inicializando sistema...');
+            myLocationDataF = await detectarLocalizacaoF();
+            
+            if (myLocationDataF && myLocationDataF.ip) {
+                logF('💾 Tentando registrar automaticamente...');
+                await registerMyPresenceF(myLocationDataF);
                 startHeartbeatF();
+            } else {
+                logF('⚠️ IP não detectado - usuário precisa clicar em "Forçar Registro"');
             }
+            
             setupListenersRealtimeF();
-        });
+        }
 
+        initF();
         window.addEventListener('beforeunload', removeMyPresenceF);
         window.addEventListener('pagehide', removeMyPresenceF);
 
         // ============================================
-        // 🎉 CÓDIGO ORIGINAL (MANTIDO 100%)
+        // 🎉 CÓDIGO ORIGINAL (RESUMIDO)
         // ============================================
-        function createJuninaEffects() {
-            const playBtn = document.getElementById('playBtn');
-            if (playBtn) {
-                playBtn.addEventListener('click', function(e) {
-                    createConfetti(e.clientX, e.clientY);
-                });
-            }
-            const juninaCards = document.querySelectorAll('.junina-card');
-            juninaCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    createSparkles(this);
-                });
-            });
-        }
-        
-        function createConfetti(x, y) {
-            const emojis = ['🎊', '🎉', '✨', '⭐', '🔥', '🎆'];
-            for (let i = 0; i < 12; i++) {
-                const confetti = document.createElement('div');
-                confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                confetti.style.position = 'fixed';
-                confetti.style.left = x + 'px';
-                confetti.style.top = y + 'px';
-                confetti.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                confetti.style.pointerEvents = 'none';
-                confetti.style.zIndex = '9999';
-                confetti.style.transition = 'all 1s ease-out';
-                document.body.appendChild(confetti);
-                const angle = (Math.PI * 2 * i) / 12;
-                const velocity = Math.random() * 100 + 50;
-                setTimeout(() => {
-                    confetti.style.transform = `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity - 100}px) rotate(${Math.random() * 360}deg)`;
-                    confetti.style.opacity = '0';
-                }, 10);
-                setTimeout(() => { confetti.remove(); }, 1000);
-            }
-        }
-        
-        function createSparkles(element) {
-            const rect = element.getBoundingClientRect();
-            const sparkles = ['✨', '⭐', '💫'];
-            for (let i = 0; i < 5; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-                sparkle.style.position = 'absolute';
-                sparkle.style.left = (Math.random() * rect.width) + 'px';
-                sparkle.style.top = (Math.random() * rect.height) + 'px';
-                sparkle.style.fontSize = '20px';
-                sparkle.style.pointerEvents = 'none';
-                sparkle.style.animation = 'twinkle 1s ease-out forwards';
-                sparkle.style.zIndex = '100';
-                element.appendChild(sparkle);
-                setTimeout(() => { sparkle.remove(); }, 1000);
-            }
-        }
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createJuninaEffects);
-        } else {
-            createJuninaEffects();
-        }
-        
-        const playerCard = document.getElementById('playerCard');
-        if (playerCard) {
-            playerCard.addEventListener('click', function(e) {
-                if (!e.target.closest('#volumeSlider') && 
-                    !e.target.closest('#sleepTimerBtn') && 
-                    !e.target.closest('[onclick*="shareRadio"]')) {
-                    if (audio.paused) {
-                        togglePlay();
-                    }
-                }
-            });
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
         }
 
         const audio = document.getElementById('audioPlayer');
@@ -1333,11 +970,11 @@
                     .then(() => {
                         playIcon.className = "fa-solid fa-pause";
                         playBtnRing.classList.remove('opacity-0');
-                        statusText.innerText = "No Ar - Forró Stream MOC Forró De Minas Uai";
+                        statusText.innerText = "No Ar - Forró Stream MOC";
                         statusText.className = "text-xl font-semibold text-green-400";
                         waveform.classList.remove('hidden');
-                        showToast('🎊 Bem-vindo ao Arraiá do Forró! 🔥 São João 2026!', 4000);
-                        incrementListenerCounter();
+                        showToast('🎊 Bem-vindo! 🔥');
+                        incrementarManual();
                         adicionarOuvinteF();
                     })
                     .catch(err => {
@@ -1365,438 +1002,6 @@
             else volumeIcon.className = "fa-solid fa-volume-high text-slate-500";
         }
 
-        function showToast(message, duration = 3000) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), duration);
-        }
-
-        let sleepTimerInterval = null;
-        let sleepTimerMinutes = 0;
-
-        function toggleSleepTimer() {
-            if (sleepTimerMinutes > 0) {
-                clearInterval(sleepTimerInterval);
-                sleepTimerMinutes = 0;
-                document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
-                showToast('⏰ Timer desativado');
-            } else {
-                const minutes = prompt('Definir timer para parar em quantos minutos?\n\nExemplos: 15, 30, 45, 60', '30');
-                if (minutes && !isNaN(minutes) && parseInt(minutes) > 0) {
-                    sleepTimerMinutes = parseInt(minutes);
-                    startSleepTimer(sleepTimerMinutes);
-                }
-            }
-        }
-
-        function startSleepTimer(minutes) {
-            let remainingSeconds = minutes * 60;
-            updateSleepTimerDisplay(remainingSeconds);
-            sleepTimerInterval = setInterval(() => {
-                remainingSeconds--;
-                if (remainingSeconds <= 0) {
-                    clearInterval(sleepTimerInterval);
-                    audio.pause();
-                    playIcon.className = "fa-solid fa-play ml-1";
-                    playBtnRing.classList.add('opacity-0');
-                    statusText.innerText = "Timer encerrado - Pausado";
-                    statusText.className = "text-xl font-semibold text-slate-500";
-                    waveform.classList.add('hidden');
-                    sleepTimerMinutes = 0;
-                    document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
-                    showToast('😴 Timer encerrado! Rádio pausada.');
-                    removerOuvinteF();
-                } else {
-                    updateSleepTimerDisplay(remainingSeconds);
-                }
-            }, 1000);
-            showToast(`⏰ Timer ativado: ${minutes} minutos`);
-        }
-
-        function updateSleepTimerDisplay(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
-            document.getElementById('sleepTimerText').textContent = `Timer: ${timeStr}`;
-        }
-
-        const songHistory = [];
-        const MAX_HISTORY = 3;
-
-        function addToSongHistory(title, artist) {
-            if (songHistory.length > 0 && songHistory[0].title === title && songHistory[0].artist === artist) return;
-            songHistory.unshift({ title, artist, time: new Date() });
-            if (songHistory.length > MAX_HISTORY) songHistory.pop();
-            updateSongHistoryDisplay();
-        }
-
-        function updateSongHistoryDisplay() {
-            const historyContainer = document.getElementById('songHistory');
-            if (songHistory.length === 0) {
-                historyContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Aguardando músicas...</p>';
-                return;
-            }
-            historyContainer.innerHTML = songHistory.map((song) => {
-                const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                return `
-                    <div class="flex items-start gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors">
-                        <span class="text-xs text-slate-500 font-mono flex-shrink-0 mt-0.5">${time}</span>
-                        <div class="flex-grow min-w-0">
-                            <p class="text-xs font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p>
-                            ${song.artist ? `<p class="text-[10px] text-slate-400 truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>` : ''}
-                        </div>
-                    </div>`;
-            }).join('');
-            updateRecentSongsPanel();
-        }
-        
-        function updateRecentSongsPanel() {
-            const recentContainer = document.getElementById('recentSongs');
-            if (!recentContainer) return;
-            if (songHistory.length === 0) {
-                recentContainer.innerHTML = `<div class="flex items-center gap-3 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50"><div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-music text-xs text-white"></i></div><div class="flex-grow min-w-0"><p class="text-sm font-medium text-white truncate">Aguardando músicas...</p><p class="text-xs text-slate-400">Toque a rádio para começar</p></div></div>`;
-                return;
-            }
-            const recentSongsList = songHistory.slice(0, 3);
-            recentContainer.innerHTML = recentSongsList.map((song, index) => {
-                const time = song.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                const isFirst = index === 0;
-                return `<div class="flex items-center gap-3 p-3 ${isFirst ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/40' : 'bg-slate-900/60 border-slate-700/50'} rounded-lg border transition-all hover:scale-105"><div class="w-8 h-8 ${isFirst ? 'bg-gradient-to-br from-purple-400 to-pink-500 animate-pulse' : 'bg-gradient-to-br from-amber-400 to-orange-500'} rounded-full flex items-center justify-center flex-shrink-0">${isFirst ? '<i class="fa-solid fa-volume-high text-xs text-white"></i>' : '<i class="fa-solid fa-music text-xs text-white"></i>'}</div><div class="flex-grow min-w-0"><p class="text-sm font-medium text-white truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</p><p class="text-xs ${isFirst ? 'text-purple-300' : 'text-slate-400'}">${isFirst ? 'Tocando agora • ' : ''}${time}</p></div>${isFirst ? '<span class="text-xs bg-purple-500/30 text-purple-300 px-2 py-1 rounded-full font-bold">AO VIVO</span>' : ''}</div>`;
-            }).join('');
-        }
-
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const clockElement = document.getElementById('currentTime');
-            if (clockElement) clockElement.textContent = `${hours}:${minutes}`;
-        }
-
-        let realListenerCount = 0;
-        const streamUrl = 'https://stream.forrostreammoc.shop/radio.mp3';
-        let currentSongTitle = '';
-        let currentSongArtist = '';
-
-        let globalTotalVisitors = 0;
-        let lastSyncTime = 0;
-        let firebaseListener = null;
-        let broadcastChannel = null;
-        
-        try {
-            if ('BroadcastChannel' in window) {
-                broadcastChannel = new BroadcastChannel('forro_stream_counter');
-                broadcastChannel.onmessage = (event) => {
-                    if (event.data && event.data.type === 'counter_update') {
-                        globalTotalVisitors = event.data.value;
-                        animateCounter('totalVisitors', globalTotalVisitors);
-                        lastSyncTime = Date.now();
-                    }
-                };
-            }
-        } catch (e) {}
-        
-        async function initializeVisitorCounter() {
-            if (!window.firebaseDB) {
-                const localValue = parseInt(localStorage.getItem('forro_local_total') || '0');
-                globalTotalVisitors = localValue > 0 ? localValue : Math.floor(Math.random() * 10) + 5;
-                animateCounter('totalVisitors', globalTotalVisitors);
-                localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
-                return;
-            }
-            
-            const { counterRef, onValue, runTransaction, set, ref, database } = window.firebaseDB;
-            
-            firebaseListener = onValue(counterRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data !== null && data.count !== undefined) {
-                    const firebaseCount = data.count;
-                    if (firebaseCount !== globalTotalVisitors) {
-                        globalTotalVisitors = firebaseCount;
-                        animateCounter('totalVisitors', globalTotalVisitors);
-                        lastSyncTime = Date.now();
-                        localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
-                        if (broadcastChannel) {
-                            broadcastChannel.postMessage({ type: 'counter_update', value: globalTotalVisitors, timestamp: Date.now() });
-                        }
-                    }
-                } else {
-                    const initialValue = Math.floor(Math.random() * 10) + 5;
-                    set(counterRef, { count: initialValue, last_updated: Date.now() }).then(() => {
-                        globalTotalVisitors = initialValue;
-                        animateCounter('totalVisitors', globalTotalVisitors);
-                        localStorage.setItem('forro_local_total', initialValue.toString());
-                    }).catch(() => {
-                        globalTotalVisitors = initialValue;
-                        animateCounter('totalVisitors', globalTotalVisitors);
-                    });
-                }
-            });
-        }
-
-        async function manualSyncCounter() {
-            showToast('🔄 Atualizando contador...');
-            if (!window.firebaseDB) {
-                showToast('⚠️ Firebase não disponível');
-                return;
-            }
-            const { counterRef, onValue } = window.firebaseDB;
-            onValue(counterRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data && data.count !== undefined) {
-                    globalTotalVisitors = data.count;
-                    animateCounter('totalVisitors', globalTotalVisitors);
-                    showToast('✅ Contador atualizado!');
-                }
-            }, { onlyOnce: true });
-        }
-        
-        async function incrementListenerCounter() {
-            if (!window.firebaseDB) {
-                globalTotalVisitors++;
-                localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
-                animateCounter('totalVisitors', globalTotalVisitors);
-                return;
-            }
-            const { counterRef, runTransaction } = window.firebaseDB;
-            runTransaction(counterRef, (currentData) => {
-                if (currentData === null) return { count: 1, last_updated: Date.now() };
-                return { count: (currentData.count || 0) + 1, last_updated: Date.now() };
-            }).then((result) => {
-                const newCount = result.snapshot.val().count;
-                globalTotalVisitors = newCount;
-                animateCounter('totalVisitors', globalTotalVisitors);
-                localStorage.setItem('forro_local_total', newCount.toString());
-                if (broadcastChannel) {
-                    broadcastChannel.postMessage({ type: 'counter_update', value: newCount, timestamp: Date.now() });
-                }
-            }).catch(() => {
-                globalTotalVisitors++;
-                localStorage.setItem('forro_local_total', globalTotalVisitors.toString());
-                animateCounter('totalVisitors', globalTotalVisitors);
-            });
-        }
-
-        function animateCounter(elementId, targetValue) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
-            const startValue = parseInt(element.textContent) || 0;
-            const duration = 1500;
-            const startTime = performance.now();
-            function updateCounter(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
-                element.textContent = currentValue.toLocaleString('pt-BR');
-                if (elementId === 'totalVisitors') {
-                    const statsElement = document.getElementById('totalVisitorsStats');
-                    if (statsElement) statsElement.textContent = currentValue.toLocaleString('pt-BR');
-                }
-                if (progress < 1) requestAnimationFrame(updateCounter);
-            }
-            requestAnimationFrame(updateCounter);
-        }
-
-        async function fetchNowPlaying() {
-            try {
-                const workerUrl = 'https://forro-stream-metadata.marcostheangels.workers.dev';
-                const response = await fetch(workerUrl, { method: 'GET', cache: 'no-cache', headers: { 'Accept': 'application/json' } });
-                if (response.ok) {
-                    const data = await response.json();
-                    processMetadata(data);
-                }
-            } catch (error) {}
-        }
-        
-        function processMetadata(data) {
-            if (!data || !data.icestats) return;
-            let songTitle = data.icestats.source?.title;
-            if (!songTitle || songTitle === null) {
-                songTitle = data.icestats.source?.metadata?.x_icy_title;
-            }
-            if (songTitle && songTitle.trim().length > 0) {
-                parseAndDisplaySongTitle(songTitle);
-            }
-        }
-
-        function fixUTF8Encoding(text) {
-            if (!text) return text;
-            if (!text.includes('Ã') && !text.includes('\ufffd')) return text;
-            const replacements = { 'Ã§': 'ç', 'Ã£': 'ã', 'Ã¡': 'á', 'Ã©': 'é', 'Ã­': 'í', 'Ã³': 'ó', 'Ãº': 'ú', 'Ã¢': 'â', 'Ãª': 'ê', 'Ã´': 'ô', 'Ãµ': 'õ', 'Ãœ': 'Ü', 'Ã': 'À', 'Ã±': 'ñ' };
-            let fixed = text;
-            for (const [wrong, correct] of Object.entries(replacements)) {
-                fixed = fixed.split(wrong).join(correct);
-            }
-            return fixed;
-        }
-
-        function parseAndDisplaySongTitle(title) {
-            title = fixUTF8Encoding(title);
-            if (title.includes('<!DOCTYPE') || title.includes('<html') || title.includes('Icecast Server')) return;
-            let artist = '';
-            let song = title;
-            if (title.includes(' - ')) {
-                const parts = title.split(' - ');
-                artist = parts[0].trim();
-                song = parts.slice(1).join(' - ').trim();
-            }
-            if (song !== currentSongTitle || artist !== currentSongArtist) {
-                currentSongTitle = song;
-                currentSongArtist = artist;
-                displayNowPlaying(song, artist);
-                addToSongHistory(song, artist);
-            }
-        }
-
-        function displayNowPlaying(title, artist) {
-            const nowPlayingText = document.getElementById('nowPlayingText');
-            const nowPlayingArtist = document.getElementById('nowPlayingArtist');
-            const floatingSongTitle = document.getElementById('floatingSongTitle');
-            const floatingSongArtist = document.getElementById('floatingSongArtist');
-            if (nowPlayingText) nowPlayingText.textContent = title || 'Forró Stream MOC';
-            if (nowPlayingArtist) {
-                if (artist && artist.trim()) {
-                    nowPlayingArtist.textContent = artist;
-                    nowPlayingArtist.style.display = 'block';
-                } else {
-                    nowPlayingArtist.style.display = 'none';
-                }
-            }
-            if (floatingSongTitle) floatingSongTitle.textContent = title || 'Forró Stream MOC';
-            if (floatingSongArtist) {
-                if (artist && artist.trim()) {
-                    floatingSongArtist.textContent = artist;
-                    floatingSongArtist.style.display = 'block';
-                } else {
-                    floatingSongArtist.style.display = 'none';
-                }
-            }
-        }
-
-        async function attemptAutoPlay() {
-            try {
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    await playPromise;
-                    playIcon.className = "fa-solid fa-pause ml-1";
-                    playBtnRing.classList.remove('opacity-0');
-                    statusText.innerText = "Tocando Agora";
-                    statusText.className = "text-xl font-semibold text-green-400 animate-pulse";
-                    waveform.classList.remove('hidden');
-                    incrementListenerCounter();
-                    adicionarOuvinteF();
-                }
-            } catch (error) {
-                setTimeout(() => { showToast('🎵 Clique no botão PLAY para ouvir!', 5000); }, 2000);
-            }
-        }
-
-        async function fetchRealListeners() {
-            try {
-                const statusUrls = [
-                    'https://stream.forrostreammoc.shop/status.xsl',
-                    'https://stream.forrostreammoc.shop/7.html',
-                    'https://stream.forrostreammoc.shop/status-json.xsl'
-                ];
-                let listenersFound = false;
-                for (const url of statusUrls) {
-                    try {
-                        const response = await fetch(url, { method: 'GET', mode: 'cors' });
-                        if (response.ok) {
-                            const text = await response.text();
-                            try {
-                                const json = JSON.parse(text);
-                                if (json.icestats && json.icestats.source) {
-                                    const sources = Array.isArray(json.icestats.source) ? json.icestats.source : [json.icestats.source];
-                                    realListenerCount = sources.reduce((sum, source) => sum + (source.listeners || 0), 0);
-                                    listenersFound = true;
-                                    break;
-                                }
-                            } catch (e) {
-                                if (text.includes('<icestats>') || text.includes('<?xml')) {
-                                    const sourceMatch = text.match(/<source[^>]*mount="\/radio\.mp3"[^>]*>[\s\S]*?<listeners>(\d+)<\/listeners>/i);
-                                    if (sourceMatch && sourceMatch[1]) {
-                                        realListenerCount = parseInt(sourceMatch[1]);
-                                        listenersFound = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    } catch (err) { continue; }
-                }
-                if (!listenersFound) {
-                    if (audio && !audio.paused) realListenerCount = Math.max(realListenerCount, 1);
-                }
-                updateAllDisplays(realListenerCount);
-            } catch (error) {
-                if (audio && !audio.paused && realListenerCount === 0) {
-                    realListenerCount = 1;
-                    updateAllDisplays(realListenerCount);
-                }
-            }
-        }
-
-        function updateAllDisplays(count) {
-            const listenerElement = document.getElementById('listenerCount');
-            const liveListenerElement = document.getElementById('liveListenerCount');
-            const floatingCountElement = document.getElementById('floatingCount');
-            if (listenerElement) listenerElement.textContent = count;
-            if (liveListenerElement) liveListenerElement.textContent = count;
-            if (floatingCountElement) floatingCountElement.textContent = count;
-        }
-
-        function monitorPlayerState() {
-            if (!audio) return;
-            audio.addEventListener('play', () => {
-                if (realListenerCount < 1) {
-                    realListenerCount = 1;
-                    updateAllDisplays(realListenerCount);
-                }
-            });
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initializeVisitorCounter();
-            setTimeout(() => {
-                if (window.firebaseDB) {
-                    const { counterRef, onValue } = window.firebaseDB;
-                    onValue(counterRef, (snapshot) => {
-                        const data = snapshot.val();
-                        if (data !== null && data > globalTotalVisitors) {
-                            globalTotalVisitors = data;
-                            animateCounter('totalVisitors', globalTotalVisitors);
-                        }
-                    }, { onlyOnce: true });
-                }
-            }, 2000);
-            attemptAutoPlay();
-            updateClock();
-            setInterval(updateClock, 1000);
-            fetchRealListeners();
-            fetchNowPlaying();
-            monitorPlayerState();
-            setTimeout(() => {
-                audio.play()
-                    .then(() => {
-                        playIcon.className = "fa-solid fa-pause";
-                        playBtnRing.classList.remove('opacity-0');
-                        statusText.innerText = "No Ar - Forró Stream MOC VIP";
-                        statusText.className = "text-xl font-semibold text-green-400";
-                        waveform.classList.remove('hidden');
-                    })
-                    .catch(err => {
-                        statusText.innerText = "Clique para ouvir MOC";
-                        statusText.className = "text-xl font-semibold text-amber-400";
-                    });
-            }, 1000);
-            setInterval(fetchRealListeners, 10000);
-            setInterval(fetchNowPlaying, 2000);
-        });
-
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobileMenu');
             if (mobileMenu.classList.contains('hidden')) {
@@ -1810,15 +1015,199 @@
             }
         }
 
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const el = document.getElementById('currentTime');
+            if (el) el.textContent = `${hours}:${minutes}`;
+        }
+
         async function shareRadio() {
-            const shareData = { title: 'Forró Stream MOC', text: 'Ouça a melhor rádio de forró 24 horas! 🎵🎶', url: window.location.href };
+            const shareData = { title: 'Forró Stream MOC', text: 'Ouça a melhor rádio de forró 24 horas!', url: window.location.href };
             try {
                 if (navigator.share) await navigator.share(shareData);
                 else {
                     await navigator.clipboard.writeText(window.location.href);
-                    showToast('✅ Link copiado! Compartilhe com seus amigos.');
+                    showToast('✅ Link copiado!');
                 }
-            } catch (err) { showToast('❌ Erro ao compartilhar'); }
+            } catch (err) { showToast('❌ Erro'); }
+        }
+
+        let sleepTimerInterval = null;
+        let sleepTimerMinutes = 0;
+        function toggleSleepTimer() {
+            if (sleepTimerMinutes > 0) {
+                clearInterval(sleepTimerInterval);
+                sleepTimerMinutes = 0;
+                document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
+            } else {
+                const minutes = prompt('Timer em minutos?', '30');
+                if (minutes && !isNaN(minutes) && parseInt(minutes) > 0) {
+                    sleepTimerMinutes = parseInt(minutes);
+                    startSleepTimer(sleepTimerMinutes);
+                }
+            }
+        }
+        function startSleepTimer(minutes) {
+            let secs = minutes * 60;
+            sleepTimerInterval = setInterval(() => {
+                secs--;
+                if (secs <= 0) {
+                    clearInterval(sleepTimerInterval);
+                    audio.pause();
+                    playIcon.className = "fa-solid fa-play ml-1";
+                    sleepTimerMinutes = 0;
+                    document.getElementById('sleepTimerText').textContent = 'Timer: Desligado';
+                    removerOuvinteF();
+                } else {
+                    const m = Math.floor(secs / 60), s = secs % 60;
+                    document.getElementById('sleepTimerText').textContent = `Timer: ${m}:${s.toString().padStart(2,'0')}`;
+                }
+            }, 1000);
+        }
+
+        // Incrementar manualmente contador
+        function incrementarManual() {
+            if (!window.firebaseDB) return;
+            const { counterRef, runTransaction } = window.firebaseDB;
+            runTransaction(counterRef, (current) => {
+                if (current === null) return { count: 1, last_updated: Date.now() };
+                return { count: (current.count || 0) + 1, last_updated: Date.now() };
+            }).then(r => {
+                const count = r.snapshot.val().count;
+                document.getElementById('totalVisitors').textContent = count.toLocaleString('pt-BR');
+                const stats = document.getElementById('totalVisitorsStats');
+                if (stats) stats.textContent = count.toLocaleString('pt-BR');
+            }).catch(err => errF('Erro incrementar:', err));
+        }
+
+        // Buscar ouvintes reais do stream
+        async function fetchRealListeners() {
+            try {
+                const urls = [
+                    'https://stream.forrostreammoc.shop/status.xsl',
+                    'https://stream.forrostreammoc.shop/7.html'
+                ];
+                let found = false;
+                for (const url of urls) {
+                    try {
+                        const r = await fetch(url);
+                        if (r.ok) {
+                            const text = await r.text();
+                            const m = text.match(/<listeners>(\d+)<\/listeners>/);
+                            if (m) {
+                                const count = parseInt(m[1]);
+                                document.getElementById('listenerCount').textContent = count;
+                                document.getElementById('liveListenerCount').textContent = count;
+                                document.getElementById('floatingCount').textContent = count;
+                                found = true;
+                                break;
+                            }
+                        }
+                    } catch (e) { continue; }
+                }
+                if (!found && !audio.paused) {
+                    document.getElementById('listenerCount').textContent = '1';
+                    document.getElementById('liveListenerCount').textContent = '1';
+                }
+            } catch (e) {}
+        }
+
+        async function fetchNowPlaying() {
+            try {
+                const r = await fetch('https://forro-stream-metadata.marcostheangels.workers.dev', { cache: 'no-cache' });
+                if (r.ok) {
+                    const d = await r.json();
+                    let title = d.icestats?.source?.title || d.icestats?.source?.metadata?.x_icy_title;
+                    if (title) {
+                        title = title.replace(/Ã§/g,'ç').replace(/Ã£/g,'ã').replace(/Ã¡/g,'á').replace(/Ã©/g,'é').replace(/Ã­/g,'í').replace(/Ã³/g,'ó').replace(/Ãº/g,'ú');
+                        if (!title.includes('<') && title.trim()) {
+                            let artist = '', song = title;
+                            if (title.includes(' - ')) {
+                                [artist, ...song.split(' - ').slice(1)].join(' - ');
+                                const parts = title.split(' - ');
+                                artist = parts[0];
+                                song = parts.slice(1).join(' - ');
+                            }
+                            document.getElementById('nowPlayingText').textContent = song;
+                            document.getElementById('nowPlayingArtist').textContent = artist;
+                            document.getElementById('floatingSongTitle').textContent = song;
+                            if (artist) document.getElementById('floatingSongArtist').textContent = artist;
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+
+        async function initialCounter() {
+            if (!window.firebaseDB) return;
+            const { counterRef, onValue } = window.firebaseDB;
+            onValue(counterRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.count !== undefined) {
+                    document.getElementById('totalVisitors').textContent = data.count.toLocaleString('pt-BR');
+                    const stats = document.getElementById('totalVisitorsStats');
+                    if (stats) stats.textContent = data.count.toLocaleString('pt-BR');
+                } else {
+                    const { set } = window.firebaseDB;
+                    set(counterRef, { count: Math.floor(Math.random() * 10) + 5, last_updated: Date.now() });
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initialCounter();
+            updateClock();
+            setInterval(updateClock, 1000);
+            fetchRealListeners();
+            fetchNowPlaying();
+            setInterval(fetchRealListeners, 10000);
+            setInterval(fetchNowPlaying, 2000);
+            
+            // Autoplay
+            setTimeout(() => {
+                audio.play()
+                    .then(() => {
+                        playIcon.className = "fa-solid fa-pause";
+                        playBtnRing.classList.remove('opacity-0');
+                        statusText.innerText = "No Ar - Forró Stream MOC VIP";
+                        statusText.className = "text-xl font-semibold text-green-400";
+                        waveform.classList.remove('hidden');
+                        incrementarManual();
+                        adicionarOuvinteF();
+                    })
+                    .catch(err => {
+                        statusText.innerText = "Clique para ouvir MOC";
+                        statusText.className = "text-xl font-semibold text-amber-400";
+                    });
+            }, 1000);
+        });
+
+        function createJuninaEffects() {
+            const playBtn = document.getElementById('playBtn');
+            if (playBtn) {
+                playBtn.addEventListener('click', function(e) {
+                    const emojis = ['🎊', '🎉', '✨', '⭐', '🔥', '🎆'];
+                    for (let i = 0; i < 12; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                        confetti.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;font-size:${Math.random()*20+10}px;pointer-events:none;z-index:9999;transition:all 1s ease-out;`;
+                        document.body.appendChild(confetti);
+                        const angle = (Math.PI*2*i)/12, velocity = Math.random()*100+50;
+                        setTimeout(() => {
+                            confetti.style.transform = `translate(${Math.cos(angle)*velocity}px, ${Math.sin(angle)*velocity-100}px) rotate(${Math.random()*360}deg)`;
+                            confetti.style.opacity = '0';
+                        }, 10);
+                        setTimeout(() => confetti.remove(), 1000);
+                    }
+                });
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', createJuninaEffects);
+        } else {
+            createJuninaEffects();
         }
     </script>
 </body>
