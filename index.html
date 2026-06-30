@@ -338,7 +338,6 @@
           <div class="location-status-forr" id="locationStatusF">💡 Detectando seu IP público real...</div>
         </div>
 
-        <!-- 🆕 CARD DE OUINTES ONLINE EM TEMPO REAL (CORRIGIDO) -->
         <div class="unified-stats-card" id="unifiedStatsCard">
           <div class="unified-header">
             <div class="unified-title">
@@ -376,7 +375,6 @@
           </div>
         </div>
 
-        <!-- 🆕 CARD DE IPS DE QUEM DEU PLAY NO SITE -->
         <div class="listeners-card-forr" id="listenersCardF">
           <div class="listeners-header-forr">
             <div class="listeners-title-forr">
@@ -428,19 +426,17 @@
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3 mb-6">
-            <!-- 🆕 CORRIGIDO: "Ouvintes Agora" agora mostra online em tempo real -->
             <div class="p-4 bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/40 rounded-xl text-center">
               <i class="fa-solid fa-users text-2xl text-green-400 mb-2 animate-pulse"></i>
-              <p class="text-xs text-slate-400 mb-1">Ouvintes Agora</p>
+              <p class="text-xs text-slate-400 mb-1">Online Agora</p>
               <p class="text-2xl font-black text-green-400" id="listenerCountNow">0</p>
-              <p class="text-[10px] text-green-400/80 mt-1">Em tempo real</p>
+              <p class="text-[10px] text-green-400/80 mt-1">em tempo real</p>
             </div>
-            <!-- 🆕 NOVO: Total de Visitas ACUMULADO (não atualiza) -->
             <div class="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl text-center">
               <i class="fa-solid fa-database text-2xl text-blue-400 mb-2"></i>
               <p class="text-xs text-slate-400 mb-1">Total de Visitas</p>
               <p class="text-2xl font-black text-blue-400" id="totalVisitsAccumulated">0</p>
-              <p class="text-[10px] text-blue-400/80 mt-1">Acumulado</p>
+              <p class="text-[10px] text-blue-400/80 mt-1">acumulado</p>
             </div>
           </div>
           <div class="p-5 bg-slate-900/60 border border-slate-700 rounded-xl space-y-4">
@@ -560,8 +556,6 @@
     const database = firebase.database();
     const counterRef = database.ref('forro_stream/total_listeners');
     const listenersListRef = database.ref('listeners');
-
-    // 🆕 URL do Worker Cloudflare
     const ICECAST_PROXY_URL = 'https://flat-rain-59ad.marcostheangels.workers.dev/';
 
     // ============================================
@@ -619,17 +613,18 @@
     }
 
     // ============================================
-    // 🆕 SISTEMA DE OUINTES CORRIGIDO
+    // 🆕 SISTEMA CORRIGIDO - SEM DUPLICAÇÃO
     // ============================================
     const myUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     let myUserRef = null;
     let heartbeatInterval = null;
     let myLocationData = null;
 
-    // Variáveis dos contadores
-    let siteOnlineCount = 0;     // Pessoas online AGORA no site
-    let radioOnlineCount = 0;    // Pessoas online AGORA no RadiosNet
-    let totalAccumulated = 0;    // Total acumulado de quem já acessou
+    // Variáveis
+    let siteOnlineCount = 0;     
+    let radioOnlineCount = 0;    
+    let totalAccumulated = 0;    
+    let rawIcecastCount = 0;      // Valor bruto do Icecast
 
     function timeAgo(timestamp) {
         const diff = Date.now() - timestamp;
@@ -651,11 +646,9 @@
 
     async function registerMyPresence(locationData) {
         if (!locationData || !locationData.ip) return;
-        
         myUserRef = listenersListRef.child(myUserId);
         myLocationData = locationData;
         const locationText = locationData.state ? `${locationData.city}, ${locationData.state}` : locationData.city;
-        
         try {
             await myUserRef.set({
                 ip: locationData.ip,
@@ -680,48 +673,52 @@
         if (heartbeatInterval) clearInterval(heartbeatInterval);
     }
 
-    // 🆕 FUNÇÃO: Atualiza contadores em TEMPO REAL
+    // 🆕 FUNÇÃO INTELIGENTE: Calcula contadores sem duplicar
     function updateAllDisplays() {
-        const totalOnline = siteOnlineCount + radioOnlineCount;
-        const maxVal = Math.max(totalOnline, 1);
+        // LÓGICA INTELIGENTE:
+        // - Se tem gente no site E no Icecast, o Icecast inclui o site
+        // - O site conta quem deu play (lastSeen < 5 min)
+        // - O Icecast mostra o número TOTAL (incluindo o site)
+        // - O "RadiosNet" mostra APENAS quem está NO RadiosNet (não no site)
+        //   = Icecast - Site (se Icecast >= Site)
+        // - O "Total" mostra SEMPRE o Icecast (que é o total real de conexões)
         
-        // Card unificado
-        document.getElementById('statSiteCount').textContent = siteOnlineCount;
-        document.getElementById('statRadioCount').textContent = radioOnlineCount;
+        const siteOnly = siteOnlineCount;
+        const icecastTotal = rawIcecastCount;
+        // Quem está SÓ no RadiosNet (não no site):
+        const radioOnly = Math.max(0, icecastTotal - siteOnly);
+        // Total = Icecast (que é a fonte da verdade)
+        const totalOnline = icecastTotal;
+        
+        document.getElementById('statSiteCount').textContent = siteOnly;
+        document.getElementById('statRadioCount').textContent = radioOnly;
         document.getElementById('statTotalCount').textContent = totalOnline;
-        
-        // Badge flutuante
         document.getElementById('floatingCount').textContent = totalOnline;
-        
-        // Card "Online Agora" (verde) - CORRIGIDO
         document.getElementById('listenerCountNow').textContent = totalOnline;
         document.getElementById('listenerCount').textContent = totalOnline;
-        
-        // Total de visitas acumulado (card azul)
         document.getElementById('totalVisitsAccumulated').textContent = totalAccumulated.toLocaleString('pt-BR');
         
-        // Barras
-        const sitePct = (siteOnlineCount / maxVal) * 100;
-        const radioPct = (radioOnlineCount / maxVal) * 100;
+        const maxVal = Math.max(totalOnline, 1);
+        const sitePct = (siteOnly / maxVal) * 100;
+        const radioPct = (radioOnly / maxVal) * 100;
         document.getElementById('barSite').style.width = sitePct + '%';
         document.getElementById('barRadio').style.width = radioPct + '%';
     }
 
-    // 🆕 CONTADOR DO SITE: conta quem está ONLINE (lastSeen < 5 min)
+    // CONTADOR DO SITE: pessoas que deram play (lastSeen < 5 min)
     listenersListRef.on('value', (snapshot) => {
         const data = snapshot.val() || {};
         const now = Date.now();
-        const ACTIVE_LIMIT = 5 * 60 * 1000; // 5 minutos = "online agora"
+        const ACTIVE_LIMIT = 5 * 60 * 1000;
         let count = 0;
         Object.values(data).forEach(listener => {
             if (now - (listener.lastSeen || 0) < ACTIVE_LIMIT && listener.ip) count++;
         });
         siteOnlineCount = count;
         updateAllDisplays();
-        displayIPsList(snapshot); // Atualiza a lista de IPs
+        displayIPsList(snapshot);
     });
 
-    // 🆕 FUNÇÃO: Mostra a lista de IPs
     function displayIPsList(snapshot) {
         const list = document.getElementById('listenersListF');
         const countEl = document.getElementById('listenersCountF');
@@ -770,13 +767,13 @@
         }
     }
 
-    // 🆕 BUSCA OUVINTES DO ICECAST (RadiosNet) - A cada 2s
+    // BUSCA OUVINTES DO ICECAST (RadiosNet) - A cada 2s
     async function fetchRadioOnline() {
         try {
             const response = await fetch(ICECAST_PROXY_URL, { cache: 'no-cache' });
             if (response.ok) {
                 const data = await response.json();
-                radioOnlineCount = data.listeners || 0;
+                rawIcecastCount = data.listeners || 0;
                 updateAllDisplays();
             }
         } catch (err) {}
@@ -784,14 +781,12 @@
     setInterval(fetchRadioOnline, 2000);
     fetchRadioOnline();
 
-    // 🆕 CONTADOR ACUMULADO DE VISITAS
+    // CONTADOR ACUMULADO
     let countedThisSession = sessionStorage.getItem('fsmoc_visit_counted');
-
     function incrementTotalVisits() {
-        if (countedThisSession) return; // Já contou nesta sessão
+        if (countedThisSession) return;
         countedThisSession = '1';
         sessionStorage.setItem('fsmoc_visit_counted', '1');
-        
         counterRef.transaction((current) => {
             if (current === null || current.count === undefined) {
                 return { count: 1, last_updated: Date.now() };
@@ -802,7 +797,6 @@
             updateAllDisplays();
         }).catch(err => console.log('Erro:', err));
     }
-
     counterRef.on('value', (snapshot) => {
         const data = snapshot.val();
         if (data && data.count !== undefined) {
@@ -971,7 +965,7 @@
         }
     });
 
-    incrementTotalVisits(); // Conta visita IMEDIATAMENTE
+    incrementTotalVisits();
 
     window.addEventListener('beforeunload', removeMyPresence);
     window.addEventListener('pagehide', removeMyPresence);
